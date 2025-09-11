@@ -2,10 +2,16 @@
 
 Professional wholesale catalogue for premium children's and ladies sleepwear collection.
 
+## Collection Overview
+
+**Totals are calculated dynamically from the inventory CSV:**
+- Total pieces, SKUs, and category breakdowns update automatically
+- Current inventory: 168 pieces across 168 SKUs in 50 boxes
+- All items stored in professional 50L containers
+
 ## Collection Details
-- **Total Items**: 168 pieces
 - **Brand**: Marleen Molenaar (Lane Crawford Heritage)
-- **Categories**: Children's nightwear, bathrobes, pajama sets, ladies sleepwear
+- **Categories**: Children's sleepwear, ladies sleepwear, bathrobes, pajama sets
 - **Condition**: New with tags
 - **Location**: Vaucluse, Sydney NSW
 
@@ -25,6 +31,11 @@ Ground floor access, driveway pickup available
 - [South China Morning Post Profile](https://www.scmp.com/article/533820/eastern-premise)
 - [Retail Pricing Evidence](https://retykle.com/products/marleen-molenaar-pyjama-set-2t-8y)
 
----
-*Professional wholesale catalogue - All items stored in 50L containers with professional organization*
+## Technical Notes
+- Static GitHub Pages site with responsive design
+- Images optimized for web with WebP and JPEG fallbacks
+- Dynamic totals calculated from CSV data
+- Mobile-friendly catalogue with search and filtering
 
+---
+*Professional wholesale catalogue - All totals calculated dynamically from detailed_inventory.csv*
