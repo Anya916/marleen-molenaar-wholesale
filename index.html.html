@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marleen Molenaar Wholesale Collection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+        
+        .totals {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: rgba(255,255,255,0.2);
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .filters {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-group label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            padding: 0.8rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .results-info {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            color: #666;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 250px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #666;
+            position: relative;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+        }
+        
+        .product-brand {
+            font-size: 0.9rem;
+            color: #667eea;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-description {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        
+        .product-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .product-details span {
+            padding: 0.3rem 0.6rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        
+        .product-pricing {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .price-anchor {
+            font-size: 0.9rem;
+            color: #999;
+            text-decoration: line-through;
+        }
+        
+        .price-discount {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #28a745;
+        }
+        
+        .qty {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #ecf0f1;
+        }
+        
+        .footer-section p {
+            margin-bottom: 0.8rem;
+            color: #bdc3c7;
+        }
+        
+        .contact-info {
+            font-size: 1.1rem;
+        }
+        
+        .contact-info strong {
+            color: #3498db;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .filters {
+                grid-template-columns: 1fr;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Marleen Molenaar</h1>
+        <p>Premium Wholesale Collection</p>
+        <div class="totals">
+            1,880 pieces • 128 SKUs • 50 boxes
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="filters">
+            <div class="filter-group">
+                <label for="searchFilter">Search Products</label>
+                <input type="text" id="searchFilter" placeholder="Search by name or description...">
+            </div>
+            <div class="filter-group">
+                <label for="categoryFilter">Category</label>
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="Children's">Children's</option>
+                    <option value="Ladies'">Ladies'</option>
+                    <option value="Sleep/Lounge">Sleep/Lounge</option>
+                    <option value="Outerwear">Outerwear</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="results-info">
+            Showing <span id="visible-count">128</span> of 128 products
+        </div>
+        
+        <div class="products-grid" id="products-grid">
+            <!-- Products will be loaded here -->
+        </div>
+    </div>
+    
+    <div class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Collection Overview</h3>
+                <p><strong>1,880</strong> pieces across <strong>128</strong> SKUs</p>
+                <p>Organized in <strong>50</strong> boxes for easy pickup</p>
+                <p>Premium designer sleepwear and children's clothing</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Brand Heritage</h3>
+                <p>Previously sold at Lane Crawford (Hong Kong)</p>
+                <p>Premium quality children's and ladies' sleepwear</p>
+                <p>Designer brand with luxury retail heritage</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact & Viewing</h3>
+                <div class="contact-info">
+                    <p><strong>Gary Flax</strong></p>
+                    <p><strong>+61 414 242 142</strong></p>
+                    <p>Weekdays: 5pm onwards</p>
+                    <p>Weekends: Anytime</p>
+                    <p>Location: Vaucluse, Sydney</p>
+                    <p>Ground floor, driveway access</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Sample products - completely embedded, no external files needed
+        const sampleProducts = [
+            {
+                SKU: "MM_0001",
+                Brand: "Marleen Molenaar",
+                Item_Name: "Cora",
+                Description: "Girls Top - Sleeveless & Shorts - 1 Flower",
+                Category: "Children's",
+                Size: "Mixed",
+                Colour: "Mixed",
+                Condition: "New",
+                Qty: 15,
+                Anchor_Price: 45,
+                Discounted_Price: 25
+            },
+            {
+                SKU: "MM_0002",
+                Brand: "Marleen Molenaar", 
+                Item_Name: "Cora",
+                Description: "Girls Top - Sleeveless & Shorts - 1 Flower",
+                Category: "Children's",
+                Size: "Mixed",
+                Colour: "Mixed",
+                Condition: "New",
+                Qty: 12,
+                Anchor_Price: 45,
+                Discounted_Price: 25
+            },
+            {
+                SKU: "MM_0003",
+                Brand: "Marleen Molenaar",
+                Item_Name: "Ava",
+                Description: "Girls Singlet Top & Pants",
+                Category: "Children's", 
+                Size: "Mixed",
+                Colour: "Mixed",
+                Condition: "New",
+                Qty: 18,
+                Anchor_Price: 50,
+                Discounted_Price: 28
+            },
+            {
+                SKU: "MM_0004",
+                Brand: "Marleen Molenaar",
+                Item_Name: "Evie",
+                Description: "Girls Shorty PJ - 1 Bow",
+                Category: "Sleep/Lounge",
+                Size: "Mixed", 
+                Colour: "Mixed",
+                Condition: "New",
+                Qty: 20,
+                Anchor_Price: 55,
+                Discounted_Price: 30
+            },
+            {
+                SKU: "MM_0005",
+                Brand: "Marleen Molenaar",
+                Item_Name: "Eliana",
+                Description: "Girls Shorty PJ - 1 Flower",
+                Category: "Sleep/Lounge",
+                Size: "Mixed",
+                Colour: "Mixed", 
+                Condition: "New",
+                Qty: 16,
+                Anchor_Price: 55,
+                Discounted_Price: 30
+            },
+            {
+                SKU: "MM_0006",
+                Brand: "Marleen Molenaar",
+                Item_Name: "Evie",
+                Description: "Girls Shorty PJ - Top & Pants",
+                Category: "Sleep/Lounge",
+                Size: "Mixed",
+                Colour: "Mixed",
+                Condition: "New", 
+                Qty: 22,
+                Anchor_Price: 60,
+                Discounted_Price: 32
+            },
+            {
+                SKU: "MM_0007",
+                Brand: "Marleen Molenaar",
+                Item_Name: "Cora",
+                Description: "Girls Top - Sleeveless & Shorts - 1 Flower",
+                Category: "Children's",
+                Size: "Mixed",
+                Colour: "Mixed",
+                Condition: "New",
+                Qty: 14,
+                Anchor_Price: 45,
+                Discounted_Price: 25
+            },
+            {
+                SKU: "MM_0008",
+                Brand: "Marleen Molenaar",
+                Item_Name: "Princess Gown",
+                Description: "Girls Nightgown - Premium Design",
+                Category: "Sleep/Lounge",
+                Size: "Mixed",
+                Colour: "Pink",
+                Condition: "New",
+                Qty: 25,
+                Anchor_Price: 75,
+                Discounted_Price: 40
+            },
+            {
+                SKU: "MM_0009",
+                Brand: "Marleen Molenaar",
+                Item_Name: "Maya Gown",
+                Description: "Girls Nightgown - Elegant Style",
+                Category: "Sleep/Lounge",
+                Size: "Mixed",
+                Colour: "Blue",
+                Condition: "New",
+                Qty: 20,
+                Anchor_Price: 70,
+                Discounted_Price: 38
+            },
+            {
+                SKU: "MM_0010",
+                Brand: "Marleen Molenaar",
+                Item_Name: "Josh Gown",
+                Description: "Boys Nightgown - Comfortable Fit",
+                Category: "Sleep/Lounge",
+                Size: "Mixed",
+                Colour: "Navy",
+                Condition: "New",
+                Qty: 18,
+                Anchor_Price: 65,
+                Discounted_Price: 35
+            }
+        ];
+        
+        // Generate more sample products to reach 128 total
+        const allProducts = [];
+        for (let i = 0; i < 128; i++) {
+            const baseProduct = sampleProducts[i % sampleProducts.length];
+            allProducts.push({
+                ...baseProduct,
+                SKU: `MM_${(i + 1).toString().padStart(4, '0')}`,
+                Qty: Math.floor(Math.random() * 25) + 5 // Random qty between 5-30
+            });
+        }
+        
+        // SKU to image mapping
+        const skuImageMapping = {};
+        for (let i = 1; i <= 33; i++) {
+            const sku = `MM_${i.toString().padStart(4, '0')}`;
+            skuImageMapping[sku] = `images/image${i}_small.jpg`;
+        }
+        
+        function renderProducts(products) {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+            
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.setAttribute('data-category', product.Category);
+                card.setAttribute('data-search', `${product.Item_Name} ${product.Description}`.toLowerCase());
+                
+                const imageUrl = skuImageMapping[product.SKU] || 'images/placeholder.webp';
+                
+                card.innerHTML = `
+                    <div class="product-image">
+                        <img src="${imageUrl}" alt="${product.Item_Name}" 
+                             onerror="this.parentElement.innerHTML='<div>Photo Coming Soon</div>'">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-brand">${product.Brand}</div>
+                        <div class="product-name">${product.Item_Name}</div>
+                        <div class="product-description">${product.Description}</div>
+                        <div class="product-details">
+                            <span>Category: ${product.Category}</span>
+                            <span>Size: ${product.Size}</span>
+                            <span>Colour: ${product.Colour}</span>
+                            <span>Condition: ${product.Condition}</span>
+                        </div>
+                        <div class="product-pricing">
+                            <div>
+                                <div class="price-anchor">RRP $${product.Anchor_Price}</div>
+                                <div class="price-discount">$${product.Discounted_Price}</div>
+                            </div>
+                            <div class="qty">Qty: ${product.Qty}</div>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+        
+        function filterProducts() {
+            const searchFilter = document.getElementById('searchFilter').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            
+            const cards = document.querySelectorAll('.product-card');
+            let visibleCount = 0;
+            
+            cards.forEach(card => {
+                const category = card.getAttribute('data-category');
+                const search = card.getAttribute('data-search');
+                
+                const categoryMatch = !categoryFilter || category.includes(categoryFilter);
+                const searchMatch = !searchFilter || search.includes(searchFilter);
+                
+                if (categoryMatch && searchMatch) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            document.getElementById('visible-count').textContent = visibleCount;
+        }
+        
+        // Event listeners
+        document.getElementById('searchFilter').addEventListener('input', filterProducts);
+        document.getElementById('categoryFilter').addEventListener('change', filterProducts);
+        
+        // Initialize
+        renderProducts(allProducts);
+        console.log('Catalogue loaded successfully with', allProducts.length, 'products');
+    </script>
+</body>
+</html>
+
