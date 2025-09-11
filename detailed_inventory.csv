@@ -1,4 +1,4 @@
-SKU,Brand,Item_Name,Description,Category,Subcategory,Size,Colour,Gender,Condition,Qty,Anchor_Price,Discounted_Price,Channel
+SKU,Brand,Item_Name,Category,Size,Colour,Condition,Qty,Anchor_Price_AUD,Wholesale_Price_AUD
 MM_0001,Marleen Molenaar,Cora,Girls Top - Sleeveless & Shorts - 1 Flower,Children's,Children's,Mixed,Blue,Mixed,New,10,45,25,Wholesale
 MM_0002,Marleen Molenaar,Cora,Girls Top - Sleeveless & Shorts - 1 Flower,Children's,Children's,Mixed,Pink ,Mixed,New,25,45,25,Wholesale
 MM_0003,Marleen Molenaar,Ava,Girls Singlet Top & Pants,Children's,Children's,Mixed,Green Top / Yellow Pants,Mixed,New,27,45,25,Wholesale
