@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-GB">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,96 +54,6 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
-        }
-        
-        .size-breakdown {
-            background: #fff;
-            margin: 2rem 0;
-            padding: 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .size-breakdown h3 {
-            color: #667eea;
-            margin-bottom: 1rem;
-            font-size: 1.2rem;
-        }
-        
-        .size-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 1rem;
-            text-align: center;
-        }
-        
-        .size-item {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            border: 2px solid #e9ecef;
-        }
-        
-        .size-item .size-number {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #667eea;
-        }
-        
-        .size-item .size-count {
-            font-size: 0.9rem;
-            color: #666;
-            margin-top: 0.5rem;
-        }
-        
-        .proof-section {
-            background: #fff;
-            margin: 2rem 0;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .proof-section h2 {
-            color: #667eea;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-        
-        .proof-links {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .proof-link {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-        }
-        
-        .proof-link h3 {
-            color: #333;
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-        }
-        
-        .proof-link a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        
-        .proof-link a:hover {
-            text-decoration: underline;
-        }
-        
-        .proof-link p {
-            font-size: 0.9rem;
-            color: #666;
-            margin-top: 0.5rem;
         }
         
         .filters {
@@ -216,7 +126,7 @@
         }
         
         .product-image {
-            height: 150px;
+            height: 200px;
             background: #f8f9fa;
             display: flex;
             align-items: center;
@@ -225,10 +135,9 @@
         }
         
         .product-image img {
-            max-width: 100%;
-            max-height: 150px;
-            object-fit: contain;
-            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         
         .placeholder {
@@ -282,18 +191,6 @@
             color: #333;
         }
         
-        .sizes-available {
-            background: #f8f9fa;
-            padding: 0.5rem;
-            border-radius: 5px;
-            margin: 0.5rem 0;
-            font-size: 0.9rem;
-        }
-        
-        .sizes-available strong {
-            color: #667eea;
-        }
-        
         .product-prices {
             display: flex;
             justify-content: space-between;
@@ -337,40 +234,36 @@
         
         .footer-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 2rem;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
         
-        .footer-section h3 {
-            font-size: 1.3rem;
+        .contact-info h3 {
+            font-size: 1.5rem;
             margin-bottom: 1rem;
             color: #667eea;
         }
         
-        .footer-section p, .footer-section li {
+        .contact-info p {
             margin-bottom: 0.5rem;
-            line-height: 1.6;
+            line-height: 1.8;
         }
         
-        .footer-section strong {
+        .contact-info strong {
             color: #fff;
         }
         
-        .footer-section ul {
-            list-style: none;
-            padding: 0;
+        .footer-stats {
+            text-align: right;
         }
         
-        .footer-section a {
+        .footer-stats h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
             color: #667eea;
-            text-decoration: none;
-        }
-        
-        .footer-section a:hover {
-            text-decoration: underline;
         }
         
         @media (max-width: 768px) {
@@ -391,12 +284,13 @@
                 grid-template-columns: 1fr;
             }
             
-            .proof-links {
+            .footer-content {
                 grid-template-columns: 1fr;
+                text-align: center;
             }
             
-            .size-grid {
-                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            .footer-stats {
+                text-align: center;
             }
         }
     </style>
@@ -413,39 +307,6 @@
     </div>
     
     <div class="container">
-        <div class="size-breakdown">
-            <h3>📏 Size Breakdown - Individual Pieces Available</h3>
-            <div class="size-grid" id="sizeBreakdown">
-                <!-- Size breakdown will be loaded here -->
-            </div>
-        </div>
-        
-        <div class="proof-section">
-            <h2>🏆 Verified Luxury Credentials & Proof Links</h2>
-            <div class="proof-links">
-                <div class="proof-link">
-                    <h3>Lane Crawford Luxury Retailer</h3>
-                    <a href="https://www.lanecrawford.com/brand/700351/marleen-molenaar-sleepwear/women/" target="_blank">View Brand Page</a>
-                    <p>Hong Kong's premier luxury department store - equivalent to Harrods</p>
-                </div>
-                <div class="proof-link">
-                    <h3>Retail Pricing Evidence</h3>
-                    <a href="https://retykle.com/products/marleen-molenaar-pyjama-set-2t-8y" target="_blank">Retykle Pricing Proof</a>
-                    <p>Shows $59+ retail pricing for individual pieces</p>
-                </div>
-                <div class="proof-link">
-                    <h3>Media Coverage</h3>
-                    <a href="https://www.scmp.com/article/533820/eastern-premise" target="_blank">South China Morning Post</a>
-                    <p>2006 profile: "running a children's clothing design company under her own name"</p>
-                </div>
-                <div class="proof-link">
-                    <h3>Current Listings</h3>
-                    <a href="https://www.facebook.com/marketplace" target="_blank">Facebook Marketplace</a>
-                    <p>Individual pieces currently listed - view active sales</p>
-                </div>
-            </div>
-        </div>
-        
         <div class="filters">
             <div class="filter-row">
                 <div class="filter-group">
@@ -466,13 +327,6 @@
                     <label for="sizeFilter">Size</label>
                     <select id="sizeFilter">
                         <option value="">All Sizes</option>
-                        <option value="2">Size 2</option>
-                        <option value="4">Size 4</option>
-                        <option value="6">Size 6</option>
-                        <option value="8">Size 8</option>
-                        <option value="10">Size 10</option>
-                        <option value="12">Size 12</option>
-                        <option value="14">Size 14</option>
                     </select>
                 </div>
                 
@@ -501,28 +355,22 @@
     
     <div class="footer">
         <div class="footer-content">
-            <div class="footer-section">
+            <div class="contact-info">
                 <h3>Contact Information</h3>
                 <p><strong>Gary Flax:</strong> +61 414 242 142</p>
                 <p><strong>Location:</strong> Vaucluse, Sydney NSW</p>
                 <p><strong>Viewing:</strong> Weekdays 5pm+, Weekends anytime</p>
+                <p><strong>Brand:</strong> Marleen Molenaar (Lane Crawford Heritage)</p>
+                <p><strong>Wholesale Price:</strong> $18,000-22,000 complete collection</p>
+                <p><strong>Quick Sale:</strong> $12,000-15,000 complete collection</p>
                 <p><strong>Access:</strong> Ground floor, driveway access for easy pickup</p>
             </div>
             
-            <div class="footer-section">
-                <h3>Collection Details</h3>
+            <div class="footer-stats">
+                <h3>Collection Summary</h3>
                 <p><strong><span id="footer-total-pieces">1,880</span></strong> pieces across <strong><span id="footer-total-skus">128</span></strong> SKUs</p>
-                <p><strong>Organisation:</strong> Professional storage in 50 boxes</p>
-                <p><strong>Brand:</strong> Marleen Molenaar (Lane Crawford Heritage)</p>
-                <p><strong>Quality:</strong> New with tags, premium cotton construction</p>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Pricing & Sales</h3>
-                <p><strong>Complete Collection:</strong> $18,000-22,000</p>
-                <p><strong>Quick Sale:</strong> $12,000-15,000</p>
-                <p><strong>Individual Pieces:</strong> Wholesale prices shown</p>
-                <p><strong>Bulk Discounts:</strong> Available for large orders</p>
+                <p>Organized in <strong>50</strong> boxes for easy pickup</p>
+                <p><strong>Storage:</strong> Professional organization system</p>
             </div>
         </div>
     </div>
@@ -531,40 +379,19 @@
         // Global variables
         let allProducts = [];
         let filteredProducts = [];
-        let sizeBreakdown = {};
         
-        // Direct SKU to image mapping - no hardcoded numbers
-        function getImagePath(sku) {
-            return `images/${sku}.jpg`;
-        }
+        // SKU to image mapping - auto-generate for available images
+        const skuImageMapping = {};
         
-        // Load and display size breakdown
-        function displaySizeBreakdown(sizeData) {
-            const container = document.getElementById('sizeBreakdown');
-            container.innerHTML = '';
-            
-            Object.entries(sizeData).forEach(([size, count]) => {
-                const sizeItem = document.createElement('div');
-                sizeItem.className = 'size-item';
-                sizeItem.innerHTML = `
-                    <div class="size-number">Size ${size}</div>
-                    <div class="size-count">${count} pieces</div>
-                `;
-                container.appendChild(sizeItem);
-            });
-        }
-        
-        // Generate size options for products based on category and SKU
-        function generateSizeOptions(product) {
-            // For children's items, show common size ranges
-            if (product.Category && product.Category.toLowerCase().includes('children')) {
-                return ['2', '4', '6', '8', '10', '12'];
-            } else if (product.Category && product.Category.toLowerCase().includes('ladies')) {
-                return ['8', '10', '12', '14'];
-            } else {
-                return ['2', '4', '6', '8', '10', '12'];
+        function generateImageMapping() {
+            // Map first 33 SKUs to available images
+            for (let i = 1; i <= 33; i++) {
+                const sku = `MM_${i.toString().padStart(4, '0')}`;
+                skuImageMapping[sku] = `images/image${i}_small.jpg`;
             }
         }
+        
+        generateImageMapping();
         
         // Load products from CSV
         async function loadProducts() {
@@ -594,8 +421,6 @@
                         // Only include products with quantity > 0
                         const qty = parseInt(product.Qty) || 0;
                         if (qty > 0 && product.SKU) {
-                            // Add size options for this product
-                            product.availableSizes = generateSizeOptions(product);
                             allProducts.push(product);
                         }
                     }
@@ -658,10 +483,12 @@
         function populateFilters() {
             const brands = [...new Set(allProducts.map(p => p.Brand))].sort();
             const categories = [...new Set(allProducts.map(p => p.Category))].sort();
+            const sizes = [...new Set(allProducts.map(p => p.Size))].sort();
             const conditions = [...new Set(allProducts.map(p => p.Condition))].sort();
             
             populateSelect('brandFilter', brands);
             populateSelect('categoryFilter', categories);
+            populateSelect('sizeFilter', sizes);
             populateSelect('conditionFilter', conditions);
         }
         
@@ -711,13 +538,11 @@
             const anchorPrice = parseFloat(product.Anchor_Price || product.Anchor_Price_AUD || 0);
             const wholesalePrice = parseFloat(product.Discounted_Price || product.Wholesale_Price_AUD || 0);
             const discount = anchorPrice > 0 ? Math.round(((anchorPrice - wholesalePrice) / anchorPrice) * 100) : 0;
-            // Determine image source - improved handling
-            const sku = product.SKU;
-            const imageSrc = getImagePath(sku);
-            const imageAlt = `${product.Brand} - ${product.Item_Name}`;
             
-            // Format available sizes
-            const sizesText = product.availableSizes ? product.availableSizes.join(', ') : 'Mixed sizes';
+            // Determine image source
+            const sku = product.SKU;
+            const imageSrc = skuImageMapping[sku] || 'images/placeholder.webp';
+            const imageAlt = `${product.Brand} - ${product.Item_Name}`;
             
             const card = document.createElement('div');
             card.className = 'product-card';
@@ -727,28 +552,21 @@
             card.dataset.condition = (product.Condition || '').toLowerCase();
             card.dataset.search = `${product.Brand} ${product.Item_Name} ${product.Size} ${product.Colour}`.toLowerCase();
             
-            // Add size filtering support
-            if (product.availableSizes) {
-                card.dataset.availableSizes = product.availableSizes.join(',');
-            }
-            
             card.innerHTML = `
-                <div class="product-image" id="img-container-${product.SKU.replace(/[^a-zA-Z0-9]/g, '_')}">
-                    <div class="placeholder">Photo<br>Coming Soon</div>
+                <div class="product-image">
+                    <img src="${imageSrc}" alt="${imageAlt}" 
+                         onerror="this.parentElement.innerHTML='<div class=\"placeholder\">Photo<br>Coming Soon</div>';">
                 </div>
                 <div class="product-info">
-                    <div class="category-badge">${product.Category || 'Uncategorised'}</div>
+                    <div class="category-badge">${product.Category || 'Uncategorized'}</div>
                     <div class="product-title">${product.Item_Name || 'Untitled Item'}</div>
                     <div class="product-details">
                         <div><strong>SKU:</strong> ${product.SKU || 'N/A'}</div>
                         <div><strong>Brand:</strong> ${product.Brand || 'N/A'}</div>
+                        <div><strong>Size:</strong> ${product.Size || 'N/A'}</div>
                         <div><strong>Colour:</strong> ${product.Colour || 'N/A'}</div>
                         <div><strong>Condition:</strong> ${product.Condition || 'N/A'}</div>
                         <div><strong>Qty:</strong> ${product.Qty || 'N/A'}</div>
-                        <div><strong>Category:</strong> ${product.Category || 'N/A'}</div>
-                    </div>
-                    <div class="sizes-available">
-                        <strong>Sizes Available:</strong> ${sizesText}
                     </div>
                     <div class="product-prices">
                         <div class="price-group">
@@ -760,23 +578,6 @@
                 </div>
             `;
             
-            // Load image after card is created - clean loading
-            setTimeout(() => {
-                const containerId = `img-container-${product.SKU.replace(/[^a-zA-Z0-9]/g, '_')}`;
-                const container = document.getElementById(containerId);
-                if (container) {
-                    const img = new Image();
-                    img.onload = function() {
-                        // Image loaded successfully - replace placeholder with image with forced small size
-                        container.innerHTML = `<img src="${imageSrc}" alt="${imageAlt}" style="max-width: 100%; max-height: 120px; object-fit: contain; display: block;">`;
-                    };
-                    img.onerror = function() {
-                        // Image failed to load - keep placeholder (already there)
-                    };
-                    img.src = imageSrc;
-                }
-            }, 10);
-            
             return card;
         }
         
@@ -784,23 +585,22 @@
         function filterProducts() {
             const brandFilter = document.getElementById('brandFilter').value.toLowerCase();
             const categoryFilter = document.getElementById('categoryFilter').value.toLowerCase();
-            const sizeFilter = document.getElementById('sizeFilter').value;
+            const sizeFilter = document.getElementById('sizeFilter').value.toLowerCase();
             const conditionFilter = document.getElementById('conditionFilter').value.toLowerCase();
             const searchFilter = document.getElementById('searchFilter').value.toLowerCase();
             
             filteredProducts = allProducts.filter(product => {
                 const brand = (product.Brand || '').toLowerCase();
                 const category = (product.Category || '').toLowerCase();
+                const size = (product.Size || '').toLowerCase();
                 const condition = (product.Condition || '').toLowerCase();
                 const searchText = `${product.Brand} ${product.Item_Name} ${product.Size} ${product.Colour}`.toLowerCase();
                 
                 const brandMatch = !brandFilter || brand.includes(brandFilter);
                 const categoryMatch = !categoryFilter || category.includes(categoryFilter);
+                const sizeMatch = !sizeFilter || size.includes(sizeFilter);
                 const conditionMatch = !conditionFilter || condition.includes(conditionFilter);
                 const searchMatch = !searchFilter || searchText.includes(searchFilter);
-                
-                // Size filter - check if the selected size is in available sizes
-                const sizeMatch = !sizeFilter || (product.availableSizes && product.availableSizes.includes(sizeFilter));
                 
                 return brandMatch && categoryMatch && sizeMatch && conditionMatch && searchMatch;
             });
@@ -817,16 +617,15 @@
         
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, initialising catalogue...');
+            console.log('DOM loaded, initializing catalogue...');
             loadProducts();
         });
         
-        // Load metrics from summary_metrics.json
+        // Load metrics from summary_metrics.json for additional data
         fetch('summary_metrics.json')
             .then(response => response.json())
             .then(metrics => {
                 console.log('Loaded metrics:', metrics);
-                
                 // Update totals if metrics provide more accurate data
                 if (metrics.TOTAL_UNITS && metrics.TOTAL_SKUS) {
                     document.getElementById('header-total-pieces').textContent = metrics.TOTAL_UNITS.toLocaleString();
@@ -834,22 +633,10 @@
                     document.getElementById('footer-total-pieces').textContent = metrics.TOTAL_UNITS.toLocaleString();
                     document.getElementById('footer-total-skus').textContent = metrics.TOTAL_SKUS.toLocaleString();
                 }
-                
-                // Display size breakdown
-                if (metrics.PER_SIZE) {
-                    sizeBreakdown = metrics.PER_SIZE;
-                    displaySizeBreakdown(sizeBreakdown);
-                }
             })
             .catch(error => {
                 console.log('Metrics file not found or invalid, using calculated totals');
-                // Fallback size breakdown
-                const fallbackSizes = {
-                    '2': 497, '4': 396, '6': 287, '8': 267, '10': 213, '12': 211, '14': 9
-                };
-                displaySizeBreakdown(fallbackSizes);
             });
     </script>
 </body>
 </html>
-
