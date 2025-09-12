@@ -767,8 +767,8 @@
                 if (container) {
                     const img = new Image();
                     img.onload = function() {
-                        // Image loaded successfully - replace placeholder with image
-                        container.innerHTML = `<img src="${imageSrc}" alt="${imageAlt}">`;
+                        // Image loaded successfully - replace placeholder with image with forced small size
+                        container.innerHTML = `<img src="${imageSrc}" alt="${imageAlt}" style="max-width: 100%; max-height: 120px; object-fit: contain; display: block;">`;
                     };
                     img.onerror = function() {
                         // Image failed to load - keep placeholder (already there)
