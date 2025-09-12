@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marleen Molenaar Wholesale Collection</title>
+    <meta name="description" content="Professional wholesale catalogue for Marleen Molenaar premium sleepwear collection - 1,880 pieces across 128 SKUs">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+        
+        .totals {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: rgba(255,255,255,0.2);
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .filters {
+            background: white;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 150px;
+        }
+        
+        .filter-group label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-size: 0.9rem;
+        }
+        
+        .filter-group select, .filter-group input {
+            padding: 0.5rem;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 1rem;
+            background: white;
+        }
+        
+        .filter-group select:focus, .filter-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .results-info {
+            text-align: center;
+            margin: 1rem 0;
+            font-size: 1.1rem;
+            color: #666;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        
+        .product-image {
+            height: 200px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .placeholder {
+            color: #999;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 1rem;
+            background: linear-gradient(45deg, #f8f9fa 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f8f9fa 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f8f9fa 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f8f9fa 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+        }
+        
+        .category-badge {
+            background: #667eea;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 0.8rem;
+        }
+        
+        .product-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .product-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .product-details div {
+            color: #666;
+        }
+        
+        .product-details strong {
+            color: #333;
+        }
+        
+        .product-prices {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .price-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .anchor-price {
+            font-size: 0.9rem;
+            color: #999;
+            text-decoration: line-through;
+        }
+        
+        .wholesale-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #28a745;
+        }
+        
+        .discount-badge {
+            background: #dc3545;
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .footer {
+            background: #343a40;
+            color: white;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .contact-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+        
+        .contact-info p {
+            margin-bottom: 0.5rem;
+            line-height: 1.8;
+        }
+        
+        .contact-info strong {
+            color: #fff;
+        }
+        
+        .footer-stats {
+            text-align: right;
+        }
+        
+        .footer-stats h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .filter-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-group {
+                min-width: auto;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .footer-stats {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>Marleen Molenaar Collection</h1>
+            <p>Premium Children's & Ladies Sleepwear - Wholesale Catalogue</p>
+            <div class="totals">
+                <span id="header-total-pieces">1,880</span> pieces • <span id="header-total-skus">128</span> SKUs • 50 boxes
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="filters">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="brandFilter">Brand</label>
+                    <select id="brandFilter">
+                        <option value="">All Brands</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="categoryFilter">Category</label>
+                    <select id="categoryFilter">
+                        <option value="">All Categories</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="sizeFilter">Size</label>
+                    <select id="sizeFilter">
+                        <option value="">All Sizes</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="conditionFilter">Condition</label>
+                    <select id="conditionFilter">
+                        <option value="">All Conditions</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="searchFilter">Search</label>
+                    <input type="text" id="searchFilter" placeholder="Search items...">
+                </div>
+            </div>
+            
+            <div class="results-info">
+                Showing <span id="visible-count">0</span> items
+            </div>
+        </div>
+        
+        <div class="grid" id="productGrid">
+            <!-- Products will be loaded here -->
+        </div>
+    </div>
+    
+    <div class="footer">
+        <div class="footer-content">
+            <div class="contact-info">
+                <h3>Contact Information</h3>
+                <p><strong>Gary Flax:</strong> +61 414 242 142</p>
+                <p><strong>Location:</strong> Vaucluse, Sydney NSW</p>
+                <p><strong>Viewing:</strong> Weekdays 5pm+, Weekends anytime</p>
+                <p><strong>Brand:</strong> Marleen Molenaar (Lane Crawford Heritage)</p>
+                <p><strong>Wholesale Price:</strong> $18,000-22,000 complete collection</p>
+                <p><strong>Quick Sale:</strong> $12,000-15,000 complete collection</p>
+                <p><strong>Access:</strong> Ground floor, driveway access for easy pickup</p>
+            </div>
+            
+            <div class="footer-stats">
+                <h3>Collection Summary</h3>
+                <p><strong><span id="footer-total-pieces">1,880</span></strong> pieces across <strong><span id="footer-total-skus">128</span></strong> SKUs</p>
+                <p>Organized in <strong>50</strong> boxes for easy pickup</p>
+                <p><strong>Storage:</strong> Professional organization system</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let allProducts = [];
+        let filteredProducts = [];
+        
+        // SKU to image mapping - auto-generate for available images
+        const skuImageMapping = {};
+        
+        function generateImageMapping() {
+            // Map first 33 SKUs to available images
+            for (let i = 1; i <= 33; i++) {
+                const sku = `MM_${i.toString().padStart(4, '0')}`;
+                skuImageMapping[sku] = `images/image${i}_small.jpg`;
+            }
+        }
+        
+        generateImageMapping();
+        
+        // Load products from CSV
+        async function loadProducts() {
+            try {
+                const response = await fetch('detailed_inventory.csv');
+                const csvText = await response.text();
+                const lines = csvText.split('\n').filter(line => line.trim());
+                
+                if (lines.length === 0) {
+                    throw new Error('CSV file is empty');
+                }
+                
+                const headers = lines[0].split(',').map(h => h.trim());
+                console.log('CSV Headers:', headers);
+                
+                allProducts = [];
+                
+                for (let i = 1; i < lines.length; i++) {
+                    const row = parseCSVRow(lines[i]);
+                    if (row.length === headers.length) {
+                        const product = {};
+                        
+                        headers.forEach((header, index) => {
+                            product[header] = row[index] ? row[index].trim() : '';
+                        });
+                        
+                        // Only include products with quantity > 0
+                        const qty = parseInt(product.Qty) || 0;
+                        if (qty > 0 && product.SKU) {
+                            allProducts.push(product);
+                        }
+                    }
+                }
+                
+                console.log(`Loaded ${allProducts.length} products`);
+                
+                // Update totals from loaded data
+                updateTotals();
+                
+                // Populate filter options
+                populateFilters();
+                
+                // Initial render
+                filteredProducts = [...allProducts];
+                renderProducts();
+                
+            } catch (error) {
+                console.error('Error loading products:', error);
+                document.getElementById('productGrid').innerHTML = 
+                    '<div style="text-align: center; padding: 2rem; color: #666;">Error loading products. Please check the data files.</div>';
+            }
+        }
+        
+        // Parse CSV row handling commas within quotes
+        function parseCSVRow(row) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < row.length; i++) {
+                const char = row[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            
+            result.push(current);
+            return result;
+        }
+        
+        // Update totals from loaded data
+        function updateTotals() {
+            const totalPieces = allProducts.reduce((sum, product) => sum + (parseInt(product.Qty) || 0), 0);
+            const totalSKUs = allProducts.length;
+            
+            document.getElementById('header-total-pieces').textContent = totalPieces.toLocaleString();
+            document.getElementById('header-total-skus').textContent = totalSKUs.toLocaleString();
+            document.getElementById('footer-total-pieces').textContent = totalPieces.toLocaleString();
+            document.getElementById('footer-total-skus').textContent = totalSKUs.toLocaleString();
+        }
+        
+        // Populate filter dropdowns
+        function populateFilters() {
+            const brands = [...new Set(allProducts.map(p => p.Brand))].sort();
+            const categories = [...new Set(allProducts.map(p => p.Category))].sort();
+            const sizes = [...new Set(allProducts.map(p => p.Size))].sort();
+            const conditions = [...new Set(allProducts.map(p => p.Condition))].sort();
+            
+            populateSelect('brandFilter', brands);
+            populateSelect('categoryFilter', categories);
+            populateSelect('sizeFilter', sizes);
+            populateSelect('conditionFilter', conditions);
+        }
+        
+        function populateSelect(selectId, options) {
+            const select = document.getElementById(selectId);
+            const currentValue = select.value;
+            
+            // Keep the "All" option and add new options
+            const allOption = select.querySelector('option[value=""]');
+            select.innerHTML = '';
+            select.appendChild(allOption);
+            
+            options.forEach(option => {
+                if (option) {
+                    const optionElement = document.createElement('option');
+                    optionElement.value = option;
+                    optionElement.textContent = option;
+                    select.appendChild(optionElement);
+                }
+            });
+            
+            select.value = currentValue;
+        }
+        
+        // Render products
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+            
+            if (filteredProducts.length === 0) {
+                grid.innerHTML = '<div style="text-align: center; padding: 2rem; color: #666;">No products match your filters.</div>';
+                document.getElementById('visible-count').textContent = '0';
+                return;
+            }
+            
+            filteredProducts.forEach(product => {
+                const card = createProductCard(product);
+                grid.appendChild(card);
+            });
+            
+            document.getElementById('visible-count').textContent = filteredProducts.length.toLocaleString();
+        }
+        
+        // Create product card
+        function createProductCard(product) {
+            // Calculate discount - handle both column name variations
+            const anchorPrice = parseFloat(product.Anchor_Price || product.Anchor_Price_AUD || 0);
+            const wholesalePrice = parseFloat(product.Discounted_Price || product.Wholesale_Price_AUD || 0);
+            const discount = anchorPrice > 0 ? Math.round(((anchorPrice - wholesalePrice) / anchorPrice) * 100) : 0;
+            
+            // Determine image source
+            const sku = product.SKU;
+            const imageSrc = skuImageMapping[sku] || 'images/placeholder.webp';
+            const imageAlt = `${product.Brand} - ${product.Item_Name}`;
+            
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.dataset.brand = (product.Brand || '').toLowerCase();
+            card.dataset.category = (product.Category || '').toLowerCase();
+            card.dataset.size = (product.Size || '').toLowerCase();
+            card.dataset.condition = (product.Condition || '').toLowerCase();
+            card.dataset.search = `${product.Brand} ${product.Item_Name} ${product.Size} ${product.Colour}`.toLowerCase();
+            
+            card.innerHTML = `
+                <div class="product-image">
+                    <img src="${imageSrc}" alt="${imageAlt}" 
+                         onerror="this.parentElement.innerHTML='<div class=\"placeholder\">Photo<br>Coming Soon</div>';">
+                </div>
+                <div class="product-info">
+                    <div class="category-badge">${product.Category || 'Uncategorized'}</div>
+                    <div class="product-title">${product.Item_Name || 'Untitled Item'}</div>
+                    <div class="product-details">
+                        <div><strong>SKU:</strong> ${product.SKU || 'N/A'}</div>
+                        <div><strong>Brand:</strong> ${product.Brand || 'N/A'}</div>
+                        <div><strong>Size:</strong> ${product.Size || 'N/A'}</div>
+                        <div><strong>Colour:</strong> ${product.Colour || 'N/A'}</div>
+                        <div><strong>Condition:</strong> ${product.Condition || 'N/A'}</div>
+                        <div><strong>Qty:</strong> ${product.Qty || 'N/A'}</div>
+                    </div>
+                    <div class="product-prices">
+                        <div class="price-group">
+                            ${anchorPrice > 0 ? `<div class="anchor-price">RRP $${anchorPrice.toFixed(2)}</div>` : ''}
+                            <div class="wholesale-price">$${wholesalePrice.toFixed(2)}</div>
+                        </div>
+                        ${discount > 0 ? `<div class="discount-badge">${discount}% OFF</div>` : ''}
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        // Filter functionality
+        function filterProducts() {
+            const brandFilter = document.getElementById('brandFilter').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value.toLowerCase();
+            const sizeFilter = document.getElementById('sizeFilter').value.toLowerCase();
+            const conditionFilter = document.getElementById('conditionFilter').value.toLowerCase();
+            const searchFilter = document.getElementById('searchFilter').value.toLowerCase();
+            
+            filteredProducts = allProducts.filter(product => {
+                const brand = (product.Brand || '').toLowerCase();
+                const category = (product.Category || '').toLowerCase();
+                const size = (product.Size || '').toLowerCase();
+                const condition = (product.Condition || '').toLowerCase();
+                const searchText = `${product.Brand} ${product.Item_Name} ${product.Size} ${product.Colour}`.toLowerCase();
+                
+                const brandMatch = !brandFilter || brand.includes(brandFilter);
+                const categoryMatch = !categoryFilter || category.includes(categoryFilter);
+                const sizeMatch = !sizeFilter || size.includes(sizeFilter);
+                const conditionMatch = !conditionFilter || condition.includes(conditionFilter);
+                const searchMatch = !searchFilter || searchText.includes(searchFilter);
+                
+                return brandMatch && categoryMatch && sizeMatch && conditionMatch && searchMatch;
+            });
+            
+            renderProducts();
+        }
+        
+        // Event listeners
+        document.getElementById('brandFilter').addEventListener('change', filterProducts);
+        document.getElementById('categoryFilter').addEventListener('change', filterProducts);
+        document.getElementById('sizeFilter').addEventListener('change', filterProducts);
+        document.getElementById('conditionFilter').addEventListener('change', filterProducts);
+        document.getElementById('searchFilter').addEventListener('input', filterProducts);
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing catalogue...');
+            loadProducts();
+        });
+        
+        // Load metrics from summary_metrics.json for additional data
+        fetch('summary_metrics.json')
+            .then(response => response.json())
+            .then(metrics => {
+                console.log('Loaded metrics:', metrics);
+                // Update totals if metrics provide more accurate data
+                if (metrics.TOTAL_UNITS && metrics.TOTAL_SKUS) {
+                    document.getElementById('header-total-pieces').textContent = metrics.TOTAL_UNITS.toLocaleString();
+                    document.getElementById('header-total-skus').textContent = metrics.TOTAL_SKUS.toLocaleString();
+                    document.getElementById('footer-total-pieces').textContent = metrics.TOTAL_UNITS.toLocaleString();
+                    document.getElementById('footer-total-skus').textContent = metrics.TOTAL_SKUS.toLocaleString();
+                }
+            })
+            .catch(error => {
+                console.log('Metrics file not found or invalid, using calculated totals');
+            });
+    </script>
+</body>
+</html>
