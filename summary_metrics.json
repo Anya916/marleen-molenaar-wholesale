@@ -1,0 +1,25 @@
+{
+  "TOTAL_UNITS": 1880,
+  "TOTAL_SKUS": 128,
+  "PER_SIZE": {
+    "2": 497,
+    "4": 396,
+    "6": 287,
+    "8": 267,
+    "10": 213,
+    "12": 211,
+    "14": 9
+  },
+  "CATEGORIES": {
+    "Children's": 329,
+    "Ladies'": 189,
+    "Sleep/Lounge (Unisex)": 1299,
+    "Children's (Outerwear)": 63,
+    "Uncategorised": 0
+  },
+  "NOTES": [
+    "Excluded 40 summary/total rows including the 1880 total",
+    "Applied reconciliation rule Qty vs size sum",
+    "Processed from Current May 2024 sheet"
+  ]
+}
