@@ -1,125 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Marleen Molenaar — Wholesale Catalogue</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Marleen Molenaar Wholesale Collection</title>
+  <meta name="description" content="Professional wholesale catalogue for Marleen Molenaar premium sleepwear collection - 1,880 pieces across 128 SKUs">
 
-<style>
-  :root{
-    --bg:#f8f6fb;
-    --card:#ffffff;
-    --ink:#1c1426;
-    --muted:#6d5e85;
-    --accent:#6b2bd9;          
-    --accent-soft:#6b2bd914;   
-    --border:#e6e0f3;
-    --chip:#efe9ff;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+  <style>
+    /* ====== Base + Purple Theme (kept) ====== */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: #f5f5fb;
+      color: #1d1b2e;
+      line-height: 1.4;
+    }
 
-  /* Quality & Proof ribbon */
-  .proofbar{background:var(--accent-soft);border-bottom:1px solid var(--border)}
-  .proofbar .wrap{max-width:1100px;margin:0 auto;padding:8px 16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-  .proofbar b{font-size:13px;color:#2a7a3b}
-  .proofbar a{font-size:13px;text-decoration:none;color:var(--accent);border:1px solid #dcd3ff;background:#f6f1ff;padding:4px 10px;border-radius:999px}
+    /* ====== Top Quality & Proof Links (added back) ====== */
+    .proofbar {
+      background: rgba(102, 126, 234, 0.12);
+      border-bottom: 1px solid #e6e0f3;
+    }
+    .proofbar .wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 8px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .proofbar b { font-size: 13px; color: #237a42; }
+    .proofbar a {
+      font-size: 13px;
+      color: #6b2bd9;
+      text-decoration: none;
+      border: 1px solid #dcd3ff;
+      background: #f6f1ff;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
 
-  header{position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--border);z-index:5}
-  .wrap{max-width:1100px;margin:0 auto;padding:12px 16px}
-  h1{font-size:22px;margin:0 0 6px;color:#2a1a47}
-  .metrics{display:flex;flex-wrap:wrap;gap:12px;font-size:14px;color:var(--muted)}
-  .metrics b{color:#2a1a47}
-  .controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-  .controls input,.controls select{padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:#fff;font-size:14px}
+    /* ====== Header (kept) ====== */
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 2rem 0;
+      text-align: center;
+    }
+    .header h1 { font-size: 2.4rem; margin-bottom: .5rem; }
+    .header p { font-size: 1.2rem; opacity: .92; margin-bottom: 1rem; }
+    .totals {
+      font-size: 1.05rem;
+      font-weight: 600;
+      background: rgba(255,255,255,0.2);
+      padding: .7rem 1.4rem;
+      border-radius: 25px;
+      display: inline-block;
+      backdrop-filter: blur(10px);
+    }
 
-  main{padding:18px 16px}
-  .grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+    .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
 
-  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 0 #ede7ff}
-  .imgbox{
-    height:180px;                 
-    background:#fff;
-    border-bottom:1px solid var(--border);
-    display:flex;align-items:center;justify-content:center;
-    overflow:hidden;
-  }
-  .imgbox img{
-    max-height:100%;
-    max-width:100%;
-    width:auto; height:auto;
-    object-fit:contain;
-    background:#fff;
-  }
-  .placeholder{font-size:14px;color:var(--muted);text-align:center;line-height:1.3}
+    /* ====== Filters (kept) ====== */
+    .filters {
+      background: #fff;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+    .filter-row { display:flex; gap:1rem; flex-wrap: wrap; }
+    .filter-group { flex:1 1 220px; }
+    .filter-group label { display:block; font-weight:600; margin-bottom:.4rem; color:#4b4267; }
+    .filter-group input, .filter-group select {
+      width:100%; padding:.6rem .7rem; border:1px solid #e4def3; border-radius:8px; background:#fff;
+    }
+    .summary {
+      display:flex; justify-content:space-between; align-items:center; margin-top:1rem; color:#4b4267;
+    }
 
-  .body{padding:12px;display:flex;flex-direction:column;gap:6px}
-  .title{font-weight:700;margin:0;color:#2a1a47}
-  .muted{color:var(--muted);font-size:13px;line-height:1.35}
-  .chips{display:flex;flex-wrap:wrap;gap:6px}
-  .chip{background:var(--chip);color:#2a1a47;border:1px solid #e5d9ff;border-radius:999px;padding:2px 8px;font-size:12px}
+    /* ====== Grid + Cards (kept, but image sizing fixed) ====== */
+    .grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .product-card {
+      background:#fff; border-radius:10px; overflow:hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .product-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.14);
+    }
 
-  .sizes{font-size:13px;color:#2a1a47;margin-top:4px}
-  .sizes span{background:#f4f0ff;border:1px solid #dccfff;border-radius:6px;padding:2px 6px;margin:2px;display:inline-block}
+    /* Fixed smaller, “show full garment” image area */
+    .product-image {
+      height: 180px;                     /* smaller and uniform */
+      background: #f8f9fa;
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden;
+      border-bottom:1px solid #eee;
+    }
+    .product-image img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto; height: auto;
+      object-fit: contain;               /* never crop */
+      background: #fff;
+    }
+    .placeholder { color:#999; font-size:14px; text-align:center; line-height:1.4; }
 
-  .about{max-width:1100px;margin:28px auto;padding:18px 16px;background:#fff;border:1px solid var(--border);border-radius:14px;}
-  .about h2{margin:0 0 8px;color:#2a1a47;font-size:18px}
-  .about p{margin:6px 0;color:var(--ink)}
-  .about .fine{color:var(--muted);font-size:13px}
+    .product-content { padding: 1rem; }
+    .product-title { font-weight:700; margin-bottom:.4rem; color:#2a1a47; }
+    .product-meta { font-size:.92rem; color:#6d5e85; margin-bottom:.4rem; }
+    .product-details {
+      display:flex; flex-wrap:wrap; gap:.35rem .5rem; margin:.5rem 0;
+    }
+    .badge {
+      background:#efe9ff; color:#2a1a47; border:1px solid #e5d9ff;
+      border-radius:999px; padding:2px 8px; font-size:12px;
+    }
+    .sizes { margin-top:.35rem; font-size:.92rem; color:#2a1a47; }
+    .sizes span {
+      background:#f4f0ff; border:1px solid #dccfff; border-radius:6px;
+      padding:2px 6px; margin:2px; display:inline-block;
+    }
 
-  footer{padding:28px 16px;color:var(--muted);text-align:center}
-  a{color:var(--accent)}
-</style>
+    /* ====== Footer / Owner Section (kept) ====== */
+    .footer {
+      background: #1f1640;
+      color: white;
+      margin-top: 2rem;
+    }
+    .footer-content {
+      display:flex; gap:2rem; flex-wrap:wrap;
+      justify-content: space-between;
+      padding: 2rem 20px;
+      max-width: 1400px; margin:0 auto;
+    }
+    .contact-info h3, .footer-stats h3 { margin-bottom:.8rem; color:#fff; }
+    .contact-info p { margin-bottom:.5rem; line-height:1.8; }
+    .contact-info strong { color:#fff; }
+    .footer-stats { text-align:right; }
+    .footer-stats h3 { font-size: 1.4rem; margin-bottom: .8rem; color:#aab2ff; }
+
+    @media (max-width: 768px) {
+      .header h1 { font-size: 2rem; }
+      .filter-row { flex-direction: column; align-items:stretch; }
+      .filter-group { min-width:auto; }
+      .footer-stats { text-align:left; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- Quality & Proof links bar -->
-<div class="proofbar">
-  <div class="wrap">
-    <b>Quality & Proof:</b>
-    <a href="detailed_inventory.csv" target="_blank">Inventory CSV</a>
-    <a href="summary_metrics.json" target="_blank">Totals & Metrics</a>
-    <a href="README.md" target="_blank">About the Collection</a>
-    <a href="https://www.chinapost.com/example" target="_blank">Comparable Listing (China Post)</a>
-  </div>
-</div>
-
-<header>
-  <div class="wrap">
-    <h1>Marleen Molenaar — Wholesale Catalogue</h1>
-    <div class="metrics">
-      <div><b id="m_units">—</b> pieces</div>
-      <div><b id="m_skus">—</b> SKUs</div>
-      <div><b>50</b> boxes</div>
-    </div>
-    <div class="controls">
-      <input id="q" placeholder="Search (brand, name, colour, size)…" />
-      <select id="cat"><option value="">All categories</option></select>
-      <select id="cond"><option value="">All conditions</option></select>
-      <select id="size"><option value="">All sizes</option></select>
+  <!-- ===== Quality & Proof links (restored) ===== -->
+  <div class="proofbar">
+    <div class="wrap">
+      <b>Quality & Proof:</b>
+      <a href="detailed_inventory.csv" target="_blank">Inventory CSV</a>
+      <a href="summary_metrics.json" target="_blank">Totals & Metrics</a>
+      <a href="README.md" target="_blank">About the Collection</a>
+      <!-- Add/restore your comparable links here (edit hrefs): -->
+      <a href="https://example.com/comparable-1" target="_blank">Comparable Listing 1</a>
+      <a href="https://example.com/comparable-2" target="_blank">Comparable Listing 2</a>
+      <!-- If you have a specific China Post/comparable URL, paste it above -->
     </div>
   </div>
-</header>
 
-<main>
-  <div class="grid" id="grid"></div>
+  <!-- ===== Header (kept) ===== -->
+  <div class="header">
+    <div class="container">
+      <h1>Marleen Molenaar Wholesale Collection</h1>
+      <p>Premium children’s and ladies’ sleepwear & daywear — all new with tags</p>
+      <div class="totals">
+        <span><strong id="header-total-pieces">1,880</strong> pieces • <strong id="header-total-skus">128</strong> SKUs</span>
+      </div>
+    </div>
+  </div>
 
-  <section class="about">
-    <h2>Owner & Viewing</h2>
-    <p><strong>Contact:</strong> Gary — <a href="tel:+61414242142">+61&nbsp;414&nbsp;242&nbsp;142</a></p>
-    <p><strong>Location:</strong> Vaucluse, Sydney (ground floor, driveway access). 50 professionally organised containers.</p>
-    <p><strong>Condition:</strong> All items brand new with original manufacturer tags.</p>
-    <p class="fine">Terms: B2B sale; bank transfer prior to pickup; buyer collects. Viewing weekdays after 5pm or weekends by arrangement.</p>
-  </section>
-</main>
+  <!-- ===== Filters (kept) ===== -->
+  <div class="container">
+    <div class="filters">
+      <div class="filter-row">
+        <div class="filter-group">
+          <label for="brandFilter">Brand</label>
+          <select id="brandFilter">
+            <option value="">All Brands</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="categoryFilter">Category</label>
+          <select id="categoryFilter">
+            <option value="">All Categories</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="sizeFilter">Size</label>
+          <select id="sizeFilter">
+            <option value="">All Sizes</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="conditionFilter">Condition</label>
+          <select id="conditionFilter">
+            <option value="">All Conditions</option>
+          </select>
+        </div>
+        <div class="filter-group" style="flex:2 1 280px;">
+          <label for="searchFilter">Search</label>
+          <input type="text" id="searchFilter" placeholder="Search by brand, item name, colour, size…">
+        </div>
+      </div>
+      <div class="summary">
+        <div>Showing <strong id="visible-count">0</strong> items</div>
+        <div>Totals auto-update from CSV / metrics</div>
+      </div>
+    </div>
 
-<footer>
-  <div>© Marleen Molenaar — Wholesale Catalogue • Vaucluse (Sydney NSW)</div>
-</footer>
+    <!-- ===== Product Grid (kept) ===== -->
+    <div class="grid" id="productGrid"></div>
+  </div>
+  <!-- ===== Footer / Owner Section ===== -->
+  <div class="footer">
+    <div class="footer-content">
+      <div class="contact-info">
+        <h3>Owner & Viewing</h3>
+        <p><strong>Contact:</strong> Gary — <a href="tel:+61414242142" style="color:#fff;">+61&nbsp;414&nbsp;242&nbsp;142</a></p>
+        <p><strong>Location:</strong> Vaucluse, Sydney (ground floor, driveway access). 50 professionally organised containers.</p>
+        <p><strong>Condition:</strong> All items brand new with original manufacturer tags.</p>
+        <p>Viewing available weekdays after 5pm or weekends by arrangement.</p>
+      </div>
+      <div class="footer-stats">
+        <h3>Wholesale Lot</h3>
+        <p>1,880 pieces across 128 SKUs</p>
+        <p>72% children’s nightwear • 18% daywear • 10% ladies’ items</p>
+        <p>Priced $11,000–13,000 • Serious offers $10k+</p>
+      </div>
+    </div>
+  </div>
 
 <script>
-/* Image resolution */
-function imageCandidates(sku, imageFileFromCSV){
+/* ===== Helpers for CSV parsing ===== */
+const normKey=s=>(s||'').toString().trim().toLowerCase().replace(/\s+/g,'_');
+const pick=(row,names)=>{for(const n of names){const k=normKey(n);for(const key in row){if(normKey(key)===k)return row[key];}}return'';}
+const csvToRows=(text)=>{
+  const lines=text.replace(/\r/g,'').split('\n').filter(l=>l.trim());
+  const head=lines.shift().split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(h=>h.replace(/^"|"$/g,'').trim());
+  return lines.map(line=>{
+    const cells=line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c=>c.replace(/^"|"$/g,'').trim());
+    const o={}; head.forEach((h,i)=>o[h]=cells[i]??''); return o;
+  });
+};
+
+/* ===== Image logic ===== */
+function imageCandidates(sku,imageFileFromCSV){
   const list=[];
   if(imageFileFromCSV) list.push(imageFileFromCSV);
   const S=(sku||'').trim();
@@ -131,7 +270,7 @@ function imageCandidates(sku, imageFileFromCSV){
   list.push('images/placeholder.webp');
   return list;
 }
-function imgTagFor(sku, alt, imageFileFromCSV){
+function imgTagFor(sku,alt,imageFileFromCSV){
   const tries=imageCandidates(sku,imageFileFromCSV);
   return `<img src="${tries[0]}" alt="${alt}" data-try="0" onerror="
     const list='${tries.join('|')}'.split('|');
@@ -141,33 +280,13 @@ function imgTagFor(sku, alt, imageFileFromCSV){
   ">`;
 }
 
-/* CSV helpers */
-const normKey=s=>(s||'').toString().trim().toLowerCase().replace(/\s+/g,'_');
-const pick=(row,names)=>{for(const n of names){const k=normKey(n);for(const key in row){if(normKey(key)===k) return row[key];}}return'';}
-const csvToRows=(text)=>{
-  const lines=text.replace(/\r/g,'').split('\n').filter(l=>l.trim());
-  const head=lines.shift().split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(h=>h.replace(/^"|"$/g,'').trim());
-  return lines.map(line=>{
-    const cells=line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c=>c.replace(/^"|"$/g,'').trim());
-    const o={}; head.forEach((h,i)=>o[h]=cells[i]??''); return o;
-  });
-};
-
-const $=s=>document.querySelector(s);
-const grid=$('#grid'), mU=$('#m_units'), mS=$('#m_skus');
-
+/* ===== Extract sizes ===== */
 function extractSizes(row){
-  // If there is a single Size/Sizes field with comma-separated values
   const sizesField=pick(row,['Sizes','Size']);
   let sizes=[];
   if(sizesField && sizesField.includes(',')){
-    sizes = sizesField.split(',').map(s=>s.trim()).filter(Boolean);
-  }
-  else if(sizesField){
-    sizes=[sizesField.trim()];
-  }
-
-  // If there are per-size columns (Size_2, Size_4 …), capture those with qty > 0
+    sizes=sizesField.split(',').map(s=>s.trim()).filter(Boolean);
+  } else if(sizesField){ sizes=[sizesField.trim()]; }
   for(const key in row){
     if(/^size[_ ]?\d+/i.test(key)){
       const qty=parseInt(row[key],10);
@@ -177,89 +296,81 @@ function extractSizes(row){
   return sizes;
 }
 
+/* ===== Render product cards ===== */
 function cardHTML(p){
-  const title=`${p.Brand||''} ${p.Item_Name||p.Item||p.Description||''}`.trim() || (p.SKU||'');
+  const title=`${p.Brand||''} ${p.Item_Name||p.Item||p.Description||''}`.trim()||(p.SKU||'');
   const chips=[(p.Category||'').trim(),(p.Colour||p.Color||'').trim(),(p.Condition||'').trim()].filter(Boolean);
-  const img=imgTagFor((p.SKU||'').trim(), title || (p.SKU||''), p.Image_File);
+  const img=imgTagFor((p.SKU||'').trim(),title||p.SKU,p.Image_File);
   const sizes=extractSizes(p);
-
   return `
-  <div class="card">
-    <div class="imgbox">${img}</div>
-    <div class="body">
-      <div class="title">${title}</div>
-      <div class="muted">SKU: ${p.SKU||''}</div>
-      <div class="chips">${chips.map(c=>`<span class="chip">${c}</span>`).join('')}</div>
-      ${sizes.length?`<div class="sizes">${sizes.map(s=>`<span>${s}</span>`).join(' ')}</div>`:''}
-      <div class="muted">Qty: ${p.Qty??'—'}</div>
-      ${p.Wholesale_Price_AUD?`<div class="muted">Wholesale: $${(+p.Wholesale_Price_AUD).toFixed(2)}</div>`:''}
-    </div>
-  </div>`;
+    <div class="product-card">
+      <div class="product-image">${img}</div>
+      <div class="product-content">
+        <div class="product-title">${title}</div>
+        <div class="product-meta">SKU: ${p.SKU||''}</div>
+        <div class="product-details">${chips.map(c=>`<span class="badge">${c}</span>`).join('')}</div>
+        ${sizes.length?`<div class="sizes">${sizes.map(s=>`<span>${s}</span>`).join(' ')}</div>`:''}
+        <div class="product-meta">Qty: ${p.Qty??'—'}</div>
+        ${p.Wholesale_Price_AUD?`<div class="product-meta">Wholesale: $${(+p.Wholesale_Price_AUD).toFixed(2)}</div>`:''}
+      </div>
+    </div>`;
 }
 
+/* ===== Filtering ===== */
 function matchesQ(p,q){
   if(!q) return true;
   const hay=[p.SKU,p.Brand,p.Item_Name,p.Item,p.Description,p.Category,p.Size,p.Sizes,p.Colour,p.Color].join(' ').toLowerCase();
   return hay.includes(q.toLowerCase());
 }
-function matchesSel(v, sel){ return !sel || (v||'').toString().toLowerCase()===sel.toLowerCase(); }
+function matchesSel(v,sel){ return !sel||(v||'').toString().toLowerCase()===sel.toLowerCase(); }
 
+/* ===== Main ===== */
 (async function(){
-  try{
-    const mRes = await fetch('summary_metrics.json');
-    if (mRes.ok) {
-      const m = await mRes.json();
-      if (m?.TOTAL_UNITS) mU.textContent = (+m.TOTAL_UNITS).toLocaleString();
-      if (m?.TOTAL_SKUS)  mS.textContent = (+m.TOTAL_SKUS).toLocaleString();
-    }
-  }catch(e){}
-
   const res=await fetch('detailed_inventory.csv');
   const text=await res.text();
   const rows=csvToRows(text);
-
   const products=rows.map(r=>{
     const o={};
-    o.SKU       = pick(r,['SKU','Sku','sku']);
-    o.Brand     = pick(r,['Brand']);
-    o.Item_Name = pick(r,['Item_Name','Item Name','Item','Description','Title','Product']);
-    o.Category  = pick(r,['Category']);
-    o.Size      = pick(r,['Size']); // fallback
-    o.Sizes     = pick(r,['Sizes']); // multiple sizes
-    o.Colour    = pick(r,['Colour','Color']);
-    o.Condition = pick(r,['Condition']);
-    o.Qty       = +((pick(r,['Qty','Quantity']))||0) || 0;
-    o.Wholesale_Price_AUD = pick(r,['Wholesale_Price_AUD','Wholesale Price AUD','Wholesale']);
-    o.Image_File= pick(r,['Image_File','Image File','Image','Image_URL','Image URL']);
+    o.SKU=pick(r,['SKU']); o.Brand=pick(r,['Brand']);
+    o.Item_Name=pick(r,['Item_Name','Item Name','Item','Description','Title','Product']);
+    o.Category=pick(r,['Category']); o.Size=pick(r,['Size']); o.Sizes=pick(r,['Sizes']);
+    o.Colour=pick(r,['Colour','Color']); o.Condition=pick(r,['Condition']);
+    o.Qty=+((pick(r,['Qty','Quantity']))||0)||0;
+    o.Wholesale_Price_AUD=pick(r,['Wholesale_Price_AUD','Wholesale Price AUD','Wholesale']);
+    o.Image_File=pick(r,['Image_File','Image File','Image','Image_URL','Image URL']);
     return o;
   }).filter(p=>p.SKU);
 
-  if (mU.textContent==='—' || mS.textContent==='—'){
-    const units=products.reduce((s,p)=>s+(+p.Qty||0),0);
-    mU.textContent=units.toLocaleString();
-    mS.textContent=products.length.toLocaleString();
-  }
+  document.getElementById('header-total-pieces').textContent=products.reduce((s,p)=>s+(+p.Qty||0),0).toLocaleString();
+  document.getElementById('header-total-skus').textContent=products.length.toLocaleString();
 
   const uniq=a=>[...new Set(a.filter(Boolean))].sort((x,y)=>x.localeCompare(y));
-  const set=(el,arr)=>el.innerHTML='<option value="">All</option>'+arr.map(v=>`<option>${v}</option>`).join('');
-  set($('#cat'), uniq(products.map(p=>p.Category)));
-  set($('#cond'),uniq(products.map(p=>p.Condition)));
-  set($('#size'),uniq(products.flatMap(p=>extractSizes(p))));
+  const setOpts=(id,arr)=>{document.getElementById(id).innerHTML='<option value="">All</option>'+arr.map(v=>`<option>${v}</option>`).join('');};
+  setOpts('brandFilter',uniq(products.map(p=>p.Brand)));
+  setOpts('categoryFilter',uniq(products.map(p=>p.Category)));
+  setOpts('conditionFilter',uniq(products.map(p=>p.Condition)));
+  setOpts('sizeFilter',uniq(products.flatMap(p=>extractSizes(p))));
 
   const render=()=>{
-    const q  = ($('#q').value||'').trim();
-    const cat= $('#cat').value;
-    const con= $('#cond').value;
-    const siz= $('#size').value;
-    const filtered=products.filter(p =>
-      matchesQ(p,q) && matchesSel(p.Category,cat) && matchesSel(p.Condition,con) &&
-      (!siz || extractSizes(p).some(s=>s.toLowerCase().includes(siz.toLowerCase())))
+    const q=document.getElementById('searchFilter').value.trim();
+    const brand=document.getElementById('brandFilter').value;
+    const cat=document.getElementById('categoryFilter').value;
+    const siz=document.getElementById('sizeFilter').value;
+    const cond=document.getElementById('conditionFilter').value;
+    const filtered=products.filter(p=>
+      matchesQ(p,q)&&matchesSel(p.Brand,brand)&&matchesSel(p.Category,cat)&&matchesSel(p.Condition,cond)&&
+      (!siz||extractSizes(p).some(s=>s.toLowerCase().includes(siz.toLowerCase())))
     );
-    grid.innerHTML = filtered.map(cardHTML).join('') || '<div class="muted" style="grid-column:1/-1">No results.</div>';
+    document.getElementById('visible-count').textContent=filtered.length;
+    document.getElementById('productGrid').innerHTML=filtered.map(cardHTML).join('');
   };
-  ['q','cat','cond','size'].forEach(id=>document.getElementById(id).addEventListener('input',render));
+  ['searchFilter','brandFilter','categoryFilter','conditionFilter','sizeFilter'].forEach(id=>{
+    document.getElementById(id).addEventListener('input',render);
+  });
   render();
 })();
 </script>
 </body>
 </html>
+
+
