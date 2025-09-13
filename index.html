@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marleen Molenaar — Wholesale Catalogue</title>
+<style>
+  :root{
+    --bg:#f6f7fb;--card:#fff;--ink:#1b1b1b;--muted:#6a6a6a;--accent:#0a66ff;--border:#e6e6ee;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+  header{position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--border);z-index:5}
+  .wrap{max-width:1100px;margin:0 auto;padding:12px 16px}
+  h1{font-size:20px;margin:0 0 6px}
+  .metrics{display:flex;flex-wrap:wrap;gap:12px;font-size:14px;color:var(--muted)}
+  .metrics b{color:var(--ink)}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .controls input,.controls select{padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:14px}
+  main{padding:18px 16px}
+  .grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+  .imgbox{height:260px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .imgbox img{max-width:100%;max-height:100%;object-fit:contain;background:#fff}
+  .placeholder{font-size:14px;color:var(--muted);text-align:center;line-height:1.3}
+  .body{padding:12px}
+  .title{font-weight:600;margin:0 0 6px}
+  .muted{color:var(--muted);font-size:13px;line-height:1.35}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+  .chip{background:#eef3ff;color:#234;border:1px solid #dfe7ff;border-radius:999px;padding:2px 8px;font-size:12px}
+  footer{padding:28px 16px;color:var(--muted);text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Marleen Molenaar — Wholesale Catalogue</h1>
+    <div class="metrics" id="metrics">
+      <div><b id="m_units">—</b> pieces</div>
+      <div><b id="m_skus">—</b> SKUs</div>
+      <div><b id="m_boxes">50</b> boxes</div>
+    </div>
+    <div class="controls">
+      <input id="q" placeholder="Search (brand, name, colour, size)…" />
+      <select id="cat"><option value="">All categories</option></select>
+      <select id="cond"><option value="">All conditions</option></select>
+      <select id="size"><option value="">All sizes</option></select>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>
+  <div>Vaucluse (Sydney NSW) — pickup only • All items brand new with tags</div>
+</footer>
+
+<script>
+// ---------- CSV helpers ----------
+const normKey = s => (s||'').toString().trim().toLowerCase().replace(/\s+/g,'_');
+const pick = (row, names) => {
+  for (const n of names) {
+    const k = normKey(n);
+    for (const key in row) if (normKey(key)===k) return row[key];
+  }
+  return '';
+};
+const csvToRows = (text) => {
+  const lines = text.replace(/\r/g,'').split('\n').filter(l=>l.trim());
+  const head = lines.shift().split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(h=>h.replace(/^"|"$/g,'').trim());
+  return lines.map(line=>{
+    const cells = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c=>c.replace(/^"|"$/g,'').trim());
+    const o={}; head.forEach((h,i)=>o[h]=cells[i]??''); return o;
+  });
+};
+
+// ---------- build image mapping to your filenames ----------
+// You said you have image1_small.jpg ... image33_small.jpg
+const skuImageMapping = {};
+const IMAGE_COUNT = 33; // change if you add more later
+for (let i = 1; i <= IMAGE_COUNT; i++) {
+  const sku = `MM_${i.toString().padStart(4,'0')}`;
+  skuImageMapping[sku] = `images/image${i}_small.jpg`;
+}
+
+function imgTagFor(sku, alt){
+  const primary = skuImageMapping[sku] || 'images/placeholder.webp';
+  // graceful fallback if a specific file is missing
+  const tries = [primary,'images/placeholder.webp'];
+  return `<img src="${tries[0]}" alt="${alt}" data-try="0" onerror="
+    const list='${tries.join('|')}'.split('|');
+    let i=parseInt(this.dataset.try||'0',10)+1;
+    if(i<list.length){ this.dataset.try=i; this.src=list[i]; }
+  ">`;
+}
+
+// ---------- rendering ----------
+const el=(s)=>document.querySelector(s), grid=el('#grid');
+const mU=el('#m_units'), mS=el('#m_skus');
+
+function cardHTML(p){
+  const title = `${p.Brand||''} ${p.Item_Name||p.Item||p.Description||''}`.trim() || (p.SKU||'');
+  const alt   = title || (p.SKU||'');
+  const chips = [(p.Category||'').trim(),(p.Size||'').trim(),(p.Colour||p.Color||'').trim(),(p.Condition||'').trim()].filter(Boolean);
+  const img   = imgTagFor((p.SKU||'').trim(), alt);
+  return `
+  <div class="card">
+    <div class="imgbox">${img}</div>
+    <div class="body">
+      <div class="title">${title}</div>
+      <div class="muted">SKU: ${p.SKU||''}</div>
+      <div class="chips">${chips.map(c=>`<span class="chip">${c}</span>`).join('')}</div>
+      <div class="muted">Qty: ${p.Qty??'—'}</div>
+      ${p.Wholesale_Price_AUD?`<div class="muted">Wholesale: $${(+p.Wholesale_Price_AUD).toFixed(2)}</div>`:''}
+    </div>
+  </div>`;
+}
+
+function matchesQ(p, q){
+  if(!q) return true;
+  const hay = [p.SKU,p.Brand,p.Item_Name,p.Item,p.Description,p.Category,p.Size,p.Colour,p.Color].join(' ').toLowerCase();
+  return hay.includes(q.toLowerCase());
+}
+function matchesSel(v, sel){ return !sel || (v||'').toString().toLowerCase()===sel.toLowerCase(); }
+
+(async function(){
+  // 1) optional headline metrics
+  try{
+    const mRes = await fetch('summary_metrics.json');
+    if (mRes.ok) {
+      const m = await mRes.json();
+      if (m?.TOTAL_UNITS) el('#m_units').textContent = (+m.TOTAL_UNITS).toLocaleString();
+      if (m?.TOTAL_SKUS)  el('#m_skus').textContent  = (+m.TOTAL_SKUS).toLocaleString();
+    }
+  }catch(e){}
+
+  // 2) load CSV
+  const res = await fetch('detailed_inventory.csv');
+  const text = await res.text();
+  const rows = csvToRows(text);
+
+  // 3) normalise fields
+  const products = rows.map(r=>{
+    const o={};
+    o.SKU  = pick(r,['SKU','Sku','sku']);
+    o.Brand= pick(r,['Brand']);
+    o.Item_Name = pick(r,['Item_Name','Item Name','Item','Description','Title']);
+    o.Category  = pick(r,['Category']);
+    o.Size      = pick(r,['Size']);
+    o.Colour    = pick(r,['Colour','Color']);
+    o.Condition = pick(r,['Condition']);
+    o.Qty       = +((pick(r,['Qty','Quantity']))||0) || 0;
+    o.Wholesale_Price_AUD = pick(r,['Wholesale_Price_AUD','Wholesale Price AUD','Wholesale']);
+    return o;
+  }).filter(p=>p.SKU);
+
+  // 4) fill metrics if JSON not present
+  if (mU.textContent==='—' || mS.textContent==='—'){
+    const units = products.reduce((s,p)=>s+(+p.Qty||0),0);
+    mU.textContent = units.toLocaleString();
+    mS.textContent = products.length.toLocaleString();
+  }
+
+  // 5) selectors
+  const uniq = arr => [...new Set(arr.filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  const setOpts = (sel, arr) => sel.innerHTML = '<option value="">All</option>'+arr.map(v=>`<option>${v}</option>`).join('');
+  setOpts(document.getElementById('cat'),  uniq(products.map(p=>p.Category)));
+  setOpts(document.getElementById('cond'), uniq(products.map(p=>p.Condition)));
+  setOpts(document.getElementById('size'), uniq(products.map(p=>p.Size)));
+
+  // 6) render with filters
+  const render = ()=>{
+    const q=(document.getElementById('q').value||'').trim();
+    const cat=document.getElementById('cat').value;
+    const con=document.getElementById('cond').value;
+    const siz=document.getElementById('size').value;
+    const filtered = products.filter(p =>
+      matchesQ(p,q) && matchesSel(p.Category,cat) && matchesSel(p.Condition,con) && matchesSel(p.Size,siz)
+    );
+    grid.innerHTML = filtered.map(cardHTML).join('') || '<div class="muted" style="grid-column:1/-1">No results.</div>';
+  };
+  ['q','cat','cond','size'].forEach(id=>document.getElementById(id).addEventListener('input',render));
+  render();
+})();
+</script>
+</body>
+</html>
+
