@@ -1,264 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Marleen Molenaar Wholesale Collection</title>
-  <meta name="description" content="Professional wholesale catalogue for Marleen Molenaar premium sleepwear collection - 1,880 pieces across 128 SKUs">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marleen Molenaar Collection — Wholesale Catalogue</title>
+<meta name="description" content="Premium children's & ladies' sleepwear wholesale catalogue — Marleen Molenaar.">
 
-  <style>
-    /* ====== Base + Purple Theme (kept) ====== */
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background: #f5f5fb;
-      color: #1d1b2e;
-      line-height: 1.4;
-    }
+<style>
+  :root{
+    --purple1:#667eea; --purple2:#764ba2;
+    --bg:#f5f5fb; --card:#fff; --ink:#1d1b2e; --muted:#6d5e85;
+    --border:#e8e6f3; --chip:#efe9ff; --tint:#f6f1ff; --link:#1a5cff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);}
 
-    /* ====== Top Quality & Proof Links (added back) ====== */
-    .proofbar {
-      background: rgba(102, 126, 234, 0.12);
-      border-bottom: 1px solid #e6e0f3;
-    }
-    .proofbar .wrap {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 8px 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .proofbar b { font-size: 13px; color: #237a42; }
-    .proofbar a {
-      font-size: 13px;
-      color: #6b2bd9;
-      text-decoration: none;
-      border: 1px solid #dcd3ff;
-      background: #f6f1ff;
-      padding: 4px 10px;
-      border-radius: 999px;
-    }
+  /* ---------- HERO (matches your screenshot) ---------- */
+  .hero{
+    background: linear-gradient(135deg,var(--purple1),var(--purple2));
+    color:#fff; text-align:center; padding:42px 16px 36px;
+    box-shadow: inset 0 -1px 0 rgba(255,255,255,.25);
+  }
+  .hero h1{font-size:44px; line-height:1.1; margin:0 0 8px; font-weight:800;}
+  .hero p{margin:0 0 16px; opacity:.95; font-size:18px;}
+  .pill{
+    display:inline-block; padding:10px 18px; border-radius:999px;
+    background: rgba(255,255,255,.22); border:1px solid rgba(255,255,255,.35);
+    backdrop-filter: blur(8px); font-weight:700;
+  }
 
-    /* ====== Header (kept) ====== */
-    .header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 2rem 0;
-      text-align: center;
-    }
-    .header h1 { font-size: 2.4rem; margin-bottom: .5rem; }
-    .header p { font-size: 1.2rem; opacity: .92; margin-bottom: 1rem; }
-    .totals {
-      font-size: 1.05rem;
-      font-weight: 600;
-      background: rgba(255,255,255,0.2);
-      padding: .7rem 1.4rem;
-      border-radius: 25px;
-      display: inline-block;
-      backdrop-filter: blur(10px);
-    }
+  .wrap{max-width:1200px; margin:0 auto; padding:0 16px;}
 
-    .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+  /* ---------- SIZE BREAKDOWN STRIP (tiles) ---------- */
+  .panel{
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    margin:18px auto; padding:16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.06);
+  }
+  .panel h3{margin:0 0 10px; font-size:18px; color:#2a1a47; display:flex; align-items:center; gap:8px}
+  .size-tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px}
+  .size-tile{
+    background:var(--tint); border:1px solid var(--border); border-radius:12px; padding:14px;
+    text-align:center; box-shadow: inset 0 -1px 0 #efeaff;
+  }
+  .size-tile b{display:block; font-size:22px; color:#2a1a47;}
+  .size-tile span{display:block; font-size:13px; color:var(--muted); margin-top:4px}
 
-    /* ====== Filters (kept) ====== */
-    .filters {
-      background: #fff;
-      padding: 1.5rem;
-      margin: 2rem 0;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    }
-    .filter-row { display:flex; gap:1rem; flex-wrap: wrap; }
-    .filter-group { flex:1 1 220px; }
-    .filter-group label { display:block; font-weight:600; margin-bottom:.4rem; color:#4b4267; }
-    .filter-group input, .filter-group select {
-      width:100%; padding:.6rem .7rem; border:1px solid #e4def3; border-radius:8px; background:#fff;
-    }
-    .summary {
-      display:flex; justify-content:space-between; align-items:center; margin-top:1rem; color:#4b4267;
-    }
+  /* ---------- PROOF LINKS (your exact URLs) ---------- */
+  .proof{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px}
+  .proof-card{
+    background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px;
+    box-shadow: inset 0 -1px 0 #efeaff;
+  }
+  .proof-card h4{margin:0 0 6px; color:#2a1a47}
+  .proof-card a{color:var(--link); text-decoration:none; font-weight:600}
+  .proof-card p{margin:6px 0 0; color:var(--muted); font-size:14px}
 
-    /* ====== Grid + Cards (kept, but image sizing fixed) ====== */
-    .grid {
-      display:grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-    .product-card {
-      background:#fff; border-radius:10px; overflow:hidden;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-      transition: transform .2s, box-shadow .2s;
-    }
-    .product-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 18px rgba(0,0,0,0.14);
-    }
+  /* ---------- FILTERS ---------- */
+  .filters{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; margin:18px 0; box-shadow:0 2px 10px rgba(0,0,0,.06)}
+  .row{display:flex; gap:10px; flex-wrap:wrap}
+  .filters label{display:block; font-size:13px; color:#4b4267; margin-bottom:4px}
+  .filters input,.filters select{padding:8px 10px; border:1px solid var(--border); border-radius:10px; background:#fff; min-width:200px}
+  .filters .meta{margin-top:10px; color:var(--muted); font-size:14px; display:flex; justify-content:space-between}
 
-    /* Fixed smaller, “show full garment” image area */
-    .product-image {
-      height: 180px;                     /* smaller and uniform */
-      background: #f8f9fa;
-      display:flex; align-items:center; justify-content:center;
-      overflow:hidden;
-      border-bottom:1px solid #eee;
-    }
-    .product-image img {
-      max-width: 100%;
-      max-height: 100%;
-      width: auto; height: auto;
-      object-fit: contain;               /* never crop */
-      background: #fff;
-    }
-    .placeholder { color:#999; font-size:14px; text-align:center; line-height:1.4; }
+  /* ---------- GRID / CARDS ---------- */
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px; margin-bottom:28px}
+  .card{background:#fff; border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,.06)}
+  .imgbox{height:180px; background:#fff; border-bottom:1px solid #eee; display:flex; align-items:center; justify-content:center; overflow:hidden}
+  .imgbox img{max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; background:#fff}
+  .placeholder{font-size:14px; color:#999; text-align:center}
+  .body{padding:12px}
+  .title{font-weight:800; color:#2a1a47; margin:0 0 6px}
+  .muted{color:#6d5e85; font-size:13px}
+  .chips{display:flex; flex-wrap:wrap; gap:6px; margin:8px 0}
+  .chip{background:var(--chip); color:#2a1a47; border:1px solid #e5d9ff; border-radius:999px; padding:2px 8px; font-size:12px}
+  .sizes{margin-top:4px}
+  .sizes span{background:#f4f0ff; border:1px solid #dccfff; border-radius:6px; padding:2px 6px; margin:2px; display:inline-block; font-size:12px}
 
-    .product-content { padding: 1rem; }
-    .product-title { font-weight:700; margin-bottom:.4rem; color:#2a1a47; }
-    .product-meta { font-size:.92rem; color:#6d5e85; margin-bottom:.4rem; }
-    .product-details {
-      display:flex; flex-wrap:wrap; gap:.35rem .5rem; margin:.5rem 0;
-    }
-    .badge {
-      background:#efe9ff; color:#2a1a47; border:1px solid #e5d9ff;
-      border-radius:999px; padding:2px 8px; font-size:12px;
-    }
-    .sizes { margin-top:.35rem; font-size:.92rem; color:#2a1a47; }
-    .sizes span {
-      background:#f4f0ff; border:1px solid #dccfff; border-radius:6px;
-      padding:2px 6px; margin:2px; display:inline-block;
-    }
-
-    /* ====== Footer / Owner Section (kept) ====== */
-    .footer {
-      background: #1f1640;
-      color: white;
-      margin-top: 2rem;
-    }
-    .footer-content {
-      display:flex; gap:2rem; flex-wrap:wrap;
-      justify-content: space-between;
-      padding: 2rem 20px;
-      max-width: 1400px; margin:0 auto;
-    }
-    .contact-info h3, .footer-stats h3 { margin-bottom:.8rem; color:#fff; }
-    .contact-info p { margin-bottom:.5rem; line-height:1.8; }
-    .contact-info strong { color:#fff; }
-    .footer-stats { text-align:right; }
-    .footer-stats h3 { font-size: 1.4rem; margin-bottom: .8rem; color:#aab2ff; }
-
-    @media (max-width: 768px) {
-      .header h1 { font-size: 2rem; }
-      .filter-row { flex-direction: column; align-items:stretch; }
-      .filter-group { min-width:auto; }
-      .footer-stats { text-align:left; }
-    }
-  </style>
+  /* ---------- DARK FOOTER (matches screenshot) ---------- */
+  .footer{background:#1f1640; color:#fff; margin-top:10px}
+  .footer-inner{max-width:1200px; margin:0 auto; padding:22px 16px; display:flex; flex-wrap:wrap; gap:22px; justify-content:space-between}
+  .footer h4{margin:0 0 8px}
+  .footer a{color:#fff; text-decoration:none}
+  .fine{color:#c9c4e6; font-size:13px}
+</style>
 </head>
 <body>
 
-  <!-- ===== Quality & Proof links (restored) ===== -->
-  <div class="proofbar">
+  <!-- HERO -->
+  <section class="hero">
     <div class="wrap">
-      <b>Quality & Proof:</b>
-      <a href="detailed_inventory.csv" target="_blank">Inventory CSV</a>
-      <a href="summary_metrics.json" target="_blank">Totals & Metrics</a>
-      <a href="README.md" target="_blank">About the Collection</a>
-      <!-- Add/restore your comparable links here (edit hrefs): -->
-      <a href="https://example.com/comparable-1" target="_blank">Comparable Listing 1</a>
-      <a href="https://example.com/comparable-2" target="_blank">Comparable Listing 2</a>
-      <!-- If you have a specific China Post/comparable URL, paste it above -->
+      <h1>Marleen Molenaar Collection</h1>
+      <p>Premium Children’s & Ladies’ Sleepwear — Wholesale Catalogue</p>
+      <div class="pill" id="hero-pill">1,880 pieces • 128 SKUs • 50 boxes</div>
     </div>
-  </div>
+  </section>
 
-  <!-- ===== Header (kept) ===== -->
-  <div class="header">
-    <div class="container">
-      <h1>Marleen Molenaar Wholesale Collection</h1>
-      <p>Premium children’s and ladies’ sleepwear & daywear — all new with tags</p>
-      <div class="totals">
-        <span><strong id="header-total-pieces">1,880</strong> pieces • <strong id="header-total-skus">128</strong> SKUs</span>
+  <div class="wrap">
+
+    <!-- SIZE BREAKDOWN -->
+    <div class="panel">
+      <h3>🧵 Size Breakdown — Individual Pieces Available</h3>
+      <div class="size-tiles" id="size-tiles"></div>
+    </div>
+
+    <!-- VERIFIED LUXURY CREDENTIALS & PROOF LINKS -->
+    <div class="panel">
+      <h3>🏆 Verified Luxury Credentials & Proof Links</h3>
+      <div class="proof">
+        <div class="proof-card">
+          <h4>Lane Crawford Luxury Retailer</h4>
+          <a href="https://www.lanecrawford.com/brand/700351/marleen-molenaar-sleepwear/women" target="_blank" rel="noopener">
+            View Brand Page
+          </a>
+          <p>Hong Kong’s premier luxury department store — equivalent to Harrods. Proof that Marleen Molenaar is an established luxury designer brand.</p>
+        </div>
+        <div class="proof-card">
+          <h4>Retail Pricing Evidence</h4>
+          <a href="https://retykle.com/products/marleen-molenaar-pyjama-set-2-8y" target="_blank" rel="noopener">
+            Retykle Pricing Proof
+          </a>
+          <p>Shows premium retail/resale pricing for individual pieces.</p>
+        </div>
+        <div class="proof-card">
+          <h4>Media Coverage</h4>
+          <a href="https://www.scmp.com/article/533820/eastern-premise" target="_blank" rel="noopener">
+            South China Morning Post
+          </a>
+          <p>2006 profile: “running a children’s clothing design company under her own name.” Establishes long-term designer credentials.</p>
+        </div>
+        <div class="proof-card">
+          <h4>Current Listings</h4>
+          <a href="https://www.facebook.com/marketplace/" target="_blank" rel="noopener">
+            Facebook Marketplace
+          </a>
+          <p>Live marketplace examples (individual item pricing).</p>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- ===== Filters (kept) ===== -->
-  <div class="container">
+    <!-- FILTERS -->
     <div class="filters">
-      <div class="filter-row">
-        <div class="filter-group">
-          <label for="brandFilter">Brand</label>
-          <select id="brandFilter">
-            <option value="">All Brands</option>
-          </select>
+      <div class="row">
+        <div>
+          <label for="brand">Brand</label>
+          <select id="brand"><option value="">All Brands</option></select>
         </div>
-        <div class="filter-group">
-          <label for="categoryFilter">Category</label>
-          <select id="categoryFilter">
-            <option value="">All Categories</option>
-          </select>
+        <div>
+          <label for="category">Category</label>
+          <select id="category"><option value="">All Categories</option></select>
         </div>
-        <div class="filter-group">
-          <label for="sizeFilter">Size</label>
-          <select id="sizeFilter">
-            <option value="">All Sizes</option>
-          </select>
+        <div>
+          <label for="size">Size</label>
+          <select id="size"><option value="">All Sizes</option></select>
         </div>
-        <div class="filter-group">
-          <label for="conditionFilter">Condition</label>
-          <select id="conditionFilter">
-            <option value="">All Conditions</option>
-          </select>
+        <div>
+          <label for="condition">Condition</label>
+          <select id="condition"><option value="">All Conditions</option></select>
         </div>
-        <div class="filter-group" style="flex:2 1 280px;">
-          <label for="searchFilter">Search</label>
-          <input type="text" id="searchFilter" placeholder="Search by brand, item name, colour, size…">
+        <div style="flex:1 1 280px">
+          <label for="q">Search</label>
+          <input id="q" placeholder="Search brand, item, colour, size…">
         </div>
       </div>
-      <div class="summary">
-        <div>Showing <strong id="visible-count">0</strong> items</div>
-        <div>Totals auto-update from CSV / metrics</div>
+      <div class="meta">
+        <div>Showing <b id="visible-count">0</b> items</div>
+        <div id="totals-note">Totals auto-update from CSV</div>
       </div>
     </div>
 
-    <!-- ===== Product Grid (kept) ===== -->
-    <div class="grid" id="productGrid"></div>
+    <!-- PRODUCT GRID -->
+    <div class="grid" id="grid"></div>
+
   </div>
-  <!-- ===== Footer / Owner Section ===== -->
-  <div class="footer">
-    <div class="footer-content">
-      <div class="contact-info">
-        <h3>Owner & Viewing</h3>
-        <p><strong>Contact:</strong> Gary — <a href="tel:+61414242142" style="color:#fff;">+61&nbsp;414&nbsp;242&nbsp;142</a></p>
-        <p><strong>Location:</strong> Vaucluse, Sydney (ground floor, driveway access). 50 professionally organised containers.</p>
-        <p><strong>Condition:</strong> All items brand new with original manufacturer tags.</p>
-        <p>Viewing available weekdays after 5pm or weekends by arrangement.</p>
+
+  <!-- FOOTER / OWNER + SUMMARY -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <h4>Contact Information</h4>
+        <p><strong>Gary Flax:</strong> <a href="tel:+61414242142">+61 414 242 142</a></p>
+        <p><strong>Location:</strong> Vaucluse, Sydney NSW</p>
+        <p><strong>Viewing:</strong> Weekdays 5pm+, Weekends anytime</p>
+        <p><strong>Brand:</strong> Marleen Molenaar</p>
+        <p><strong>Wholesale Price (valuation):</strong> $18,000–22,000 complete collection</p>
+        <p><strong>Quick Sale:</strong> $11,000–13,000 complete collection</p>
+        <p><strong>Access:</strong> Ground floor, driveway access for easy pickup</p>
       </div>
-      <div class="footer-stats">
-        <h3>Wholesale Lot</h3>
-        <p>1,880 pieces across 128 SKUs</p>
-        <p>72% children’s nightwear • 18% daywear • 10% ladies’ items</p>
-        <p>Priced $11,000–13,000 • Serious offers $10k+</p>
+      <div>
+        <h4>Collection Summary</h4>
+        <p><span id="sum-pieces">1,880 pieces</span> across <span id="sum-skus">128 SKUs</span></p>
+        <p>Organized in <strong>50 boxes</strong> for easy pickup</p>
+        <p>Storage: Professional organization system</p>
       </div>
     </div>
-  </div>
+  </footer>
 
 <script>
-/* ===== Helpers for CSV parsing ===== */
-const normKey=s=>(s||'').toString().trim().toLowerCase().replace(/\s+/g,'_');
-const pick=(row,names)=>{for(const n of names){const k=normKey(n);for(const key in row){if(normKey(key)===k)return row[key];}}return'';}
-const csvToRows=(text)=>{
-  const lines=text.replace(/\r/g,'').split('\n').filter(l=>l.trim());
-  const head=lines.shift().split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(h=>h.replace(/^"|"$/g,'').trim());
+/* ============== CSV + UTILITIES ============== */
+const normKey = s => (s||'').toString().trim().toLowerCase().replace(/\s+/g,'_');
+const pick = (row, names) => { for (const n of names){ const k=normKey(n); for (const key in row){ if(normKey(key)===k) return row[key]; } } return ''; };
+const csvToRows = (text) => {
+  const lines = text.replace(/\r/g,'').split('\n').filter(l=>l.trim());
+  const head = lines.shift().split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(h=>h.replace(/^"|"$/g,'').trim());
   return lines.map(line=>{
     const cells=line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c=>c.replace(/^"|"$/g,'').trim());
     const o={}; head.forEach((h,i)=>o[h]=cells[i]??''); return o;
   });
 };
 
-/* ===== Image logic ===== */
-function imageCandidates(sku,imageFileFromCSV){
+/* ============== IMAGE HANDLING + CROSS-CHECK ==============
+   Try in order:
+   1) CSV Image_File → exact path
+   2) images/<SKU>.jpg/.jpeg/.png
+   3) images/imageN_small.jpg (N = digits from SKU)
+   4) images/placeholder.webp
+   Also logs a warning if we had to fall back to (3) or if chosen filename doesn't include the SKU (possible mismatch).
+=========================================================== */
+function imageCandidates(sku, imageFileFromCSV){
   const list=[];
   if(imageFileFromCSV) list.push(imageFileFromCSV);
   const S=(sku||'').trim();
@@ -270,24 +229,53 @@ function imageCandidates(sku,imageFileFromCSV){
   list.push('images/placeholder.webp');
   return list;
 }
-function imgTagFor(sku,alt,imageFileFromCSV){
-  const tries=imageCandidates(sku,imageFileFromCSV);
-  return `<img src="${tries[0]}" alt="${alt}" data-try="0" onerror="
-    const list='${tries.join('|')}'.split('|');
+
+function chooseImageForRow(sku, imageFileFromCSV){
+  const tries = imageCandidates(sku, imageFileFromCSV);
+  // we can't pre-check existence without fetching; final check happens in <img onerror>.
+  // But we can mark which *candidate* we're starting with.
+  const chosen = tries[0];
+  const usedFallbackDigits = /image\d+_small\.jpg$/i.test(chosen);
+  const skuMissingInName = sku && chosen.startsWith('images/') && !chosen.toLowerCase().includes(sku.toLowerCase()) && !usedFallbackDigits;
+  return { chosen, tries, usedFallbackDigits, skuMissingInName };
+}
+
+function imgTagFor(p){
+  const sku = (p.SKU||'').trim();
+  const imageFileFromCSV = p.Image_File;
+  const { chosen, tries, usedFallbackDigits, skuMissingInName } = chooseImageForRow(sku, imageFileFromCSV);
+
+  // Console cross-checks for you to verify mapping
+  if (usedFallbackDigits) {
+    console.warn(`⚠︎ Potential image/SKU mismatch for ${sku} → starting with digit-fallback: ${chosen}`);
+  } else if (sku && chosen.startsWith('images/') && !chosen.toLowerCase().includes(sku.toLowerCase()) && !/placeholder\.webp$/i.test(chosen)) {
+    console.warn(`⚠︎ Chosen image does not contain SKU in filename: ${sku} → ${chosen}`);
+  }
+
+  // Build <img> with fallback chain
+  const chain = tries.join('|');
+  const alt = `${p.Brand||''} ${p.Item_Name||p.Item||p.Description||sku}`.trim();
+  return `<img src="${chosen}" alt="${alt}" data-try="0" onerror="
+    const list='${chain}'.split('|');
     let i=parseInt(this.dataset.try||'0',10)+1;
-    if(i<list.length){ this.dataset.try=i; this.src=list[i]; }
-    else { this.replaceWith(Object.assign(document.createElement('div'),{className:'placeholder',innerHTML:'Photo<br>Coming Soon'})); }
+    if(i<list.length){ 
+      this.dataset.try=i; 
+      this.src=list[i]; 
+      if(/image\\d+_small\\.jpg$/i.test(list[i])) console.warn('⚠︎ Fallback image used for ${sku}: '+list[i]);
+    } else { 
+      this.replaceWith(Object.assign(document.createElement('div'),{className:'placeholder',innerHTML:'Photo<br>Coming Soon'})); 
+      console.warn('⚠︎ No image found for ${sku}; showing placeholder.');
+    }
   ">`;
 }
 
-/* ===== Extract sizes ===== */
-function extractSizes(row){
-  const sizesField=pick(row,['Sizes','Size']);
-  let sizes=[];
-  if(sizesField && sizesField.includes(',')){
-    sizes=sizesField.split(',').map(s=>s.trim()).filter(Boolean);
-  } else if(sizesField){ sizes=[sizesField.trim()]; }
-  for(const key in row){
+/* ============== SIZES (always show) ============== */
+function extractSizesFromRow(row){
+  const sizesField = pick(row, ['Sizes','Size']);
+  let sizes = [];
+  if (sizesField && sizesField.includes(',')) sizes = sizesField.split(',').map(s=>s.trim()).filter(Boolean);
+  else if (sizesField) sizes = [sizesField.trim()];
+  for (const key in row){
     if(/^size[_ ]?\d+/i.test(key)){
       const qty=parseInt(row[key],10);
       if(qty>0) sizes.push(key.replace(/size[_ ]?/i,'')+` (${qty})`);
@@ -296,81 +284,127 @@ function extractSizes(row){
   return sizes;
 }
 
-/* ===== Render product cards ===== */
-function cardHTML(p){
-  const title=`${p.Brand||''} ${p.Item_Name||p.Item||p.Description||''}`.trim()||(p.SKU||'');
-  const chips=[(p.Category||'').trim(),(p.Colour||p.Color||'').trim(),(p.Condition||'').trim()].filter(Boolean);
-  const img=imgTagFor((p.SKU||'').trim(),title||p.SKU,p.Image_File);
-  const sizes=extractSizes(p);
-  return `
-    <div class="product-card">
-      <div class="product-image">${img}</div>
-      <div class="product-content">
-        <div class="product-title">${title}</div>
-        <div class="product-meta">SKU: ${p.SKU||''}</div>
-        <div class="product-details">${chips.map(c=>`<span class="badge">${c}</span>`).join('')}</div>
-        ${sizes.length?`<div class="sizes">${sizes.map(s=>`<span>${s}</span>`).join(' ')}</div>`:''}
-        <div class="product-meta">Qty: ${p.Qty??'—'}</div>
-        ${p.Wholesale_Price_AUD?`<div class="product-meta">Wholesale: $${(+p.Wholesale_Price_AUD).toFixed(2)}</div>`:''}
-      </div>
-    </div>`;
+/* ============== SIZE TILES AT TOP ============== */
+function buildSizeTiles(products){
+  const counts = {};
+  products.forEach(p=>{
+    let sizes = extractSizesFromRow(p);
+    if (!sizes.length && p.Size) sizes = [p.Size];
+    sizes.forEach(s=>{
+      const label = s.replace(/\s*\(\d+\)\s*$/,''); // drop (qty)
+      counts[label] = (counts[label]||0) + (+p.Qty||0);
+    });
+  });
+  const order = Object.keys(counts).sort((a,b)=>parseInt(a)-parseInt(b)); // numeric order if possible
+  const container = document.getElementById('size-tiles');
+  container.innerHTML = order.map(sz => `
+    <div class="size-tile">
+      <b>Size ${sz}</b>
+      <span>${(counts[sz]||0).toLocaleString()} pieces</span>
+    </div>
+  `).join('') || '<div class="muted">Sizes will appear here when the CSV is loaded.</div>';
 }
 
-/* ===== Filtering ===== */
+/* ============== CARD RENDER (always show sizes) ============== */
+function cardHTML(p){
+  const title = `${p.Brand||''} ${p.Item_Name||p.Item||p.Description||''}`.trim() || (p.SKU||'');
+  const chips = [(p.Category||'').trim(), (p.Colour||p.Color||'').trim(), (p.Condition||'').trim()].filter(Boolean);
+  let sizes = extractSizesFromRow(p);
+  if (!sizes || sizes.length === 0) {
+    if (p.Size) sizes = [p.Size];
+    else sizes = ["One size"];
+  }
+  const img = imgTagFor(p);
+
+  return `
+  <div class="card">
+    <div class="imgbox">${img}</div>
+    <div class="body">
+      <div class="title">${title}</div>
+      <div class="muted">SKU: ${p.SKU||''}</div>
+      <div class="chips">${chips.map(c=>`<span class="chip">${c}</span>`).join('')}</div>
+      <div class="sizes">${sizes.map(s=>`<span>${s}</span>`).join(' ')}</div>
+      <div class="muted">Qty: ${p.Qty??'—'}</div>
+      ${p.Wholesale_Price_AUD?`<div class="muted">Wholesale: $${(+p.Wholesale_Price_AUD).toFixed(2)}</div>`:''}
+    </div>
+  </div>`;
+}
+
 function matchesQ(p,q){
   if(!q) return true;
   const hay=[p.SKU,p.Brand,p.Item_Name,p.Item,p.Description,p.Category,p.Size,p.Sizes,p.Colour,p.Color].join(' ').toLowerCase();
   return hay.includes(q.toLowerCase());
 }
-function matchesSel(v,sel){ return !sel||(v||'').toString().toLowerCase()===sel.toLowerCase(); }
+function matchesSel(v,sel){return !sel||(v||'').toString().toLowerCase()===sel.toLowerCase();}
 
-/* ===== Main ===== */
+/* ============== MAIN ============== */
 (async function(){
-  const res=await fetch('detailed_inventory.csv');
-  const text=await res.text();
-  const rows=csvToRows(text);
-  const products=rows.map(r=>{
-    const o={};
-    o.SKU=pick(r,['SKU']); o.Brand=pick(r,['Brand']);
-    o.Item_Name=pick(r,['Item_Name','Item Name','Item','Description','Title','Product']);
-    o.Category=pick(r,['Category']); o.Size=pick(r,['Size']); o.Sizes=pick(r,['Sizes']);
-    o.Colour=pick(r,['Colour','Color']); o.Condition=pick(r,['Condition']);
-    o.Qty=+((pick(r,['Qty','Quantity']))||0)||0;
-    o.Wholesale_Price_AUD=pick(r,['Wholesale_Price_AUD','Wholesale Price AUD','Wholesale']);
-    o.Image_File=pick(r,['Image_File','Image File','Image','Image_URL','Image URL']);
-    return o;
-  }).filter(p=>p.SKU);
+  try{
+    const res = await fetch('detailed_inventory.csv');
+    const text = await res.text();
+    const rows = csvToRows(text);
 
-  document.getElementById('header-total-pieces').textContent=products.reduce((s,p)=>s+(+p.Qty||0),0).toLocaleString();
-  document.getElementById('header-total-skus').textContent=products.length.toLocaleString();
+    const products = rows.map(r=>{
+      const o={};
+      o.SKU  = pick(r,['SKU','Sku','sku']);
+      o.Brand= pick(r,['Brand']);
+      o.Item_Name = pick(r,['Item_Name','Item Name','Item','Description','Title','Product']);
+      o.Category  = pick(r,['Category']);
+      o.Size      = pick(r,['Size']);
+      o.Sizes     = pick(r,['Sizes']);
+      o.Colour    = pick(r,['Colour','Color']);
+      o.Condition = pick(r,['Condition']);
+      o.Qty       = +((pick(r,['Qty','Quantity']))||0) || 0;
+      o.Wholesale_Price_AUD = pick(r,['Wholesale_Price_AUD','Wholesale Price AUD','Wholesale']);
+      o.Image_File= pick(r,['Image_File','Image File','Image','Image_URL','Image URL']);
+      return o;
+    }).filter(p=>p.SKU);
 
-  const uniq=a=>[...new Set(a.filter(Boolean))].sort((x,y)=>x.localeCompare(y));
-  const setOpts=(id,arr)=>{document.getElementById(id).innerHTML='<option value="">All</option>'+arr.map(v=>`<option>${v}</option>`).join('');};
-  setOpts('brandFilter',uniq(products.map(p=>p.Brand)));
-  setOpts('categoryFilter',uniq(products.map(p=>p.Category)));
-  setOpts('conditionFilter',uniq(products.map(p=>p.Condition)));
-  setOpts('sizeFilter',uniq(products.flatMap(p=>extractSizes(p))));
+    // Hero & footer totals
+    const totalUnits = products.reduce((s,p)=>s+(+p.Qty||0),0);
+    const totalSkus  = products.length;
+    document.getElementById('hero-pill').textContent = `${totalUnits.toLocaleString()} pieces • ${totalSkus} SKUs • 50 boxes`;
+    document.getElementById('sum-pieces').textContent = `${totalUnits.toLocaleString()} pieces`;
+    document.getElementById('sum-skus').textContent   = `${totalSkus} SKUs`;
 
-  const render=()=>{
-    const q=document.getElementById('searchFilter').value.trim();
-    const brand=document.getElementById('brandFilter').value;
-    const cat=document.getElementById('categoryFilter').value;
-    const siz=document.getElementById('sizeFilter').value;
-    const cond=document.getElementById('conditionFilter').value;
-    const filtered=products.filter(p=>
-      matchesQ(p,q)&&matchesSel(p.Brand,brand)&&matchesSel(p.Category,cat)&&matchesSel(p.Condition,cond)&&
-      (!siz||extractSizes(p).some(s=>s.toLowerCase().includes(siz.toLowerCase())))
-    );
-    document.getElementById('visible-count').textContent=filtered.length;
-    document.getElementById('productGrid').innerHTML=filtered.map(cardHTML).join('');
-  };
-  ['searchFilter','brandFilter','categoryFilter','conditionFilter','sizeFilter'].forEach(id=>{
-    document.getElementById(id).addEventListener('input',render);
-  });
-  render();
+    // Size tiles
+    buildSizeTiles(products);
+
+    // Filters
+    const uniq = a => [...new Set(a.filter(Boolean))].sort((x,y)=>x.localeCompare(y));
+    const setOpts = (id, arr) => { document.getElementById(id).innerHTML = '<option value="">All</option>'+arr.map(v=>`<option>${v}</option>`).join(''); };
+    setOpts('brand',    uniq(products.map(p=>p.Brand)));
+    setOpts('category', uniq(products.map(p=>p.Category)));
+    setOpts('condition',uniq(products.map(p=>p.Condition)));
+    setOpts('size',     uniq(products.flatMap(p=>{ const s=extractSizesFromRow(p); return s.length?s:[p.Size].filter(Boolean);})));
+
+    // Render grid
+    const grid = document.getElementById('grid');
+    const render = ()=>{
+      const q  = document.getElementById('q').value.trim();
+      const b  = document.getElementById('brand').value;
+      const c  = document.getElementById('category').value;
+      const s  = document.getElementById('size').value;
+      const con= document.getElementById('condition').value;
+
+      const filtered = products.filter(p =>
+        matchesQ(p,q) &&
+        matchesSel(p.Brand,b) &&
+        matchesSel(p.Category,c) &&
+        matchesSel(p.Condition,con) &&
+        (!s || (extractSizesFromRow(p).length?extractSizesFromRow(p):[p.Size]).some(x => (x||'').toString().toLowerCase().includes(s.toLowerCase())))
+      );
+
+      document.getElementById('visible-count').textContent = filtered.length;
+      grid.innerHTML = filtered.map(cardHTML).join('') || '<div class="muted">No results.</div>';
+    };
+    ['q','brand','category','size','condition'].forEach(id=>document.getElementById(id).addEventListener('input',render));
+    render();
+  }catch(e){
+    console.error(e);
+    document.getElementById('grid').innerHTML = '<div class="muted">Error loading products. Please check the data files.</div>';
+  }
 })();
 </script>
 </body>
 </html>
-
-
