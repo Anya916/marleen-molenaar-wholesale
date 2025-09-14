@@ -147,87 +147,89 @@
   </footer>
 
 <script>
-/* ================= CONFIG (collection totals) ================= */
-const WHOLESALE_TOTAL_TARGET_AUD = 20000;   // change to any number (e.g., 18000–22000)
+/* ================= CONFIG (edit these as needed) ================= */
+const WHOLESALE_TOTAL_TARGET_AUD = 20000;   // e.g., 18000–22000
 const QUICKSALE_TOTAL_TARGET_AUD  = 12000;  // shown as collection total only
-const CSV_PATH = 'detailed_inventory.csv';  // your exported sheet
+const CSV_CANDIDATES = [
+  'detailed_inventory.csv',
+  'detailed_inventory (1).csv',
+  'Detailed_Inventory.csv'
+];
 
-/* ================= Header aliasing (robust to variations) ================= */
-const ALIASES = {
-  box: ['box no','box','box number','box_no','boxno'],
-  name: ['new product names','product name','name','title'],
-  desc: ['description','desc','details'],
-  colour: ['colour','color','colourway','col'],
-  qty: ['qty','quantity','total qty','total','pieces'],
-  rrp: ['rrp','rrp (aud)','retail','price rrp'],
-  image: ['image','image file','image_file','image url','image_url','photo'],
-  size2: ['2','size 2'],
-  size4: ['4','size 4'],
-  size6: ['6','size 6'],
-  size8: ['8','size 8'],
-  size10:['10','size 10'],
-  size12:['12','size 12'],
-  size14:['14','size 14'],
-  category:['category','type']
-};
-const SIZE_KEYS = ['size2','size4','size6','size8','size10','size12','size14'];
-
-/* ================= CSV parser (supports quoted commas) ================= */
-function splitCSV(line){
-  return line.match(/("([^"]|"")*"|[^,]+)/g)?.map(s=>s.replace(/^"|"$/g,'').replace(/""/g,'"').trim()) || [];
-}
-function parseCSV(text){
-  const lines = text.replace(/\r/g,'').split('\n').filter(l=>l.trim());
-  const header = splitCSV(lines.shift());
-  const colsLC = header.map(h=>h.toLowerCase());
-  const map = {};
-  for (const key in ALIASES){
-    map[key] = null;
-    for (const alias of ALIASES[key]){
-      const idx = colsLC.indexOf(alias);
-      if (idx !== -1){ map[key]=idx; break; }
-    }
-  }
-  const rows = lines.map(line=>{
-    const cells = splitCSV(line);
-    const get = key => (map[key]!=null ? (cells[map[key]]||'') : '');
-    const row = {
-      _raw: cells,
-      box:   get('box'),
-      name:  get('name'),
-      desc:  get('desc'),
-      colour:get('colour'),
-      qty:   get('qty'),
-      rrp:   get('rrp'),
-      image: get('image'),
-      category:get('category')
-    };
-    // sizes
-    row.size2 = get('size2'); row.size4=get('size4'); row.size6=get('size6');
-    row.size8 = get('size8'); row.size10=get('size10'); row.size12=get('size12'); row.size14=get('size14');
-    row._headerAliases = map;
-    return row;
-  });
-  return {rows, header, map};
-}
-
-/* ================= Helpers ================= */
-const norm  = s => (s||'').toString().trim();
-const lc    = s => norm(s).toLowerCase();
+/* ================= CSV loader with delimiter auto-detect ================= */
+const norm=s=> (s||'').toString().trim();
+const lc  =s=> norm(s).toLowerCase();
 const toNum = x => { if(x==null) return 0; const s=String(x).replace(/[^\d.,-]/g,'').replace(/,/g,''); return parseFloat(s)||0; };
-const aud   = v => isFinite(v) ? `\$${v.toFixed(2)} AUD` : '—';
+const aud = v => isFinite(v) ? `\$${v.toFixed(2)} AUD` : '—';
 
-function perSizeChips(row){
-  const labels = [['2','size2'],['4','size4'],['6','size6'],['8','size8'],['10','size10'],['12','size12'],['14','size14']];
-  const parts = [];
-  for(const [label,key] of labels){
-    const q = toNum(row[key]);
-    if(q>0) parts.push(`${label} (${q})`);
-  }
-  return parts.join(', ');
+function detectDelimiter(text){
+  const first = text.split(/\r?\n/).find(l=>l.includes(',')||l.includes(';')||l.includes('\t')) || '';
+  const counts = { ',':(first.match(/,/g)||[]).length, ';':(first.match(/;/g)||[]).length, '\t':(first.match(/\t/g)||[]).length };
+  return Object.entries(counts).sort((a,b)=>b[1]-a[1])[0][0] || ',';
+}
+function splitRow(line, delim){
+  const re = new RegExp(`("([^"]|"")*"|[^${delim}]+)`, 'g');
+  return (line.match(re)||[]).map(s=>s.replace(/^"|"$/g,'').replace(/""/g,'"').trim());
+}
+function parseCSVAuto(text){
+  const delim = detectDelimiter(text);
+  const lines = text.replace(/\r/g,'').split('\n').filter(l=>l.trim());
+  const header = splitRow(lines.shift(), delim);
+  const colsLC = header.map(h=>h.toLowerCase());
+  const alias = (names)=> names.map(lc).map(a=> colsLC.indexOf(a)).find(i=>i>=0);
+
+  const map = {
+    name: alias(['new product names','product name','name','title']),
+    desc: alias(['description','desc','details']),
+    colour: alias(['colour','color','colourway','col']),
+    qty: alias(['qty','quantity','total qty','total','pieces']),
+    rrp: alias(['rrp','rrp (aud)','retail','price rrp']),
+    box: alias(['box no','box','box number','box_no','boxno']),
+    image: alias(['image','image file','image_file','image url','image_url','photo']),
+    size2: alias(['2','size 2']),
+    size4: alias(['4','size 4']),
+    size6: alias(['6','size 6']),
+    size8: alias(['8','size 8']),
+    size10: alias(['10','size 10']),
+    size12: alias(['12','size 12']),
+    size14: alias(['14','size 14']),
+    category: alias(['category','type'])
+  };
+
+  const rows = lines.map(line=>{
+    const cells = splitRow(line, delim);
+    const get = idx => (idx!=null ? (cells[idx]||'') : '');
+    return {
+      name:  get(map.name),
+      desc:  get(map.desc),
+      colour:get(map.colour),
+      qty:   get(map.qty),
+      rrp:   get(map.rrp),
+      box:   get(map.box),
+      image: get(map.image),
+      size2: get(map.size2), size4:get(map.size4), size6:get(map.size6),
+      size8: get(map.size8), size10:get(map.size10), size12:get(map.size12), size14:get(map.size14),
+      _delim: delim, _map: map
+    };
+  });
+  return { rows, header, map, delim };
 }
 
-/* ================= IMAGE RULES (uses Box when present, otherwise name/colour) ================= */
+async function loadCSV(){
+  let lastErr;
+  for (const path of CSV_CANDIDATES){
+    try{
+      const res = await fetch(path, {cache:'no-store'});
+      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      const txt = await res.text();
+      const parsed = parseCSVAuto(txt);
+      return {...parsed, path};
+    }catch(e){ lastErr = e; }
+  }
+  throw lastErr || new Error('CSV not found');
+}
+
+/* ================= Image rules (your mappings) ================= */
 const IMAGE_RULES = [
   // 1–11 (corrected)
   { image:"images/image1_small.jpg",  boxes:["box 9","box 17","box 18","box 19","box 20","box 21","box 22","box 23","box 24","box 25","box 26","box 27"], keywords:["ella","princess","gown","pink"] },
@@ -285,159 +287,122 @@ const IMAGE_RULES = [
   { image:"images/image33_small.jpg", boxes:["box 57"], keywords:["fireman","raincoat","yellow","hat"] }
 ];
 
-/* If no box column is present, we also allow pure keyword matches (name + colour) */
 function resolveImage(row){
-  const name = lc(row.name), desc=lc(row.desc), col=lc(row.colour);
-  const box = lc(row.box||'');
+  const name=lc(row.name), desc=lc(row.desc), col=lc(row.colour), box=lc(row.box||'');
   const text = [name,desc,col].join(' ');
   for(const r of IMAGE_RULES){
     const okBox = !r.boxes || (box && r.boxes.includes(box));
-    const okKW  = (r.keywords||[]).every(k => text.includes(lc(k)));
+    const okKW  = (r.keywords||[]).every(k=> text.includes(k));
     if(okKW && okBox) return r.image;
-    // if no box value in CSV, let pure keyword match pass
-    if(!box && okKW) return r.image;
+    if(!box && okKW)  return r.image; // if Box column missing, allow keyword-only match
   }
-  // very loose fallbacks by name keywords
   if (name.includes('ella') && name.includes('princess')) return 'images/image1_small.jpg';
   return 'images/placeholder.webp';
 }
 
-/* ================= SIZE TILES ================= */
-function buildSizeTiles(items){
-  const tot = { '2':0,'4':0,'6':0,'8':0,'10':0,'12':0,'14':0 };
-  for(const r of items){
-    tot['2']  += toNum(r.size2);
-    tot['4']  += toNum(r.size4);
-    tot['6']  += toNum(r.size6);
-    tot['8']  += toNum(r.size8);
-    tot['10'] += toNum(r.size10);
-    tot['12'] += toNum(r.size12);
-    tot['14'] += toNum(r.size14);
-  }
-  const cont=document.getElementById('size-tiles');
-  cont.innerHTML = Object.keys(tot).map(k=>`
-    <div class="size-tile">
-      <b>Size ${k}</b>
-      <span>${(tot[k]||0).toLocaleString()} pieces</span>
-    </div>
-  `).join('');
+/* ================= UI helpers ================= */
+function sizeChips(r){
+  const labels=[['2','size2'],['4','size4'],['6','size6'],['8','size8'],['10','size10'],['12','size12'],['14','size14']];
+  return labels.map(([lab,key])=>{ const q=toNum(r[key]); return q>0?`${lab} (${q})`:''; }).filter(Boolean).join(', ');
 }
-
-/* ================= Cards ================= */
-function cardHTML(row, unitWholesale){
-  const name = norm(row.name||'Item');
-  const desc = norm(row.desc||'');
-  const colour = norm(row.colour||'');
-  const qty = toNum(row.qty);
-  const rrp = toNum(row.rrp);
-  const img = resolveImage(row);
-  const sizes = [['2','size2'],['4','size4'],['6','size6'],['8','size8'],['10','size10'],['12','size12'],['14','size14']]
-    .map(([label,key]) => { const q=toNum(row[key]); return q>0 ? `<span>${label} (${q})</span>` : '' })
-    .join('');
-
+function cardHTML(r, unitW){
+  const sizes = sizeChips(r);
   return `
     <div class="card">
-      <div class="imgbox">
-        <img src="${img}" alt="${name}" loading="lazy"
-             onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'placeholder',innerHTML:'Photo<br>Coming Soon'}))">
-      </div>
+      <div class="imgbox"><img src="${resolveImage(r)}" alt="${r.name}" loading="lazy"
+        onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'placeholder',innerHTML:'Photo<br>Coming Soon'}))"></div>
       <div class="body">
-        <div class="title">${name}</div>
-        <div class="muted">${[desc, colour].filter(Boolean).join(' • ')}</div>
+        <div class="title">${r.name}</div>
+        <div class="muted">${[norm(r.desc), norm(r.colour)].filter(Boolean).join(' • ')}</div>
         <div class="sizes"><strong>Sizes:</strong> ${sizes || '—'}</div>
-        <div class="muted">Qty: ${qty || '—'}</div>
+        <div class="muted">Qty: ${toNum(r.qty) || '—'}</div>
         <div class="price-line">
-          <span class="tag">RRP: ${aud(rrp)}</span>
-          <span class="tag">Wholesale: ${aud(unitWholesale)}</span>
+          <span class="tag">RRP: ${aud(toNum(r.rrp))}</span>
+          <span class="tag">Wholesale: ${aud(unitW)}</span>
         </div>
       </div>
-    </div>
-  `;
-}
-
-/* ================= Search / filters ================= */
-function matchesQ(row,q){
-  if(!q) return true;
-  const hay = [row.name,row.desc,row.colour].join(' ').toLowerCase();
-  return hay.includes(q.toLowerCase());
-}
-function rowHasSize(row,target){
-  if(!target) return true;
-  const map = {'2':'size2','4':'size4','6':'size6','8':'size8','10':'size10','12':'size12','14':'size14'};
-  const key = map[target];
-  return key ? (toNum(row[key])>0) : true;
+    </div>`;
 }
 
 /* ================= Main ================= */
 (async function(){
+  const diag = document.getElementById('diag');
+  const grid = document.getElementById('grid');
   try{
-    const res = await fetch(CSV_PATH);
-    if(!res.ok){ throw new Error(`CSV not found at ${CSV_PATH} (HTTP ${res.status})`); }
-    const text = await res.text();
-    const {rows, header, map} = parseCSV(text);
+    const {rows, header, map, delim, path} = await loadCSV();
 
-    // Diagnostics so you can instantly see if headers were detected
-    document.getElementById('diag').innerHTML = `CSV loaded: ${rows.length} rows • detected columns: 
-      name=${map.name ?? '—'}, rrp=${map.rrp ?? '—'}, qty=${map.qty ?? '—'}, sizes(E–K) ${
-        ['size2','size4','size6','size8','size10','size12','size14'].map(k=>map[k]!=null?'✓':'—').join('')
-      }${map.box!=null?'':' • <span class="warn">Box column not found — image rules will use name/colour only</span>'}`;
-
-    // Normalise + filter rows with a name and RRP
-    const items = rows.map(r=>({
-      box:r.box, name:r.name, desc:r.desc, colour:r.colour, qty:r.qty, rrp:r.rrp, image:r.image,
-      size2:r.size2,size4:r.size4,size6:r.size6,size8:r.size8,size10:r.size10,size12:r.size12,size14:r.size14
-    })).filter(r => norm(r.name));
+    // Keep rows with a name and numeric RRP
+    const items = rows.filter(r => norm(r.name) && toNum(r.rrp) > 0);
 
     // Totals
     const totalQty = items.reduce((s,r)=> s + toNum(r.qty), 0);
-    const totalSKUs= items.length;
     const totalRRP = items.reduce((s,r)=> s + (toNum(r.rrp) * toNum(r.qty)), 0);
-
-    // Wholesale scaling factor (preserve relative values)
+    const totalSKUs= items.length;
     const factorW  = totalRRP>0 ? (WHOLESALE_TOTAL_TARGET_AUD / totalRRP) : 0;
-
-    // Build once (for performance)
-    const enriched = items.map(r=>{
-      const unitW = toNum(r.rrp) * factorW;
-      return {row:r, unitWholesale: unitW};
-    });
 
     // Header totals
     document.getElementById('hero-pill').textContent =
       `${(totalQty||0).toLocaleString()} pieces • ${totalSKUs} SKUs`;
-    document.getElementById('sum-pieces').textContent = `${(totalQty||0).toLocaleString()} pieces`;
-    document.getElementById('sum-skus').textContent   = `${totalSKUs} SKUs`;
-    document.getElementById('sum-rrp').textContent    = `Total RRP: ${aud(totalRRP)}`;
-    document.getElementById('sum-wholesale').textContent = `Wholesale (target): ${aud(WHOLESALE_TOTAL_TARGET_AUD)}`;
-    document.getElementById('sum-quick').textContent     = `Quick Sale (target): ${aud(QUICKSALE_TOTAL_TARGET_AUD)}`;
+    document.getElementById('sum-pieces').textContent   = `${(totalQty||0).toLocaleString()} pieces`;
+    document.getElementById('sum-skus').textContent     = `${totalSKUs} SKUs`;
+    document.getElementById('sum-rrp').textContent      = `Total RRP: ${aud(totalRRP)}`;
+    document.getElementById('sum-wholesale').textContent= `Wholesale (target): ${aud(WHOLESALE_TOTAL_TARGET_AUD)}`;
+    document.getElementById('sum-quick').textContent    = `Quick Sale (target): ${aud(QUICKSALE_TOTAL_TARGET_AUD)}`;
 
     // Size tiles
-    buildSizeTiles(items);
+    (function buildSizeTiles(){
+      const tot = { '2':0,'4':0,'6':0,'8':0,'10':0,'12':0,'14':0 };
+      for(const r of items){
+        tot['2']+=toNum(r.size2); tot['4']+=toNum(r.size4); tot['6']+=toNum(r.size6);
+        tot['8']+=toNum(r.size8); tot['10']+=toNum(r.size10); tot['12']+=toNum(r.size12); tot['14']+=toNum(r.size14);
+      }
+      document.getElementById('size-tiles').innerHTML = Object.keys(tot).map(k=>`
+        <div class="size-tile">
+          <b>Size ${k}</b>
+          <span>${(tot[k]||0).toLocaleString()} pieces</span>
+        </div>
+      `).join('');
+    })();
 
     // Filters
-    document.getElementById('size').innerHTML = '<option value="">All Sizes</option>' + ['2','4','6','8','10','12','14'].map(s=>`<option>${s}</option>`).join('');
-
-    // Render
-    const grid = document.getElementById('grid');
     const sizeSel = document.getElementById('size');
     const qInput  = document.getElementById('q');
+    sizeSel.innerHTML = '<option value="">All Sizes</option>' + ['2','4','6','8','10','12','14'].map(s=>`<option>${s}</option>`).join('');
+
+    function matchesQ(r,q){
+      if(!q) return true;
+      const hay = [r.name,r.desc,r.colour].join(' ').toLowerCase();
+      return hay.includes(q.toLowerCase());
+    }
+    function rowHasSize(r,target){
+      if(!target) return true;
+      const key = ({'2':'size2','4':'size4','6':'size6','8':'size8','10':'size10','12':'size12','14':'size14'})[target];
+      return key ? (toNum(r[key])>0) : true;
+    }
 
     function render(){
       const q = qInput.value.trim();
       const s = sizeSel.value;
-      const filtered = enriched.filter(({row}) => matchesQ(row,q) && rowHasSize(row,s));
-      document.getElementById('visible-count').textContent = filtered.length;
-      grid.innerHTML = filtered.map(({row,unitWholesale}) => cardHTML(row, unitWholesale)).join('') || '<div class="muted">No results.</div>';
+      const html = items
+        .filter(r => matchesQ(r,q) && rowHasSize(r,s))
+        .map(r => cardHTML(r, toNum(r.rrp) * factorW))
+        .join('');
+      document.getElementById('visible-count').textContent = html ? html.match(/class="card"/g)?.length || 0 : 0;
+      grid.innerHTML = html || '<div class="muted">No results.</div>';
     }
     qInput.addEventListener('input', render);
     sizeSel.addEventListener('change', render);
     render();
 
-  }catch(err){
-    console.error(err);
-    document.getElementById('grid').innerHTML = `<div class="muted">Error loading products. ${err.message}</div>`;
-    document.getElementById('diag').innerHTML = `<span class="warn">${err.message}</span>`;
+    // Diagnostics
+    const found = k => map[k]!=null ? '✓' : '—';
+    diag.innerHTML = `Loaded <b>${path}</b> • delimiter <b>${delim==='\\t'?'TAB':delim}</b> • headers: name ${found('name')} | rrp ${found('rrp')} | qty ${found('qty')} | sizes ${['size2','size4','size6','size8','size10','size12','size14'].map(found).join('')}${map.box!=null?'':' • (no Box column found — keyword image matching only)'}`;
+
+  }catch(e){
+    console.error(e);
     document.getElementById('hero-pill').textContent = 'Could not load CSV';
+    document.getElementById('grid').innerHTML = '<div class="muted">Error loading products.</div>';
+    document.getElementById('diag').innerHTML = `<span class="warn">${e.message}</span><span> — Ensure <b>detailed_inventory.csv</b> exists at repo root (or named like one of the candidates) and is a real CSV (comma/semicolon/TAB).</span>`;
   }
 })();
 </script>
