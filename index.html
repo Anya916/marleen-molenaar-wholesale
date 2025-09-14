@@ -8,27 +8,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#f7f7fb;
-    --card:#ffffff;
-    --ink:#1f2240;
-    --muted:#6b6f8a;
-    --primary:#6b4de6; /* purple */
-    --pill:#efeaff;
-    --ok:#12a87a;
-    --chip:#f1f3f8;
+    --bg:#f7f7fb; --card:#ffffff; --ink:#1f2240; --muted:#6b6f8a;
+    --primary:#6b4de6; --pill:#efeaff; --ok:#12a87a; --chip:#f1f3f8;
     --shadow:0 8px 24px rgba(31,34,64,.08)
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-  header{
-    background:linear-gradient(135deg,#7d5df0 0%,#5b43e0 100%);
-    color:#fff;padding:56px 20px 28px;border-bottom-left-radius:24px;border-bottom-right-radius:24px;
-    box-shadow:var(--shadow)
-  }
+  header{background:linear-gradient(135deg,#7d5df0 0%,#5b43e0 100%);color:#fff;padding:56px 20px 28px;border-bottom-left-radius:24px;border-bottom-right-radius:24px;box-shadow:var(--shadow)}
   .wrap{max-width:1060px;margin:0 auto;padding:0 16px}
   h1{margin:0 0 10px;font-size:44px;line-height:1.05;font-weight:800}
-  .meta{display:inline-block;background:rgba(255,255,255,.16);backdrop-filter:blur(2px);
-    border-radius:999px;padding:10px 18px;font-weight:600}
+  .meta{display:inline-block;background:rgba(255,255,255,.16);backdrop-filter:blur(2px);border-radius:999px;padding:10px 18px;font-weight:600}
   .section{margin:22px 0}
   .card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:18px}
   .grid{display:grid;gap:14px}
@@ -50,8 +39,6 @@
   .desc{color:var(--muted);margin:0 0 10px;font-size:14px;min-height:36px}
   .chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}
   .chip{background:var(--chip);border-radius:999px;padding:6px 10px;font-size:12px}
-  .prices{display:flex;gap:8px;flex-wrap:wrap}
-  .badge{background:#eef7f3;color:var(--ok);border-radius:999px;padding:6px 10px;font-weight:600;font-size:12px}
   footer{background:#171a2e;color:#e7ebff;margin-top:28px}
   footer .wrap{display:grid;grid-template-columns:2fr 1fr;gap:18px;padding:28px 16px}
   footer h3{color:#cfd5ff;margin:0 0 12px}
@@ -125,7 +112,7 @@
       <p id="footPieces">—</p>
       <p>Organized in <b>50 boxes</b> for easy pickup</p>
       <p>Storage: Professional organization system</p>
-      <p id="pricesFoot" class="muted">—</p>
+      <p id="pricesFoot" class="muted">Wholesale • Quick sale available</p>
     </div>
   </div>
 </footer>
@@ -136,10 +123,10 @@
   const imgMapUrl = 'image_map.csv';
   const placeholder = 'images/placeholder.webp';
 
-  // Robust CSV parser for simple files
+  // simple robust CSV
   const parseCSV = (text) => {
-    // remove BOM
-    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+    if (!text) return [];
+    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1); // BOM
     const rows = [];
     let i=0, field='', row=[], q=false;
     while(i < text.length){
@@ -152,7 +139,6 @@
         else if (c === ','){ row.push(field.trim()); field=''; }
         else if (c === '\n' || c === '\r'){
           if (field.length || row.length) { row.push(field.trim()); rows.push(row); row=[]; field=''; }
-          // swallow CRLF
           if (c === '\r' && text[i+1] === '\n') i++;
         }else field += c;
       }
@@ -163,78 +149,77 @@
     return rows.map(r => Object.fromEntries(headers.map((h,idx)=>[h,r[idx]??''])));
   };
 
-  // fetch CSVs
   const [invTxt, mapTxt] = await Promise.all([
     fetch(csvUrl).then(r=>r.ok?r.text():Promise.resolve('')),
     fetch(imgMapUrl).then(r=>r.ok?r.text():Promise.resolve(''))
   ]);
 
-  const inv = invTxt ? parseCSV(invTxt) : [];
-  const imgMapRows = mapTxt ? parseCSV(mapTxt) : [];
+  const invRows = parseCSV(invTxt);
+  const mapRows = parseCSV(mapTxt);
 
-  // normalise column names
-  const pick = (o, keys) => {
-    for (const k of keys) {
-      const v = o[k]; if (v!==undefined && v!=='') return v;
-      const lower = Object.keys(o).find(x=>x.toLowerCase()===k.toLowerCase());
-      if (lower && o[lower]!=='') return o[lower];
+  // helper: pick value by possible header names
+  const pick = (o, names) => {
+    const keys = Object.keys(o);
+    for (const want of names){
+      const k = keys.find(x => x.toLowerCase() === want.toLowerCase());
+      if (k && o[k] !== undefined) return o[k];
     }
     return '';
   };
 
-  // build image map (accepts header "name" or "item")
+  // build image map (supports image,name OR image,item)
   const imageMap = new Map();
-  for (const r of imgMapRows){
+  for (const r of mapRows){
     const img = pick(r,['image']);
-    const name = pick(r,['name','item']);
-    if (img && name) imageMap.set(name.toLowerCase(), img);
+    const nm = pick(r,['name','item']);
+    if (!img || !nm) continue;
+    imageMap.set(nm.toLowerCase(), img);
   }
 
-  // roll up inventory per (Item_Name, Colour) and size counts
-  const itemsByKey = new Map();
+  // normalise and roll up inventory
+  const byKey = new Map(); // key: name|colour
   let totalPieces = 0;
-  for (const r of inv){
-    const name = pick(r,['Item_Name','name']);
-    const desc = pick(r,['Description']);
-    const cat  = pick(r,['Category']);
-    const colour = pick(r,['Colour','Color']);
-    const size = pick(r,['Size']);
-    const qty  = +pick(r,['Qty','quantity','qty']) || 0;
-    const rrp  = parseFloat(pick(r,['RRP','Anchor_Price'])) || 0;
-    const wh   = parseFloat(pick(r,['Wholesale','Discounted_Price'])) || 0;
-
-    if (!name || !qty){ continue; }
-
-    const key = (name+'|'+colour).toLowerCase();
-    if (!itemsByKey.has(key)){
-      itemsByKey.set(key,{
-        name, desc, cat, colour, sizes:new Map(), qty:0, rrp, wholesale:wh
-      });
-    }
-    const it = itemsByKey.get(key);
-    it.qty += qty;
-    totalPieces += qty;
-    // collect sizes
-    const s = (size+'').trim();
-    if (s) it.sizes.set(s, (it.sizes.get(s)||0)+qty);
-    // keep highest RRP if multiple lines
-    it.rrp = Math.max(it.rrp, rrp);
-    it.wholesale = Math.max(it.wholesale, wh);
-  }
-
-  // size breakdown totals
   const sizeTotals = {2:0,4:0,6:0,8:0,10:0,12:0,14:0};
-  for (const it of itemsByKey.values()){
-    for (const [s,n] of it.sizes) if (sizeTotals[s]!==undefined) sizeTotals[s]+=n;
+  const seenCats = new Set();
+
+  for (const r of invRows){
+    const name = (pick(r,['Item_Name','name']) || '').trim();
+    if (!name) continue;
+
+    const desc   = pick(r,['Description']) || '';
+    const cat    = pick(r,['Category']) || '';
+    const colour = (pick(r,['Colour','Color']) || '').trim();
+    const size   = (pick(r,['Size']) || '').toString().trim(); // can be "2","4",...
+    const qtyVal = pick(r,['Qty','QTY','qty','Quantity','quantity']) || '0';
+    const qty    = parseFloat(String(qtyVal).replace(/[^0-9.-]/g,'')) || 0;
+
+    const rrpVal = pick(r,['RRP','Anchor_Price']) || '';
+    const whVal  = pick(r,['Wholesale','Discounted_Price']) || '';
+    const rrp    = parseFloat(String(rrpVal).replace(/[^0-9.-]/g,'')) || 0;
+    const wh     = parseFloat(String(whVal).replace(/[^0-9.-]/g,'')) || 0;
+
+    seenCats.add(cat);
+
+    const key = (name + '|' + colour).toLowerCase();
+    if (!byKey.has(key)){
+      byKey.set(key, {name, desc, cat, colour, qty:0, sizes:new Map(), rrp:0, wholesale:0});
+    }
+    const item = byKey.get(key);
+    item.qty += qty;
+    totalPieces += qty;
+    if (size) { item.sizes.set(size, (item.sizes.get(size)||0) + qty); }
+    item.rrp = Math.max(item.rrp, rrp);
+    item.wholesale = Math.max(item.wholesale, wh);
+
+    if (sizeTotals[size] !== undefined) sizeTotals[size] += qty;
   }
 
   // header meta
   document.getElementById('meta').textContent =
-    `${totalPieces.toLocaleString()} pieces • ${itemsByKey.size} SKUs • 50 boxes`;
+    `${totalPieces.toLocaleString()} pieces • ${byKey.size} SKUs • 50 boxes`;
 
-  // size grid
-  const sg = document.getElementById('sizeGrid');
-  sg.innerHTML = '';
+  // size tiles
+  const sg = document.getElementById('sizeGrid'); sg.innerHTML='';
   Object.keys(sizeTotals).forEach(s=>{
     const div = document.createElement('div');
     div.className='size-pill';
@@ -243,29 +228,44 @@
   });
 
   // category filter options
-  const catSet = new Set();
-  itemsByKey.forEach(it=>{ if (it.cat) catSet.add(it.cat); });
   const catFilter = document.getElementById('catFilter');
-  for (const c of [...catSet].sort()){
+  [...seenCats].filter(Boolean).sort().forEach(c=>{
     const opt = document.createElement('option'); opt.textContent=c; catFilter.appendChild(opt);
-  }
+  });
 
-  // render cards (photos-first)
-  const toArray = [...itemsByKey.values()];
-  toArray.sort((a,b)=>{
-    const aHas = imageMap.has(a.name.toLowerCase());
-    const bHas = imageMap.has(b.name.toLowerCase());
-    if (aHas!==bHas) return aHas? -1: 1;
+  // image resolver: try (name+colour) → name → fuzzy contains
+  const resolveImage = (name, colour) => {
+    const key1 = (name + ' (' + colour + ')').toLowerCase();
+    const key2 = (name + ' - ' + colour).toLowerCase();
+    const key3 = (name + '|' + colour).toLowerCase();
+
+    if (imageMap.has((name+' '+colour).toLowerCase())) return imageMap.get((name+' '+colour).toLowerCase());
+    if (imageMap.has(key1)) return imageMap.get(key1);
+    if (imageMap.has(key2)) return imageMap.get(key2);
+    if (imageMap.has(key3)) return imageMap.get(key3);
+
+    if (imageMap.has(name.toLowerCase())) return imageMap.get(name.toLowerCase());
+
+    // fuzzy: any map name containing inventory name
+    const hit = [...imageMap.keys()].find(k => k.includes(name.toLowerCase()));
+    return hit ? imageMap.get(hit) : '';
+  };
+
+  // items array (photos-first)
+  const items = [...byKey.values()].sort((a,b)=>{
+    const aHas = !!resolveImage(a.name,a.colour);
+    const bHas = !!resolveImage(b.name,b.colour);
+    if (aHas !== bHas) return aHas? -1 : 1;
     return a.name.localeCompare(b.name);
   });
 
+  // render
   const cards = document.getElementById('cards');
-  function fmtAUD(n){ return n? `$${n.toFixed(2)} AUD` : '—'; }
-
-  function passFilters(it){
-    const sz = document.getElementById('sizeFilter').value;
+  const fmtAUD = n => n ? `$${n.toFixed(2)} AUD` : '—';
+  const passFilters = it => {
+    const sz  = document.getElementById('sizeFilter').value;
     const cat = document.getElementById('catFilter').value;
-    const q = document.getElementById('q').value.toLowerCase();
+    const q   = document.getElementById('q').value.toLowerCase();
     if (sz && !it.sizes.has(sz)) return false;
     if (cat && it.cat !== cat) return false;
     if (q){
@@ -273,16 +273,17 @@
       if (!hay.includes(q)) return false;
     }
     return true;
-  }
+  };
 
   function render(){
     cards.innerHTML='';
-    toArray.forEach(it=>{
+    items.forEach(it=>{
       if (!passFilters(it)) return;
-      const imgPath = imageMap.get(it.name.toLowerCase()) || placeholder;
-      const sizes = [...it.sizes.entries()]
+
+      const imgPath = resolveImage(it.name, it.colour) || placeholder;
+      const sizesHtml = [...it.sizes.entries()]
         .sort((a,b)=>Number(a[0])-Number(b[0]))
-        .map(([s,c])=>`<span class="chip">${s} × ${c}</span>`).join('');
+        .map(([s,c])=>`<span class="chip">${s} × ${c}</span>`).join('') || '<span class="chip">Sizes: —</span>';
 
       const el = document.createElement('div');
       el.className='item';
@@ -293,7 +294,7 @@
         <div class="content">
           <h3 class="name">${it.name}</h3>
           <p class="desc">${[it.desc, it.colour?`Colour: ${it.colour}`:''].filter(Boolean).join(' • ')}</p>
-          <div class="chips">${sizes || '<span class="chip">Sizes: —</span>'}</div>
+          <div class="chips">${sizesHtml}</div>
           <div class="chips">
             <span class="chip"><b>Qty:</b>&nbsp;${it.qty}</span>
             <span class="chip"><b>RRP:</b>&nbsp;${fmtAUD(it.rrp)}</span>
@@ -305,14 +306,10 @@
 
     // footer summary
     document.getElementById('footPieces').innerHTML =
-      `<b>${totalPieces.toLocaleString()}</b> pieces across <b>${itemsByKey.size}</b> SKUs`;
-    document.getElementById('pricesFoot').textContent = 'Wholesale • Quick sale available';
+      `<b>${totalPieces.toLocaleString()}</b> pieces across <b>${items.length}</b> SKUs`;
   }
 
-  ['sizeFilter','catFilter','q'].forEach(id=>{
-    document.getElementById(id).addEventListener('input',render);
-  });
-
+  ['sizeFilter','catFilter','q'].forEach(id=>document.getElementById(id).addEventListener('input',render));
   render();
 })();
 </script>
