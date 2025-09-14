@@ -107,6 +107,10 @@
           <label for="size">Size</label>
           <select id="size"><option value="">All Sizes</option></select>
         </div>
+        <div>
+          <label for="category">Category</label>
+          <select id="category"><option value="">All Categories</option></select>
+        </div>
         <div style="flex:1 1 280px">
           <label for="q">Search</label>
           <input id="q" placeholder="Search name, colour, description…">
@@ -156,12 +160,13 @@ const CSV_CANDIDATES = [
   'Detailed_Inventory.csv'
 ];
 
-/* ================= CSV loader with delimiter auto-detect ================= */
+/* ================= Helpers ================= */
 const norm=s=> (s||'').toString().trim();
 const lc  =s=> norm(s).toLowerCase();
 const toNum = x => { if(x==null) return 0; const s=String(x).replace(/[^\d.,-]/g,'').replace(/,/g,''); return parseFloat(s)||0; };
 const aud = v => isFinite(v) ? `\$${v.toFixed(2)} AUD` : '—';
 
+/* ================= CSV loader with delimiter auto-detect ================= */
 function detectDelimiter(text){
   const first = text.split(/\r?\n/).find(l=>l.includes(',')||l.includes(';')||l.includes('\t')) || '';
   const counts = { ',':(first.match(/,/g)||[]).length, ';':(first.match(/;/g)||[]).length, '\t':(first.match(/\t/g)||[]).length };
@@ -176,40 +181,45 @@ function parseCSVAuto(text){
   const lines = text.replace(/\r/g,'').split('\n').filter(l=>l.trim());
   const header = splitRow(lines.shift(), delim);
   const colsLC = header.map(h=>h.toLowerCase());
-  const alias = (names)=> names.map(lc).map(a=> colsLC.indexOf(a)).find(i=>i>=0);
+  const idx = name => colsLC.indexOf(name);
 
   const map = {
-    name: alias(['new product names','product name','name','title']),
-    desc: alias(['description','desc','details']),
-    colour: alias(['colour','color','colourway','col']),
-    qty: alias(['qty','quantity','total qty','total','pieces']),
-    rrp: alias(['rrp','rrp (aud)','retail','price rrp']),
-    box: alias(['box no','box','box number','box_no','boxno']),
-    image: alias(['image','image file','image_file','image url','image_url','photo']),
-    size2: alias(['2','size 2']),
-    size4: alias(['4','size 4']),
-    size6: alias(['6','size 6']),
-    size8: alias(['8','size 8']),
-    size10: alias(['10','size 10']),
-    size12: alias(['12','size 12']),
-    size14: alias(['14','size 14']),
-    category: alias(['category','type'])
+    sku: idx('sku'),
+    brand: idx('brand'),
+    item: idx('item_name'),
+    desc: idx('description'),
+    category: idx('category'),
+    subcat: idx('subcategory'),
+    size: idx('size'),
+    colour: idx('colour')!==-1?idx('colour'):idx('color'),
+    gender: idx('gender'),
+    condition: idx('condition'),
+    qty: idx('qty'),
+    rrp: idx('anchor_price'),
+    discounted: idx('discounted_price'),
+    channel: idx('channel')
   };
 
   const rows = lines.map(line=>{
     const cells = splitRow(line, delim);
-    const get = idx => (idx!=null ? (cells[idx]||'') : '');
+    const get = i => (i>=0 ? (cells[i]||'') : '');
     return {
-      name:  get(map.name),
-      desc:  get(map.desc),
-      colour:get(map.colour),
-      qty:   get(map.qty),
-      rrp:   get(map.rrp),
-      box:   get(map.box),
-      image: get(map.image),
-      size2: get(map.size2), size4:get(map.size4), size6:get(map.size6),
-      size8: get(map.size8), size10:get(map.size10), size12:get(map.size12), size14:get(map.size14),
-      _delim: delim, _map: map
+      SKU: get(map.sku),
+      Brand: get(map.brand),
+      Item_Name: get(map.item),
+      Description: get(map.desc),
+      Category: get(map.category),
+      Subcategory: get(map.subcat),
+      Size: get(map.size),
+      Colour: get(map.colour),
+      Gender: get(map.gender),
+      Condition: get(map.condition),
+      Qty: get(map.qty),
+      Anchor_Price: get(map.rrp),
+      Discounted_Price: get(map.discounted),
+      Channel: get(map.channel),
+      _delim: delim,
+      _map: map
     };
   });
   return { rows, header, map, delim };
@@ -229,174 +239,286 @@ async function loadCSV(){
   throw lastErr || new Error('CSV not found');
 }
 
-/* ================= Image rules (your mappings) ================= */
+/* ================= Grouping & Aggregation ================= */
+/* Key per product card: Item_Name + Colour + Subcategory */
+function keyOf(r){ return [r.Item_Name, r.Colour, r.Subcategory].map(v=>lc(v||'')).join(' • '); }
+
+function aggregateItems(rows){
+  const groups = new Map();
+  for(const r of rows){
+    const name = norm(r.Item_Name);
+    if(!name) continue;
+    const qty = toNum(r.Qty);
+    const rrp = toNum(r.Anchor_Price);
+    const key = keyOf(r);
+
+    if(!groups.has(key)){
+      groups.set(key, {
+        Item_Name: name,
+        Colour: norm(r.Colour),
+        Subcategory: norm(r.Subcategory),
+        Description: norm(r.Description),
+        Category: norm(r.Category),
+        sizes: {},         // { '2': count, '4': count, ... or text sizes too }
+        totalQty: 0,
+        rrps: {},          // frequency map of unit RRP to pick the "mode"
+        rrpsSeen: [],      // list to compute fallback average
+      });
+    }
+    const g = groups.get(key);
+
+    // size -> qty
+    const sz = norm(r.Size);
+    if(sz){ g.sizes[sz] = (g.sizes[sz]||0) + qty; }
+
+    // totals
+    g.totalQty += qty;
+
+    // rrp mode calc
+    if(rrp>0){
+      g.rrps[rrp] = (g.rrps[rrp]||0)+qty;
+      g.rrpsSeen.push(rrp);
+    }
+
+    // keep a better description if current is empty and this row has more info
+    if(!g.Description && r.Description) g.Description = norm(r.Description);
+  }
+
+  // finalize array
+  const result = [];
+  for(const g of groups.values()){
+    // pick RRP mode (price with highest count); fallback to average
+    let unitRRP = 0, bestCount = -1;
+    for(const [priceStr,count] of Object.entries(g.rrps)){
+      const price = Number(priceStr);
+      if(count>bestCount){ bestCount=count; unitRRP=price; }
+    }
+    if(unitRRP<=0 && g.rrpsSeen.length){
+      unitRRP = g.rrpsSeen.reduce((a,b)=>a+b,0)/g.rrpsSeen.length;
+    }
+    result.push({
+      name: g.Item_Name,
+      colour: g.Colour,
+      subcat: g.Subcategory,
+      desc: g.Description,
+      category: g.Category,
+      sizes: g.sizes,
+      qty: g.totalQty,
+      rrpUnit: unitRRP
+    });
+  }
+  return result;
+}
+
+/* ================= Image rules (keyword-based) ================= */
 const IMAGE_RULES = [
   // 1–11 (corrected)
-  { image:"images/image1_small.jpg",  boxes:["box 9","box 17","box 18","box 19","box 20","box 21","box 22","box 23","box 24","box 25","box 26","box 27"], keywords:["ella","princess","gown","pink"] },
-  { image:"images/image2_small.jpg",  boxes:["box 29"], keywords:["cora","sleeveless","short","flower","blue"] },
-  { image:"images/image2_small.jpg",  boxes:["box 29"], keywords:["cora","sleeveless","short","flower","light","blue"] },
-  { image:"images/image3_small.jpg",  boxes:["box 29"], keywords:["cora","sleeveless","short","flower","pink"] },
-  { image:"images/image4_small.jpg",  boxes:["box 43"], keywords:["ava","singlet","top","pants","green","yellow"] },
-  { image:"images/image5_small.jpg",  boxes:["box 30"], keywords:["harper","shorts","vest","lemon"] },
-  { image:"images/image5_small.jpg",  boxes:["box 30"], keywords:["harper","shorts","vest","green"] },
-  { image:"images/image6_small.jpg",  boxes:["box 39"], keywords:["ruby","pyjama","boob","tube","short","pink"] },
-  { image:"images/image7_small.jpg",  boxes:["box 28","box 37","box 46"], keywords:["ella","semi","pajama","pink"] },
-  { image:"images/image8_small.jpg",  boxes:["box 47"], keywords:["grace","nightie","bow","off-white","organic"] },
-  { image:"images/image9_small.jpg",  boxes:["box 41"], keywords:["isabella","nightdress","check","blue"] },
-  { image:"images/image9_small.jpg",  boxes:["box 41"], keywords:["isabella","nightdress","check","pink"] },
-  { image:"images/image10_small.jpg", boxes:["box 38"], keywords:["mia","shirt","long","sleeve","blue"] },
-  { image:"images/image10_small.jpg", boxes:["box 29"], keywords:["mia","shirt","lilac"] },
-  { image:"images/image11_small.jpg", boxes:["box 45","box 54"], keywords:["ella","suzy","90","pink"] },
+  { image:"images/image1_small.jpg",  keywords:["ella","princess","gown","pink"] },
+  { image:"images/image2_small.jpg",  keywords:["cora","sleeveless","short","flower","blue"] },
+  { image:"images/image2_small.jpg",  keywords:["cora","sleeveless","short","flower","light","blue"] },
+  { image:"images/image3_small.jpg",  keywords:["cora","sleeveless","short","flower","pink"] },
+  { image:"images/image4_small.jpg",  keywords:["ava","singlet","top","pants","green","yellow"] },
+  { image:"images/image5_small.jpg",  keywords:["harper","shorts","vest","lemon"] },
+  { image:"images/image5_small.jpg",  keywords:["harper","shorts","vest","green"] },
+  { image:"images/image6_small.jpg",  keywords:["ruby","pyjama","boob","tube","short","pink"] },
+  { image:"images/image7_small.jpg",  keywords:["ella","semi","pajama","pink"] },
+  { image:"images/image8_small.jpg",  keywords:["grace","nightie","bow","off-white","organic"] },
+  { image:"images/image9_small.jpg",  keywords:["isabella","nightdress","check","blue"] },
+  { image:"images/image9_small.jpg",  keywords:["isabella","nightdress","check","pink"] },
+  { image:"images/image10_small.jpg", keywords:["mia","shirt","long","sleeve","blue"] },
+  { image:"images/image10_small.jpg", keywords:["mia","shirt","lilac"] },
+  { image:"images/image11_small.jpg", keywords:["ella","suzy","90","pink"] },
   // 12–19
-  { image:"images/image12_small.jpg", boxes:["box 54"], keywords:["suzy","90","pink"] },
-  { image:"images/image13_small.jpg", boxes:["box 38"], keywords:["suzy","90","pink"] },
-  { image:"images/image14_small.jpg", boxes:["box 43"], keywords:["charlotte","suzy","90","blue"] },
-  { image:"images/image15_small.jpg", boxes:["box 38"], keywords:["eliana","suzy","90","sleeveless","lemon","flower"] },
-  { image:"images/image16_small.jpg", boxes:["box 39"], keywords:["cora","suzy","90","night","sleeveless","flower","blue"] },
-  { image:"images/image17_small.jpg", boxes:["box 40","box 49"], keywords:["jack","boy","paj","blue","brown"] },
-  { image:"images/image18_small.jpg", boxes:["box 44","box 53"], keywords:["oliver","gary","long","paj","black","check"] },
-  { image:"images/image19_small.jpg", boxes:["box 42"], keywords:["thomas","boy","paj","short"] },
-  { image:"images/image19_small.jpg", boxes:["box 40"], keywords:["noah","boy","short","stripe","gray","aqua"] },
-  { image:"images/image19_small.jpg", boxes:["box 40"], keywords:["turquoise","stripe"] },
-  { image:"images/image19_small.jpg", boxes:["box 40"], keywords:["green","top","navy","short"] },
-  { image:"images/image19_small.jpg", boxes:["box 40"], keywords:["gray","top","gray","pants"] },
-  { image:"images/image19_small.jpg", boxes:["box 40"], keywords:["gray","top","green","pants"] },
-  { image:"images/image19_small.jpg", boxes:["box 42"], keywords:["thomas","stripe","white","blue"] },
+  { image:"images/image12_small.jpg", keywords:["suzy","90","pink"] },
+  { image:"images/image13_small.jpg", keywords:["suzy","90","pink"] },
+  { image:"images/image14_small.jpg", keywords:["charlotte","suzy","90","blue"] },
+  { image:"images/image15_small.jpg", keywords:["eliana","suzy","90","sleeveless","lemon","flower"] },
+  { image:"images/image16_small.jpg", keywords:["cora","suzy","90","night","sleeveless","flower","blue"] },
+  { image:"images/image17_small.jpg", keywords:["jack","boy","paj","blue","brown"] },
+  { image:"images/image18_small.jpg", keywords:["oliver","gary","long","paj","black","check"] },
+  { image:"images/image19_small.jpg", keywords:["thomas","boy","paj","short"] },
+  { image:"images/image19_small.jpg", keywords:["noah","boy","short","stripe","gray","aqua"] },
+  { image:"images/image19_small.jpg", keywords:["turquoise","stripe"] },
+  { image:"images/image19_small.jpg", keywords:["green","top","navy","short"] },
+  { image:"images/image19_small.jpg", keywords:["gray","top","gray","pants"] },
+  { image:"images/image19_small.jpg", keywords:["gray","top","green","pants"] },
+  { image:"images/image19_small.jpg", keywords:["thomas","stripe","white","blue"] },
   // 20–25
-  { image:"images/image20_small.jpg", boxes:["box 39"], keywords:["maisie","baby","top","pants","pink"] },
-  { image:"images/image21_small.jpg", boxes:["box 50"], keywords:["olivia","girls","long","paj","kindie","pink"] },
-  { image:"images/image21_small.jpg", boxes:["box 50"], keywords:["olivia","girls","long","paj","kindie","blue"] },
-  { image:"images/image22_small.jpg", boxes:["box 52"], keywords:["aria","ladies","long","paj","kindie","pink"] },
-  { image:"images/image22_small.jpg", boxes:["box 52"], keywords:["aria","ladies","long","paj","kindie","light","blue"] },
-  { image:"images/image23_small.jpg", boxes:["box 51"], keywords:["layla","ladies","short","paj","sleeveless","top","floral"] },
-  { image:"images/image24_small.jpg", boxes:["box 50"], keywords:["layla","ladies","short","nightie","sleeveless","floral","yellow"] },
-  { image:"images/image25_small.jpg", boxes:["box 51"], keywords:["sophia","women","shirt","off","white"] },
-  { image:"images/image25_small.jpg", boxes:["box 51"], keywords:["sophia","women","shirt","blue"] },
+  { image:"images/image20_small.jpg", keywords:["maisie","baby","top","pants","pink"] },
+  { image:"images/image21_small.jpg", keywords:["olivia","girls","long","paj","kindie","pink"] },
+  { image:"images/image21_small.jpg", keywords:["olivia","girls","long","paj","kindie","blue"] },
+  { image:"images/image22_small.jpg", keywords:["aria","ladies","long","paj","kindie","pink"] },
+  { image:"images/image22_small.jpg", keywords:["aria","ladies","long","paj","kindie","light","blue"] },
+  { image:"images/image23_small.jpg", keywords:["layla","ladies","short","paj","sleeveless","top","floral"] },
+  { image:"images/image24_small.jpg", keywords:["layla","ladies","short","nightie","sleeveless","floral","yellow"] },
+  { image:"images/image25_small.jpg", keywords:["sophia","women","shirt","off","white"] },
+  { image:"images/image25_small.jpg", keywords:["sophia","women","shirt","blue"] },
   // 26–33
-  { image:"images/image26_small.jpg", boxes:["box 30"], keywords:["summer","dressing","gown","lilac"] },
-  { image:"images/image26_small.jpg", boxes:["box 30"], keywords:["summer","dressing","gown","lemon"] },
-  { image:"images/image26_small.jpg", boxes:["box 48"], keywords:["summer","blue"] },
-  { image:"images/image26_small.jpg", boxes:["box 48"], keywords:["summer","lilac"] },
-  { image:"images/image26_small.jpg", boxes:["box 48"], keywords:["summer","lemon"] },
-  { image:"images/image27_small.jpg", boxes:["box 10","box 11","box 12","box 13","box 14","box 15","box 16"], keywords:["maya","gown","leopard"] },
-  { image:"images/image28_small.jpg", boxes:["box 31","box 32","box 33","box 34","box 35","box 36"], keywords:["josh","gown","check"] },
-  { image:"images/image29_small.jpg", boxes:["box 1","box 2","box 3","box 4","box 5","box 6","box 7","box 8"], keywords:["jack","gown","brown"] },
-  { image:"images/image30_small.jpg", boxes:["box 57"], keywords:["fireman","raincoat","yellow","no","hat"] },
-  { image:"images/image31_small.jpg", boxes:["box 56","box 57"], keywords:["candy","raincoat","hat","pink"] },
-  { image:"images/image32_small.jpg", boxes:["box 57"], keywords:["candy","raincoat","pink","no","hat"] },
-  { image:"images/image33_small.jpg", boxes:["box 57"], keywords:["fireman","raincoat","yellow","hat"] }
+  { image:"images/image26_small.jpg", keywords:["summer","dressing","gown","lilac"] },
+  { image:"images/image26_small.jpg", keywords:["summer","dressing","gown","lemon"] },
+  { image:"images/image26_small.jpg", keywords:["summer","blue"] },
+  { image:"images/image26_small.jpg", keywords:["summer","lilac"] },
+  { image:"images/image26_small.jpg", keywords:["summer","lemon"] },
+  { image:"images/image27_small.jpg", keywords:["maya","gown","leopard"] },
+  { image:"images/image28_small.jpg", keywords:["josh","gown","check"] },
+  { image:"images/image29_small.jpg", keywords:["jack","gown","brown"] },
+  { image:"images/image30_small.jpg", keywords:["fireman","raincoat","yellow","no","hat"] },
+  { image:"images/image31_small.jpg", keywords:["candy","raincoat","hat","pink"] },
+  { image:"images/image32_small.jpg", keywords:["candy","raincoat","pink","no","hat"] },
+  { image:"images/image33_small.jpg", keywords:["fireman","raincoat","yellow","hat"] }
 ];
 
-function resolveImage(row){
-  const name=lc(row.name), desc=lc(row.desc), col=lc(row.colour), box=lc(row.box||'');
-  const text = [name,desc,col].join(' ');
+function resolveImage(name, desc, colour){
+  const text = [lc(name), lc(desc), lc(colour)].join(' ');
   for(const r of IMAGE_RULES){
-    const okBox = !r.boxes || (box && r.boxes.includes(box));
-    const okKW  = (r.keywords||[]).every(k=> text.includes(k));
-    if(okKW && okBox) return r.image;
-    if(!box && okKW)  return r.image; // if Box column missing, allow keyword-only match
+    const all = (r.keywords||[]).every(k => text.includes(k));
+    if(all) return r.image;
   }
-  if (name.includes('ella') && name.includes('princess')) return 'images/image1_small.jpg';
+  // loose fallback
+  if(text.includes('ella') && text.includes('princess')) return 'images/image1_small.jpg';
   return 'images/placeholder.webp';
 }
 
 /* ================= UI helpers ================= */
-function sizeChips(r){
-  const labels=[['2','size2'],['4','size4'],['6','size6'],['8','size8'],['10','size10'],['12','size12'],['14','size14']];
-  return labels.map(([lab,key])=>{ const q=toNum(r[key]); return q>0?`${lab} (${q})`:''; }).filter(Boolean).join(', ');
+function sizesToChips(sizes){
+  // sizes is an object: { "2": 3, "4": 1, ... or "S": 5, "M": 2 }
+  const entries = Object.entries(sizes)
+    .filter(([,q])=> toNum(q)>0)
+    .sort((a,b)=>{
+      const na = a[0], nb = b[0];
+      const ia = parseFloat(na), ib = parseFloat(nb);
+      // numeric sizes first in ascending order, then alpha
+      if(!isNaN(ia) && !isNaN(ib)) return ia-ib;
+      if(!isNaN(ia)) return -1;
+      if(!isNaN(ib)) return 1;
+      return na.localeCompare(nb);
+    });
+  return entries.map(([sz,q])=> `<span>${sz} (${q})</span>`).join('');
 }
-function cardHTML(r, unitW){
-  const sizes = sizeChips(r);
+
+function cardHTML(item, unitWholesale){
+  const img = resolveImage(item.name, item.desc, item.colour);
   return `
     <div class="card">
-      <div class="imgbox"><img src="${resolveImage(r)}" alt="${r.name}" loading="lazy"
+      <div class="imgbox"><img src="${img}" alt="${item.name}" loading="lazy"
         onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'placeholder',innerHTML:'Photo<br>Coming Soon'}))"></div>
       <div class="body">
-        <div class="title">${r.name}</div>
-        <div class="muted">${[norm(r.desc), norm(r.colour)].filter(Boolean).join(' • ')}</div>
-        <div class="sizes"><strong>Sizes:</strong> ${sizes || '—'}</div>
-        <div class="muted">Qty: ${toNum(r.qty) || '—'}</div>
+        <div class="title">${item.name}</div>
+        <div class="muted">${[item.desc, item.colour].filter(Boolean).join(' • ')}</div>
+        <div class="sizes"><strong>Sizes:</strong> ${sizesToChips(item.sizes) || '—'}</div>
+        <div class="muted">Qty: ${item.qty || '—'}</div>
         <div class="price-line">
-          <span class="tag">RRP: ${aud(toNum(r.rrp))}</span>
-          <span class="tag">Wholesale: ${aud(unitW)}</span>
+          <span class="tag">RRP: ${aud(item.rrpUnit)}</span>
+          <span class="tag">Wholesale: ${aud(unitWholesale)}</span>
         </div>
       </div>
     </div>`;
 }
 
-/* ================= Main ================= */
+function matchesQ(item,q){
+  if(!q) return true;
+  const hay = [item.name,item.desc,item.colour,item.category,item.subcat].join(' ').toLowerCase();
+  return hay.includes(q.toLowerCase());
+}
+function rowHasSize(item, target){
+  if(!target) return true;
+  return toNum(item.sizes[target]) > 0;
+}
+
+/* ================= MAIN ================= */
 (async function(){
   const diag = document.getElementById('diag');
   const grid = document.getElementById('grid');
+
   try{
     const {rows, header, map, delim, path} = await loadCSV();
 
-    // Keep rows with a name and numeric RRP
-    const items = rows.filter(r => norm(r.name) && toNum(r.rrp) > 0);
+    // Filter out empty names; ensure numeric Qty & RRP at row level for totals
+    const validRows = rows.filter(r => norm(r.Item_Name));
+    const totalPiecesFromRows = validRows.reduce((s,r)=> s + toNum(r.Qty), 0);
+    const totalRRPFromRows    = validRows.reduce((s,r)=> s + (toNum(r.Anchor_Price) * toNum(r.Qty)), 0);
 
-    // Totals
-    const totalQty = items.reduce((s,r)=> s + toNum(r.qty), 0);
-    const totalRRP = items.reduce((s,r)=> s + (toNum(r.rrp) * toNum(r.qty)), 0);
-    const totalSKUs= items.length;
-    const factorW  = totalRRP>0 ? (WHOLESALE_TOTAL_TARGET_AUD / totalRRP) : 0;
+    // Aggregate per item card
+    const items = aggregateItems(validRows); // [{name, colour, subcat, desc, category, sizes:{}, qty, rrpUnit}, ...]
+
+    // Compute wholesale factor to hit the page target
+    // Use row-level total RRP so we weight correctly even if sizes carry different RRPs
+    const factorW = totalRRPFromRows>0 ? (WHOLESALE_TOTAL_TARGET_AUD / totalRRPFromRows) : 0;
 
     // Header totals
+    const totalSKUs = items.length;
     document.getElementById('hero-pill').textContent =
-      `${(totalQty||0).toLocaleString()} pieces • ${totalSKUs} SKUs`;
-    document.getElementById('sum-pieces').textContent   = `${(totalQty||0).toLocaleString()} pieces`;
+      `${(totalPiecesFromRows||0).toLocaleString()} pieces • ${totalSKUs} SKUs`;
+    document.getElementById('sum-pieces').textContent   = `${(totalPiecesFromRows||0).toLocaleString()} pieces`;
     document.getElementById('sum-skus').textContent     = `${totalSKUs} SKUs`;
-    document.getElementById('sum-rrp').textContent      = `Total RRP: ${aud(totalRRP)}`;
+    document.getElementById('sum-rrp').textContent      = `Total RRP: ${aud(totalRRPFromRows)}`;
     document.getElementById('sum-wholesale').textContent= `Wholesale (target): ${aud(WHOLESALE_TOTAL_TARGET_AUD)}`;
     document.getElementById('sum-quick').textContent    = `Quick Sale (target): ${aud(QUICKSALE_TOTAL_TARGET_AUD)}`;
 
-    // Size tiles
+    // Size tiles (across all rows)
     (function buildSizeTiles(){
-      const tot = { '2':0,'4':0,'6':0,'8':0,'10':0,'12':0,'14':0 };
-      for(const r of items){
-        tot['2']+=toNum(r.size2); tot['4']+=toNum(r.size4); tot['6']+=toNum(r.size6);
-        tot['8']+=toNum(r.size8); tot['10']+=toNum(r.size10); tot['12']+=toNum(r.size12); tot['14']+=toNum(r.size14);
+      const totals = {};
+      for(const r of validRows){
+        const s = norm(r.Size);
+        const q = toNum(r.Qty);
+        if(!s || q<=0) continue;
+        totals[s] = (totals[s]||0) + q;
       }
-      document.getElementById('size-tiles').innerHTML = Object.keys(tot).map(k=>`
+      const ordered = Object.entries(totals).sort((a,b)=>{
+        const ia = parseFloat(a[0]), ib = parseFloat(b[0]);
+        if(!isNaN(ia) && !isNaN(ib)) return ia-ib;
+        if(!isNaN(ia)) return -1;
+        if(!isNaN(ib)) return 1;
+        return a[0].localeCompare(b[0]);
+      });
+      document.getElementById('size-tiles').innerHTML = ordered.map(([k,v])=>`
         <div class="size-tile">
-          <b>Size ${k}</b>
-          <span>${(tot[k]||0).toLocaleString()} pieces</span>
+          <b>${k}</b><span>${(v||0).toLocaleString()} pieces</span>
         </div>
       `).join('');
     })();
 
-    // Filters
-    const sizeSel = document.getElementById('size');
-    const qInput  = document.getElementById('q');
-    sizeSel.innerHTML = '<option value="">All Sizes</option>' + ['2','4','6','8','10','12','14'].map(s=>`<option>${s}</option>`).join('');
+    // Populate filters
+    const uniq = arr => [...new Set(arr.filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+    document.getElementById('size').innerHTML =
+      '<option value="">All Sizes</option>' + uniq(validRows.map(r=>norm(r.Size))).map(s=>`<option>${s}</option>`).join('');
+    document.getElementById('category').innerHTML =
+      '<option value="">All Categories</option>' + uniq(validRows.map(r=>norm(r.Category))).map(s=>`<option>${s}</option>`).join('');
 
-    function matchesQ(r,q){
-      if(!q) return true;
-      const hay = [r.name,r.desc,r.colour].join(' ').toLowerCase();
-      return hay.includes(q.toLowerCase());
-    }
-    function rowHasSize(r,target){
-      if(!target) return true;
-      const key = ({'2':'size2','4':'size4','6':'size6','8':'size8','10':'size10','12':'size12','14':'size14'})[target];
-      return key ? (toNum(r[key])>0) : true;
-    }
+    // Render with filters
+    const sizeSel = document.getElementById('size');
+    const catSel  = document.getElementById('category');
+    const qInput  = document.getElementById('q');
 
     function render(){
-      const q = qInput.value.trim();
-      const s = sizeSel.value;
-      const html = items
-        .filter(r => matchesQ(r,q) && rowHasSize(r,s))
-        .map(r => cardHTML(r, toNum(r.rrp) * factorW))
+      const q  = qInput.value.trim();
+      const sz = sizeSel.value;
+      const cat= catSel.value;
+
+      const filtered = items.filter(it =>
+        matchesQ(it, q) &&
+        rowHasSize(it, sz) &&
+        (!cat || lc(it.category) === lc(cat))
+      );
+
+      const html = filtered
+        .map(it => cardHTML(it, it.rrpUnit * factorW))
         .join('');
-      document.getElementById('visible-count').textContent = html ? html.match(/class="card"/g)?.length || 0 : 0;
+
+      document.getElementById('visible-count').textContent = filtered.length;
       grid.innerHTML = html || '<div class="muted">No results.</div>';
     }
     qInput.addEventListener('input', render);
     sizeSel.addEventListener('change', render);
+    catSel.addEventListener('change', render);
     render();
 
     // Diagnostics
-    const found = k => map[k]!=null ? '✓' : '—';
-    diag.innerHTML = `Loaded <b>${path}</b> • delimiter <b>${delim==='\\t'?'TAB':delim}</b> • headers: name ${found('name')} | rrp ${found('rrp')} | qty ${found('qty')} | sizes ${['size2','size4','size6','size8','size10','size12','size14'].map(found).join('')}${map.box!=null?'':' • (no Box column found — keyword image matching only)'}`;
+    const found = v => v>=0 ? '✓' : '—';
+    const m = map;
+    document.getElementById('diag').innerHTML =
+      `Loaded <b>${path}</b> • delimiter <b>${delim==='\\t'?'TAB':delim}</b> • headers:
+       Item_Name ${found(m.item)} | Size ${found(m.size)} | Qty ${found(m.qty)} | RRP(Anchor_Price) ${found(m.rrp)} | Colour ${found(m.colour)} | Category ${found(m.category)}.`;
 
   }catch(e){
     console.error(e);
