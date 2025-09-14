@@ -10,7 +10,7 @@
   :root{ --purple1:#667eea; --purple2:#764ba2; --bg:#f5f5fb; --card:#fff; --ink:#1d1b2e; --muted:#6d5e85; --border:#e8e6f3; --chip:#efe9ff; --tint:#f6f1ff; --link:#1a5cff; }
   *{box-sizing:border-box}
   body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);}
-  .hero{background:linear-gradient(135deg,var(--purple1),var(--purple2));color:#fff;text-align:center;padding:42px 16px 36px;box-shadow:inset 0 -1px 0 rgba(255,255,255,.25)}
+  .hero{background:linear-gradient(135deg,var(--purple1),var(--purple2));color:#fff;text-align:center;padding:42px 16px 36px}
   .hero h1{font-size:44px;line-height:1.1;margin:0 0 8px;font-weight:800}
   .hero p{margin:0 0 16px;opacity:.95;font-size:18px}
   .pill{display:inline-block;padding:10px 18px;border-radius:999px;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(8px);font-weight:700}
@@ -26,11 +26,13 @@
   .proof-card h4{margin:0 0 6px;color:#2a1a47}
   .proof-card a{color:var(--link);text-decoration:none;font-weight:600}
   .proof-card p{margin:6px 0 0;color:#6d5e85;font-size:14px}
-  .filters{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin:18px 0;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+
+  .filters{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin:18px 0}
   .row{display:flex;gap:10px;flex-wrap:wrap}
   .filters label{display:block;font-size:13px;color:#4b4267;margin-bottom:4px}
   .filters input,.filters select{padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:#fff;min-width:200px}
   .filters .meta{margin-top:10px;color:var(--muted);font-size:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:28px}
   .card{background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.06)}
   .imgbox{height:180px;background:#fff;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:center;overflow:hidden}
@@ -39,13 +41,12 @@
   .body{padding:12px}
   .title{font-weight:800;color:#2a1a47;margin:0 0 6px}
   .muted{color:#6d5e85;font-size:13px}
-  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
-  .chip{background:var(--chip);color:#2a1a47;border:1px solid #e5d9ff;border-radius:999px;padding:2px 8px;font-size:12px}
   .sizes{margin-top:4px}
   .sizes span{background:#f4f0ff;border:1px solid #dccfff;border-radius:6px;padding:2px 6px;margin:2px;display:inline-block;font-size:12px}
   .price-line{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px}
   .price-line .tag{background:#f4f0ff;border:1px solid #dccfff;border-radius:6px;padding:2px 8px;font-size:12px}
-  .footer{background:#1f1640;color:#fff;margin-top:10px}
+
+  .footer{background:#1f1640;color:#fff}
   .footer-inner{max-width:1200px;margin:0 auto;padding:22px 16px;display:flex;flex-wrap:wrap;gap:22px;justify-content:space-between}
   .footer h4{margin:0 0 8px}
   .footer a{color:#fff;text-decoration:none}
@@ -78,23 +79,17 @@
       <div class="proof">
         <div class="proof-card">
           <h4>Lane Crawford Luxury Retailer</h4>
-          <a href="https://www.lanecrawford.com/brand/700351/marleen-molenaar-sleepwear/women" target="_blank" rel="noopener">
-            View Brand Page
-          </a>
+          <a href="https://www.lanecrawford.com/brand/700351/marleen-molenaar-sleepwear/women" target="_blank" rel="noopener">View Brand Page</a>
           <p>Hong Kong’s premier luxury department store — equivalent to Harrods. Establishes brand positioning.</p>
         </div>
         <div class="proof-card">
           <h4>Retail Pricing Evidence</h4>
-          <a href="https://retykle.com/products/marleen-molenaar-pyjama-set-2-8y" target="_blank" rel="noopener">
-            Retykle Pricing Proof
-          </a>
+          <a href="https://retykle.com/products/marleen-molenaar-pyjama-set-2-8y" target="_blank" rel="noopener">Retykle Pricing Proof</a>
           <p>Shows premium retail/resale pricing for individual pieces.</p>
         </div>
         <div class="proof-card">
           <h4>Media Coverage</h4>
-          <a href="https://www.scmp.com/article/533820/eastern-premise" target="_blank" rel="noopener">
-            South China Morning Post
-          </a>
+          <a href="https://www.scmp.com/article/533820/eastern-premise" target="_blank" rel="noopener">South China Morning Post</a>
           <p>2006 profile: “running a children’s clothing design company under her own name.”</p>
         </div>
       </div>
@@ -151,101 +146,105 @@
   </footer>
 
 <script>
-/* ================= CONFIG (edit these as needed) ================= */
-const WHOLESALE_TOTAL_TARGET_AUD = 20000;   // e.g., 18000–22000
-const QUICKSALE_TOTAL_TARGET_AUD  = 12000;  // shown as collection total only
-const CSV_CANDIDATES = [
-  'detailed_inventory.csv',
-  'detailed_inventory (1).csv',
-  'Detailed_Inventory.csv'
-];
+/* ================= CONFIG ================= */
+const WHOLESALE_TOTAL_TARGET_AUD = 20000;  // adjust if needed
+const QUICKSALE_TOTAL_TARGET_AUD  = 12000;
+const CSV_CANDIDATES = ['detailed_inventory.csv','detailed_inventory (1).csv','Detailed_Inventory.csv'];
 
 /* ================= Helpers ================= */
-const norm=s=> (s||'').toString().trim();
-const lc  =s=> norm(s).toLowerCase();
+const norm = s => (s||'').toString().trim();
+const lc   = s => norm(s).toLowerCase();
 const toNum = x => { if(x==null) return 0; const s=String(x).replace(/[^\d.,-]/g,'').replace(/,/g,''); return parseFloat(s)||0; };
 const aud = v => isFinite(v) ? `\$${v.toFixed(2)} AUD` : '—';
 
-/* ================= CSV loader with delimiter auto-detect ================= */
+/* ================= CSV loader (delimiter + schema auto-detect) ================= */
 function detectDelimiter(text){
-  const first = text.split(/\r?\n/).find(l=>l.includes(',')||l.includes(';')||l.includes('\t')) || '';
-  const counts = { ',':(first.match(/,/g)||[]).length, ';':(first.match(/;/g)||[]).length, '\t':(first.match(/\t/g)||[]).length };
+  const first = text.split(/\r?\n/).find(l=>/[,\t;]/.test(l)) || '';
+  const counts = {',':(first.match(/,/g)||[]).length,'\t':(first.match(/\t/g)||[]).length,';':(first.match(/;/g)||[]).length};
   return Object.entries(counts).sort((a,b)=>b[1]-a[1])[0][0] || ',';
 }
 function splitRow(line, delim){
   const re = new RegExp(`("([^"]|"")*"|[^${delim}]+)`, 'g');
   return (line.match(re)||[]).map(s=>s.replace(/^"|"$/g,'').replace(/""/g,'"').trim());
 }
-function parseCSVAuto(text){
+function parseCSV(text){
   const delim = detectDelimiter(text);
   const lines = text.replace(/\r/g,'').split('\n').filter(l=>l.trim());
-  const header = splitRow(lines.shift(), delim);
-  const colsLC = header.map(h=>h.toLowerCase());
-  const idx = name => colsLC.indexOf(name);
+  const header = splitRow(lines.shift(),delim);
 
+  const hdrLC = header.map(h=>lc(h));
+  const find = (...alts)=> alts.map(lc).map(a=>hdrLC.indexOf(a)).find(i=>i>=0);
+
+  // Accept many header aliases:
   const map = {
-    sku: idx('sku'),
-    brand: idx('brand'),
-    item: idx('item_name'),
-    desc: idx('description'),
-    category: idx('category'),
-    subcat: idx('subcategory'),
-    size: idx('size'),
-    colour: idx('colour')!==-1?idx('colour'):idx('color'),
-    gender: idx('gender'),
-    condition: idx('condition'),
-    qty: idx('qty'),
-    rrp: idx('anchor_price'),
-    discounted: idx('discounted_price'),
-    channel: idx('channel')
+    sku: find('sku'),
+    brand: find('brand'),
+    item: find('item_name','name','product','new product names'),
+    desc: find('description','desc'),
+    category: find('category'),
+    subcat: find('subcategory','sub category','sub-category'),
+    size: find('size'), // present in long format
+    colour: find('colour','color'),
+    qty: find('qty','quantity','total qty','total quantity'),
+    rrp: find('anchor_price','rrp','retail','retail price'),
+    discounted: find('discounted_price','wholesale','wholesale price'),
+    // wide-format size columns (2..14)
+    s2:   find('size_2','2','size2','size 2'),
+    s4:   find('size_4','4','size4','size 4'),
+    s6:   find('size_6','6','size6','size 6'),
+    s8:   find('size_8','8','size8','size 8'),
+    s10:  find('size_10','10','size10','size 10'),
+    s12:  find('size_12','12','size12','size 12'),
+    s14:  find('size_14','14','size14','size 14'),
   };
 
   const rows = lines.map(line=>{
-    const cells = splitRow(line, delim);
-    const get = i => (i>=0 ? (cells[i]||'') : '');
+    const c = splitRow(line,delim);
+    const get = i => (i>=0? c[i] : '');
     return {
-      SKU: get(map.sku),
-      Brand: get(map.brand),
-      Item_Name: get(map.item),
-      Description: get(map.desc),
-      Category: get(map.category),
-      Subcategory: get(map.subcat),
-      Size: get(map.size),
-      Colour: get(map.colour),
-      Gender: get(map.gender),
-      Condition: get(map.condition),
-      Qty: get(map.qty),
-      Anchor_Price: get(map.rrp),
-      Discounted_Price: get(map.discounted),
-      Channel: get(map.channel),
-      _delim: delim,
-      _map: map
+      SKU: get(map.sku), Brand:get(map.brand),
+      Item_Name:get(map.item), Description:get(map.desc),
+      Category:get(map.category), Subcategory:get(map.subcat),
+      Size:get(map.size), Colour:get(map.colour),
+      Qty:get(map.qty), Anchor_Price:get(map.rrp),
+      Discounted_Price:get(map.discounted),
+      // wide sizes
+      SZ2:get(map.s2), SZ4:get(map.s4), SZ6:get(map.s6), SZ8:get(map.s8),
+      SZ10:get(map.s10), SZ12:get(map.s12), SZ14:get(map.s14)
     };
   });
-  return { rows, header, map, delim };
+
+  return {rows,header,map,delim};
 }
 
-async function loadCSV(){
-  let lastErr;
-  for (const path of CSV_CANDIDATES){
-    try{
-      const res = await fetch(path, {cache:'no-store'});
-      if(!res.ok) throw new Error(`HTTP ${res.status}`);
-      const txt = await res.text();
-      const parsed = parseCSVAuto(txt);
-      return {...parsed, path};
-    }catch(e){ lastErr = e; }
-  }
-  throw lastErr || new Error('CSV not found');
-}
-
-/* ================= Grouping & Aggregation ================= */
-/* Key per product card: Item_Name + Colour + Subcategory */
-function keyOf(r){ return [r.Item_Name, r.Colour, r.Subcategory].map(v=>lc(v||'')).join(' • '); }
-
-function aggregateItems(rows){
-  const groups = new Map();
+/* ================= Schema normalisation ================= */
+/* Convert either schema (long or wide) into a unified long array with Size + Qty per row */
+function normaliseToLong(rows){
+  const out=[];
   for(const r of rows){
+    const hasWide = [r.SZ2,r.SZ4,r.SZ6,r.SZ8,r.SZ10,r.SZ12,r.SZ14].some(v=>String(v||'').trim()!=='');
+    if(hasWide){
+      const pairs = [['2',r.SZ2],['4',r.SZ4],['6',r.SZ6],['8',r.SZ8],['10',r.SZ10],['12',r.SZ12],['14',r.SZ14]];
+      for(const [sz,val] of pairs){
+        const q = toNum(val);
+        if(q>0){
+          out.push({...r, Size:sz, Qty:q});
+        }
+      }
+    }else{
+      // already long
+      out.push({...r, Qty:toNum(r.Qty)});
+    }
+  }
+  return out;
+}
+
+/* Group by Item_Name + Colour + Subcategory */
+function keyOf(r){ return [r.Item_Name||'', r.Colour||'', r.Subcategory||''].map(v=>lc(v)).join(' • '); }
+
+function aggregateItems(longRows){
+  const groups = new Map();
+  for(const r of longRows){
     const name = norm(r.Item_Name);
     if(!name) continue;
     const qty = toNum(r.Qty);
@@ -253,158 +252,105 @@ function aggregateItems(rows){
     const key = keyOf(r);
 
     if(!groups.has(key)){
-      groups.set(key, {
-        Item_Name: name,
-        Colour: norm(r.Colour),
-        Subcategory: norm(r.Subcategory),
-        Description: norm(r.Description),
-        Category: norm(r.Category),
-        sizes: {},         // { '2': count, '4': count, ... or text sizes too }
-        totalQty: 0,
-        rrps: {},          // frequency map of unit RRP to pick the "mode"
-        rrpsSeen: [],      // list to compute fallback average
+      groups.set(key,{
+        Item_Name:name, Colour:norm(r.Colour), Subcategory:norm(r.Subcategory),
+        Description:norm(r.Description), Category:norm(r.Category),
+        sizes:{}, qtyTotal:0, rrps:{}, rrpsSeen:[]
       });
     }
     const g = groups.get(key);
-
-    // size -> qty
     const sz = norm(r.Size);
-    if(sz){ g.sizes[sz] = (g.sizes[sz]||0) + qty; }
-
-    // totals
-    g.totalQty += qty;
-
-    // rrp mode calc
-    if(rrp>0){
-      g.rrps[rrp] = (g.rrps[rrp]||0)+qty;
-      g.rrpsSeen.push(rrp);
-    }
-
-    // keep a better description if current is empty and this row has more info
-    if(!g.Description && r.Description) g.Description = norm(r.Description);
+    if(sz){ g.sizes[sz]=(g.sizes[sz]||0)+qty; }
+    g.qtyTotal += qty;
+    if(rrp>0){ g.rrps[rrp]=(g.rrps[rrp]||0)+qty; g.rrpsSeen.push(rrp); }
   }
 
-  // finalize array
-  const result = [];
+  const result=[];
   for(const g of groups.values()){
-    // pick RRP mode (price with highest count); fallback to average
-    let unitRRP = 0, bestCount = -1;
-    for(const [priceStr,count] of Object.entries(g.rrps)){
-      const price = Number(priceStr);
-      if(count>bestCount){ bestCount=count; unitRRP=price; }
-    }
-    if(unitRRP<=0 && g.rrpsSeen.length){
-      unitRRP = g.rrpsSeen.reduce((a,b)=>a+b,0)/g.rrpsSeen.length;
-    }
+    // mode RRP
+    let unitRRP=0, best=-1;
+    for(const [p,c] of Object.entries(g.rrps)){ const pv=+p; if(c>best){best=c; unitRRP=pv;} }
+    if(unitRRP<=0 && g.rrpsSeen.length){ unitRRP=g.rrpsSeen.reduce((a,b)=>a+b,0)/g.rrpsSeen.length; }
     result.push({
-      name: g.Item_Name,
-      colour: g.Colour,
-      subcat: g.Subcategory,
-      desc: g.Description,
-      category: g.Category,
-      sizes: g.sizes,
-      qty: g.totalQty,
-      rrpUnit: unitRRP
+      name:g.Item_Name, colour:g.Colour, subcat:g.Subcategory, desc:g.Description, category:g.Category,
+      sizes:g.sizes, qty:g.qtyTotal, rrpUnit:unitRRP
     });
   }
   return result;
 }
 
-/* ================= Image rules (keyword-based) ================= */
+/* ============ Image rules (your mapping) ============ */
+const IMG = s=>`images/${s}`;
 const IMAGE_RULES = [
-  // 1–11 (corrected)
-  { image:"images/image1_small.jpg",  keywords:["ella","princess","gown","pink"] },
-  { image:"images/image2_small.jpg",  keywords:["cora","sleeveless","short","flower","blue"] },
-  { image:"images/image2_small.jpg",  keywords:["cora","sleeveless","short","flower","light","blue"] },
-  { image:"images/image3_small.jpg",  keywords:["cora","sleeveless","short","flower","pink"] },
-  { image:"images/image4_small.jpg",  keywords:["ava","singlet","top","pants","green","yellow"] },
-  { image:"images/image5_small.jpg",  keywords:["harper","shorts","vest","lemon"] },
-  { image:"images/image5_small.jpg",  keywords:["harper","shorts","vest","green"] },
-  { image:"images/image6_small.jpg",  keywords:["ruby","pyjama","boob","tube","short","pink"] },
-  { image:"images/image7_small.jpg",  keywords:["ella","semi","pajama","pink"] },
-  { image:"images/image8_small.jpg",  keywords:["grace","nightie","bow","off-white","organic"] },
-  { image:"images/image9_small.jpg",  keywords:["isabella","nightdress","check","blue"] },
-  { image:"images/image9_small.jpg",  keywords:["isabella","nightdress","check","pink"] },
-  { image:"images/image10_small.jpg", keywords:["mia","shirt","long","sleeve","blue"] },
-  { image:"images/image10_small.jpg", keywords:["mia","shirt","lilac"] },
-  { image:"images/image11_small.jpg", keywords:["ella","suzy","90","pink"] },
-  // 12–19
-  { image:"images/image12_small.jpg", keywords:["suzy","90","pink"] },
-  { image:"images/image13_small.jpg", keywords:["suzy","90","pink"] },
-  { image:"images/image14_small.jpg", keywords:["charlotte","suzy","90","blue"] },
-  { image:"images/image15_small.jpg", keywords:["eliana","suzy","90","sleeveless","lemon","flower"] },
-  { image:"images/image16_small.jpg", keywords:["cora","suzy","90","night","sleeveless","flower","blue"] },
-  { image:"images/image17_small.jpg", keywords:["jack","boy","paj","blue","brown"] },
-  { image:"images/image18_small.jpg", keywords:["oliver","gary","long","paj","black","check"] },
-  { image:"images/image19_small.jpg", keywords:["thomas","boy","paj","short"] },
-  { image:"images/image19_small.jpg", keywords:["noah","boy","short","stripe","gray","aqua"] },
-  { image:"images/image19_small.jpg", keywords:["turquoise","stripe"] },
-  { image:"images/image19_small.jpg", keywords:["green","top","navy","short"] },
-  { image:"images/image19_small.jpg", keywords:["gray","top","gray","pants"] },
-  { image:"images/image19_small.jpg", keywords:["gray","top","green","pants"] },
-  { image:"images/image19_small.jpg", keywords:["thomas","stripe","white","blue"] },
-  // 20–25
-  { image:"images/image20_small.jpg", keywords:["maisie","baby","top","pants","pink"] },
-  { image:"images/image21_small.jpg", keywords:["olivia","girls","long","paj","kindie","pink"] },
-  { image:"images/image21_small.jpg", keywords:["olivia","girls","long","paj","kindie","blue"] },
-  { image:"images/image22_small.jpg", keywords:["aria","ladies","long","paj","kindie","pink"] },
-  { image:"images/image22_small.jpg", keywords:["aria","ladies","long","paj","kindie","light","blue"] },
-  { image:"images/image23_small.jpg", keywords:["layla","ladies","short","paj","sleeveless","top","floral"] },
-  { image:"images/image24_small.jpg", keywords:["layla","ladies","short","nightie","sleeveless","floral","yellow"] },
-  { image:"images/image25_small.jpg", keywords:["sophia","women","shirt","off","white"] },
-  { image:"images/image25_small.jpg", keywords:["sophia","women","shirt","blue"] },
-  // 26–33
-  { image:"images/image26_small.jpg", keywords:["summer","dressing","gown","lilac"] },
-  { image:"images/image26_small.jpg", keywords:["summer","dressing","gown","lemon"] },
-  { image:"images/image26_small.jpg", keywords:["summer","blue"] },
-  { image:"images/image26_small.jpg", keywords:["summer","lilac"] },
-  { image:"images/image26_small.jpg", keywords:["summer","lemon"] },
-  { image:"images/image27_small.jpg", keywords:["maya","gown","leopard"] },
-  { image:"images/image28_small.jpg", keywords:["josh","gown","check"] },
-  { image:"images/image29_small.jpg", keywords:["jack","gown","brown"] },
-  { image:"images/image30_small.jpg", keywords:["fireman","raincoat","yellow","no","hat"] },
-  { image:"images/image31_small.jpg", keywords:["candy","raincoat","hat","pink"] },
-  { image:"images/image32_small.jpg", keywords:["candy","raincoat","pink","no","hat"] },
-  { image:"images/image33_small.jpg", keywords:["fireman","raincoat","yellow","hat"] }
+  { image:IMG('image1_small.jpg'),  keywords:['ella','princess','gown','pink'] },
+  { image:IMG('image2_small.jpg'),  keywords:['cora','sleeveless','short','flower','blue'] },
+  { image:IMG('image2_small.jpg'),  keywords:['cora','sleeveless','short','flower','light','blue'] },
+  { image:IMG('image3_small.jpg'),  keywords:['cora','sleeveless','short','flower','pink'] },
+  { image:IMG('image4_small.jpg'),  keywords:['ava','singlet','top','pants','green','yellow'] },
+  { image:IMG('image5_small.jpg'),  keywords:['harper','shorts','vest','lemon'] },
+  { image:IMG('image5_small.jpg'),  keywords:['harper','shorts','vest','green'] },
+  { image:IMG('image6_small.jpg'),  keywords:['ruby','pyjama','boob','tube','short','pink'] },
+  { image:IMG('image7_small.jpg'),  keywords:['ella','semi','pajama','pink'] },
+  { image:IMG('image8_small.jpg'),  keywords:['grace','nightie','bow','off-white','organic'] },
+  { image:IMG('image9_small.jpg'),  keywords:['isabella','nightdress','check','blue'] },
+  { image:IMG('image9_small.jpg'),  keywords:['isabella','nightdress','check','pink'] },
+  { image:IMG('image10_small.jpg'), keywords:['mia','shirt','long','sleeve','blue'] },
+  { image:IMG('image10_small.jpg'), keywords:['mia','shirt','lilac'] },
+  { image:IMG('image11_small.jpg'), keywords:['ella','suzy','90','pink'] },
+  { image:IMG('image12_small.jpg'), keywords:['suzy','90','pink'] },
+  { image:IMG('image13_small.jpg'), keywords:['suzy','90','pink'] },
+  { image:IMG('image14_small.jpg'), keywords:['charlotte','suzy','90','blue'] },
+  { image:IMG('image15_small.jpg'), keywords:['eliana','suzy','90','sleeveless','lemon','flower'] },
+  { image:IMG('image16_small.jpg'), keywords:['cora','suzy','90','night','sleeveless','flower','blue'] },
+  { image:IMG('image17_small.jpg'), keywords:['jack','boy','paj','blue','brown'] },
+  { image:IMG('image18_small.jpg'), keywords:['oliver','gary','long','paj','black','check'] },
+  { image:IMG('image19_small.jpg'), keywords:['thomas','boy','paj','short'] },
+  { image:IMG('image19_small.jpg'), keywords:['noah','short','stripe'] },
+  { image:IMG('image20_small.jpg'), keywords:['maisie','baby','top','pants','pink'] },
+  { image:IMG('image21_small.jpg'), keywords:['olivia','girls','long','paj'] },
+  { image:IMG('image22_small.jpg'), keywords:['aria','ladies','long','paj'] },
+  { image:IMG('image23_small.jpg'), keywords:['layla','ladies','short','paj','sleeveless'] },
+  { image:IMG('image24_small.jpg'), keywords:['layla','short','nightie','sleeveless','floral','yellow'] },
+  { image:IMG('image25_small.jpg'), keywords:['sophia','shirt'] },
+  { image:IMG('image26_small.jpg'), keywords:['summer','dressing','gown'] },
+  { image:IMG('image27_small.jpg'), keywords:['maya','gown','leopard'] },
+  { image:IMG('image28_small.jpg'), keywords:['josh','gown','check'] },
+  { image:IMG('image29_small.jpg'), keywords:['jack','gown','brown'] },
+  { image:IMG('image30_small.jpg'), keywords:['fireman','raincoat','yellow','no','hat'] },
+  { image:IMG('image31_small.jpg'), keywords:['candy','raincoat','hat','pink'] },
+  { image:IMG('image32_small.jpg'), keywords:['candy','raincoat','pink','no','hat'] },
+  { image:IMG('image33_small.jpg'), keywords:['fireman','raincoat','yellow','hat'] },
 ];
 
 function resolveImage(name, desc, colour){
   const text = [lc(name), lc(desc), lc(colour)].join(' ');
   for(const r of IMAGE_RULES){
-    const all = (r.keywords||[]).every(k => text.includes(k));
-    if(all) return r.image;
+    if(r.keywords.every(k=>text.includes(k))) return r.image;
   }
-  // loose fallback
-  if(text.includes('ella') && text.includes('princess')) return 'images/image1_small.jpg';
   return 'images/placeholder.webp';
 }
 
 /* ================= UI helpers ================= */
 function sizesToChips(sizes){
-  // sizes is an object: { "2": 3, "4": 1, ... or "S": 5, "M": 2 }
   const entries = Object.entries(sizes)
     .filter(([,q])=> toNum(q)>0)
     .sort((a,b)=>{
-      const na = a[0], nb = b[0];
-      const ia = parseFloat(na), ib = parseFloat(nb);
-      // numeric sizes first in ascending order, then alpha
-      if(!isNaN(ia) && !isNaN(ib)) return ia-ib;
-      if(!isNaN(ia)) return -1;
-      if(!isNaN(ib)) return 1;
-      return na.localeCompare(nb);
+      const ia=parseFloat(a[0]), ib=parseFloat(b[0]);
+      if(!isNaN(ia)&&!isNaN(ib)) return ia-ib;
+      if(!isNaN(ia)) return -1; if(!isNaN(ib)) return 1;
+      return a[0].localeCompare(b[0]);
     });
-  return entries.map(([sz,q])=> `<span>${sz} (${q})</span>`).join('');
+  return entries.map(([s,q])=>`<span>${s} (${q})</span>`).join('');
 }
-
 function cardHTML(item, unitWholesale){
-  const img = resolveImage(item.name, item.desc, item.colour);
+  const img = resolveImage(item.name,item.desc,item.colour);
   return `
     <div class="card">
       <div class="imgbox"><img src="${img}" alt="${item.name}" loading="lazy"
         onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'placeholder',innerHTML:'Photo<br>Coming Soon'}))"></div>
       <div class="body">
         <div class="title">${item.name}</div>
-        <div class="muted">${[item.desc, item.colour].filter(Boolean).join(' • ')}</div>
+        <div class="muted">${[item.desc,item.colour].filter(Boolean).join(' • ')}</div>
         <div class="sizes"><strong>Sizes:</strong> ${sizesToChips(item.sizes) || '—'}</div>
         <div class="muted">Qty: ${item.qty || '—'}</div>
         <div class="price-line">
@@ -415,80 +361,82 @@ function cardHTML(item, unitWholesale){
     </div>`;
 }
 
-function matchesQ(item,q){
-  if(!q) return true;
-  const hay = [item.name,item.desc,item.colour,item.category,item.subcat].join(' ').toLowerCase();
-  return hay.includes(q.toLowerCase());
-}
-function rowHasSize(item, target){
-  if(!target) return true;
-  return toNum(item.sizes[target]) > 0;
-}
-
 /* ================= MAIN ================= */
 (async function(){
   const diag = document.getElementById('diag');
   const grid = document.getElementById('grid');
 
   try{
-    const {rows, header, map, delim, path} = await loadCSV();
+    // Fetch CSV (try candidates)
+    let csvText=null, csvPath=null;
+    for(const p of CSV_CANDIDATES){
+      const r = await fetch(p,{cache:'no-store'});
+      if(r.ok){ csvText = await r.text(); csvPath=p; break; }
+    }
+    if(!csvText) throw new Error('CSV not found at repo root (expected detailed_inventory.csv)');
 
-    // Filter out empty names; ensure numeric Qty & RRP at row level for totals
-    const validRows = rows.filter(r => norm(r.Item_Name));
-    const totalPiecesFromRows = validRows.reduce((s,r)=> s + toNum(r.Qty), 0);
-    const totalRRPFromRows    = validRows.reduce((s,r)=> s + (toNum(r.Anchor_Price) * toNum(r.Qty)), 0);
+    // Parse and normalise
+    const parsed = parseCSV(csvText);
+    const longRows = normaliseToLong(parsed.rows);
 
-    // Aggregate per item card
-    const items = aggregateItems(validRows); // [{name, colour, subcat, desc, category, sizes:{}, qty, rrpUnit}, ...]
+    // Totals
+    const totalPieces = longRows.reduce((s,r)=> s + toNum(r.Qty), 0);
+    const totalRRP    = longRows.reduce((s,r)=> s + (toNum(r.Anchor_Price)*toNum(r.Qty)), 0);
 
-    // Compute wholesale factor to hit the page target
-    // Use row-level total RRP so we weight correctly even if sizes carry different RRPs
-    const factorW = totalRRPFromRows>0 ? (WHOLESALE_TOTAL_TARGET_AUD / totalRRPFromRows) : 0;
-
-    // Header totals
+    // Group into product cards
+    const items = aggregateItems(longRows);
     const totalSKUs = items.length;
+
+    // Set header/summary
     document.getElementById('hero-pill').textContent =
-      `${(totalPiecesFromRows||0).toLocaleString()} pieces • ${totalSKUs} SKUs`;
-    document.getElementById('sum-pieces').textContent   = `${(totalPiecesFromRows||0).toLocaleString()} pieces`;
+      `${(totalPieces||0).toLocaleString()} pieces • ${totalSKUs} SKUs`;
+    document.getElementById('sum-pieces').textContent   = `${(totalPieces||0).toLocaleString()} pieces`;
     document.getElementById('sum-skus').textContent     = `${totalSKUs} SKUs`;
-    document.getElementById('sum-rrp').textContent      = `Total RRP: ${aud(totalRRPFromRows)}`;
+    document.getElementById('sum-rrp').textContent      = `Total RRP: ${aud(totalRRP)}`;
     document.getElementById('sum-wholesale').textContent= `Wholesale (target): ${aud(WHOLESALE_TOTAL_TARGET_AUD)}`;
     document.getElementById('sum-quick').textContent    = `Quick Sale (target): ${aud(QUICKSALE_TOTAL_TARGET_AUD)}`;
 
-    // Size tiles (across all rows)
+    // Size tiles (from longRows)
     (function buildSizeTiles(){
-      const totals = {};
-      for(const r of validRows){
-        const s = norm(r.Size);
-        const q = toNum(r.Qty);
+      const totals={};
+      for(const r of longRows){
+        const s = norm(r.Size); const q = toNum(r.Qty);
         if(!s || q<=0) continue;
-        totals[s] = (totals[s]||0) + q;
+        totals[s]=(totals[s]||0)+q;
       }
       const ordered = Object.entries(totals).sort((a,b)=>{
-        const ia = parseFloat(a[0]), ib = parseFloat(b[0]);
-        if(!isNaN(ia) && !isNaN(ib)) return ia-ib;
-        if(!isNaN(ia)) return -1;
-        if(!isNaN(ib)) return 1;
+        const ia=parseFloat(a[0]), ib=parseFloat(b[0]);
+        if(!isNaN(ia)&&!isNaN(ib)) return ia-ib;
+        if(!isNaN(ia)) return -1; if(!isNaN(ib)) return 1;
         return a[0].localeCompare(b[0]);
       });
       document.getElementById('size-tiles').innerHTML = ordered.map(([k,v])=>`
-        <div class="size-tile">
-          <b>${k}</b><span>${(v||0).toLocaleString()} pieces</span>
-        </div>
+        <div class="size-tile"><b>Size ${k}</b><span>${(v||0).toLocaleString()} pieces</span></div>
       `).join('');
+      // populate size filter
+      document.getElementById('size').innerHTML =
+        '<option value="">All Sizes</option>' + ordered.map(([k])=>`<option>${k}</option>`).join('');
     })();
 
-    // Populate filters
+    // Category filter options
     const uniq = arr => [...new Set(arr.filter(Boolean))].sort((a,b)=>a.localeCompare(b));
-    document.getElementById('size').innerHTML =
-      '<option value="">All Sizes</option>' + uniq(validRows.map(r=>norm(r.Size))).map(s=>`<option>${s}</option>`).join('');
     document.getElementById('category').innerHTML =
-      '<option value="">All Categories</option>' + uniq(validRows.map(r=>norm(r.Category))).map(s=>`<option>${s}</option>`).join('');
+      '<option value="">All Categories</option>' + uniq(longRows.map(r=>norm(r.Category))).map(s=>`<option>${s}</option>`).join('');
+
+    // Compute wholesale unit price factor to hit total target
+    const factorW = totalRRP>0 ? (WHOLESALE_TOTAL_TARGET_AUD / totalRRP) : 0;
 
     // Render with filters
     const sizeSel = document.getElementById('size');
     const catSel  = document.getElementById('category');
     const qInput  = document.getElementById('q');
+
+    function matchesQ(item,q){
+      if(!q) return true;
+      const hay = [item.name,item.desc,item.colour,item.category,item.subcat].join(' ').toLowerCase();
+      return hay.includes(q.toLowerCase());
+    }
+    function rowHasSize(item, target){ if(!target) return true; return toNum(item.sizes[target])>0; }
 
     function render(){
       const q  = qInput.value.trim();
@@ -496,15 +444,12 @@ function rowHasSize(item, target){
       const cat= catSel.value;
 
       const filtered = items.filter(it =>
-        matchesQ(it, q) &&
-        rowHasSize(it, sz) &&
-        (!cat || lc(it.category) === lc(cat))
+        matchesQ(it,q) &&
+        rowHasSize(it,sz) &&
+        (!cat || lc(it.category)===lc(cat))
       );
 
-      const html = filtered
-        .map(it => cardHTML(it, it.rrpUnit * factorW))
-        .join('');
-
+      const html = filtered.map(it => cardHTML(it, it.rrpUnit * factorW)).join('');
       document.getElementById('visible-count').textContent = filtered.length;
       grid.innerHTML = html || '<div class="muted">No results.</div>';
     }
@@ -513,18 +458,19 @@ function rowHasSize(item, target){
     catSel.addEventListener('change', render);
     render();
 
-    // Diagnostics
-    const found = v => v>=0 ? '✓' : '—';
-    const m = map;
+    // Diagnostics so you can see what was detected
+    const m = parsed.map, h = parsed.header;
+    function ok(i){return (i>=0?'✓':'—')}
     document.getElementById('diag').innerHTML =
-      `Loaded <b>${path}</b> • delimiter <b>${delim==='\\t'?'TAB':delim}</b> • headers:
-       Item_Name ${found(m.item)} | Size ${found(m.size)} | Qty ${found(m.qty)} | RRP(Anchor_Price) ${found(m.rrp)} | Colour ${found(m.colour)} | Category ${found(m.category)}.`;
+      `Loaded <b>${csvPath}</b> • delimiter <b>${parsed.delim==='\\t'?'TAB':parsed.delim}</b> • headers: 
+       name ${ok(m.item)} | rrp ${ok(m.rrp)} | qty ${ok(m.qty)} | size ${ok(m.size)} | 
+       wide-sizes [2:${ok(m.s2)} 4:${ok(m.s4)} 6:${ok(m.s6)} 8:${ok(m.s8)} 10:${ok(m.s10)} 12:${ok(m.s12)} 14:${ok(m.s14)}]`;
 
   }catch(e){
     console.error(e);
     document.getElementById('hero-pill').textContent = 'Could not load CSV';
     document.getElementById('grid').innerHTML = '<div class="muted">Error loading products.</div>';
-    document.getElementById('diag').innerHTML = `<span class="warn">${e.message}</span><span> — Ensure <b>detailed_inventory.csv</b> exists at repo root (or named like one of the candidates) and is a real CSV (comma/semicolon/TAB).</span>`;
+    document.getElementById('diag').innerHTML = `<span class="warn">${e.message}</span> — Ensure <b>detailed_inventory.csv</b> is at repo root and is a real CSV (not .xlsx).`;
   }
 })();
 </script>
