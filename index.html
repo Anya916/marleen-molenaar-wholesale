@@ -1,478 +1,334 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Marleen Molenaar Collection — Wholesale Catalogue</title>
-<meta name="description" content="Premium children's & ladies' sleepwear wholesale catalogue — Marleen Molenaar. All items new with tags.">
+<meta name="description" content="Premium children's & ladies' sleepwear wholesale catalogue — Marleen Molenaar (all new with tags).">
 
 <style>
-  :root{ --purple1:#667eea; --purple2:#764ba2; --bg:#f5f5fb; --card:#fff; --ink:#1d1b2e; --muted:#6d5e85; --border:#e8e6f3; --chip:#efe9ff; --tint:#f6f1ff; --link:#1a5cff; }
+  :root{ --purple1:#667eea; --purple2:#764ba2; --bg:#f6f5fb; --card:#fff; --ink:#1f1a33; --muted:#6f6486; --border:#e7e3f3; --chip:#efe9ff; }
   *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);}
-  .hero{background:linear-gradient(135deg,var(--purple1),var(--purple2));color:#fff;text-align:center;padding:42px 16px 36px}
-  .hero h1{font-size:44px;line-height:1.1;margin:0 0 8px;font-weight:800}
-  .hero p{margin:0 0 16px;opacity:.95;font-size:18px}
-  .pill{display:inline-block;padding:10px 18px;border-radius:999px;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(8px);font-weight:700}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+  .hero{background:linear-gradient(135deg,var(--purple1),var(--purple2));color:#fff;text-align:center;padding:44px 16px 36px}
+  .hero h1{margin:0 0 8px;font-size:44px;line-height:1.1;font-weight:800}
+  .hero p{margin:0 0 16px;opacity:.95}
+  .pill{display:inline-block;padding:10px 18px;border-radius:999px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);font-weight:700}
+
   .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
-  .panel{background:var(--card);border:1px solid var(--border);border-radius:14px;margin:18px auto;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-  .panel h3{margin:0 0 10px;font-size:18px;color:#2a1a47;display:flex;align-items:center;gap:8px}
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:14px;margin:18px 0;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+  .panel h3{margin:0 0 10px;color:#2a1a47}
+
   .size-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
-  .size-tile{background:var(--tint);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;box-shadow:inset 0 -1px 0 #efeaff}
+  .size-tile{background:#f4f0ff;border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
   .size-tile b{display:block;font-size:22px;color:#2a1a47}
   .size-tile span{display:block;font-size:13px;color:var(--muted);margin-top:4px}
+
   .proof{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-  .proof-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;box-shadow:inset 0 -1px 0 #efeaff}
+  .proof-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
   .proof-card h4{margin:0 0 6px;color:#2a1a47}
-  .proof-card a{color:var(--link);text-decoration:none;font-weight:600}
+  .proof-card a{color:#1a5cff;text-decoration:none;font-weight:600}
   .proof-card p{margin:6px 0 0;color:#6d5e85;font-size:14px}
 
   .filters{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin:18px 0}
   .row{display:flex;gap:10px;flex-wrap:wrap}
-  .filters label{display:block;font-size:13px;color:#4b4267;margin-bottom:4px}
   .filters input,.filters select{padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:#fff;min-width:200px}
   .filters .meta{margin-top:10px;color:var(--muted);font-size:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
 
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:28px}
   .card{background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.06)}
   .imgbox{height:180px;background:#fff;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:center;overflow:hidden}
-  .imgbox img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;background:#fff}
+  .imgbox img{max-width:100%;max-height:100%;object-fit:contain;width:auto;height:auto;background:#fff}
   .placeholder{font-size:14px;color:#999;text-align:center}
   .body{padding:12px}
   .title{font-weight:800;color:#2a1a47;margin:0 0 6px}
   .muted{color:#6d5e85;font-size:13px}
   .sizes{margin-top:4px}
   .sizes span{background:#f4f0ff;border:1px solid #dccfff;border-radius:6px;padding:2px 6px;margin:2px;display:inline-block;font-size:12px}
-  .price-line{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px}
-  .price-line .tag{background:#f4f0ff;border:1px solid #dccfff;border-radius:6px;padding:2px 8px;font-size:12px}
+  .price-line{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+  .tag{background:#f4f0ff;border:1px solid #dccfff;border-radius:6px;padding:2px 8px;font-size:12px}
 
   .footer{background:#1f1640;color:#fff}
   .footer-inner{max-width:1200px;margin:0 auto;padding:22px 16px;display:flex;flex-wrap:wrap;gap:22px;justify-content:space-between}
   .footer h4{margin:0 0 8px}
   .footer a{color:#fff;text-decoration:none}
   .fine{color:#c9c4e6;font-size:13px}
-  .warn{color:#b00020;font-weight:600}
+
+  .note{color:#8a7eb8;font-size:13px;margin-top:6px}
 </style>
 </head>
 <body>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="wrap">
-      <h1>Marleen Molenaar Collection</h1>
-      <p>Premium Children’s & Ladies’ Sleepwear — Wholesale Catalogue</p>
-      <div class="pill" id="hero-pill">Loading totals…</div>
-    </div>
-  </section>
-
+<!-- HERO -->
+<section class="hero">
   <div class="wrap">
+    <h1>Marleen Molenaar Collection</h1>
+    <p>Premium Children’s & Ladies’ Sleepwear — Wholesale Catalogue</p>
+    <div class="pill" id="hero-pill">Loading totals…</div>
+  </div>
+</section>
 
-    <!-- SIZE BREAKDOWN -->
-    <div class="panel">
-      <h3>🧵 Size Breakdown — Pieces Available</h3>
-      <div class="size-tiles" id="size-tiles"></div>
+<div class="wrap">
+
+  <!-- SIZE BREAKDOWN -->
+  <div class="panel" id="sizes-panel">
+    <h3>🧵 Size Breakdown — Pieces Available</h3>
+    <div class="size-tiles" id="size-tiles"></div>
+    <div class="note" id="size-note" style="display:none">
+      Showing total pieces only (this CSV doesn’t include per-size counts). If you later upload the per-size sheet, this section will auto-populate sizes 2–14.
     </div>
-
-    <!-- VERIFIED CREDENTIALS & PROOF LINKS -->
-    <div class="panel">
-      <h3>🏆 Verified Luxury Credentials & Proof Links</h3>
-      <div class="proof">
-        <div class="proof-card">
-          <h4>Lane Crawford Luxury Retailer</h4>
-          <a href="https://www.lanecrawford.com/brand/700351/marleen-molenaar-sleepwear/women" target="_blank" rel="noopener">View Brand Page</a>
-          <p>Hong Kong’s premier luxury department store — equivalent to Harrods. Establishes brand positioning.</p>
-        </div>
-        <div class="proof-card">
-          <h4>Retail Pricing Evidence</h4>
-          <a href="https://retykle.com/products/marleen-molenaar-pyjama-set-2-8y" target="_blank" rel="noopener">Retykle Pricing Proof</a>
-          <p>Shows premium retail/resale pricing for individual pieces.</p>
-        </div>
-        <div class="proof-card">
-          <h4>Media Coverage</h4>
-          <a href="https://www.scmp.com/article/533820/eastern-premise" target="_blank" rel="noopener">South China Morning Post</a>
-          <p>2006 profile: “running a children’s clothing design company under her own name.”</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- FILTERS -->
-    <div class="filters">
-      <div class="row">
-        <div>
-          <label for="size">Size</label>
-          <select id="size"><option value="">All Sizes</option></select>
-        </div>
-        <div>
-          <label for="category">Category</label>
-          <select id="category"><option value="">All Categories</option></select>
-        </div>
-        <div style="flex:1 1 280px">
-          <label for="q">Search</label>
-          <input id="q" placeholder="Search name, colour, description…">
-        </div>
-      </div>
-      <div class="meta">
-        <div>Showing <b id="visible-count">0</b> items</div>
-        <div id="totals-note">Totals auto-update from CSV</div>
-        <div id="diag" class="muted"></div>
-      </div>
-    </div>
-
-    <!-- PRODUCT GRID -->
-    <div class="grid" id="grid"></div>
-
   </div>
 
-  <!-- FOOTER / OWNER + SUMMARY -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div>
-        <h4>Contact</h4>
-        <p><strong>Gary Flax:</strong> <a href="tel:+61414242142">+61 414 242 142</a></p>
-        <p><strong>Location:</strong> Vaucluse, Sydney NSW</p>
-        <p><strong>Viewing:</strong> Weekdays 5pm+, Weekends anytime</p>
-        <p><strong>Brand:</strong> Marleen Molenaar</p>
-        <p class="fine">All items new with original manufacturer tags.</p>
+  <!-- PROOF LINKS -->
+  <div class="panel">
+    <h3>🏆 Verified Luxury Credentials & Proof Links</h3>
+    <div class="proof">
+      <div class="proof-card">
+        <h4>Lane Crawford Luxury Retailer</h4>
+        <a href="https://www.lanecrawford.com/brand/700351/marleen-molenaar-sleepwear/women" target="_blank" rel="noopener">View Brand Page</a>
+        <p>Hong Kong’s premier luxury department store — equivalent to Harrods. Establishes brand positioning.</p>
       </div>
-      <div>
-        <h4>Collection Summary</h4>
-        <p id="sum-pieces">— pieces</p>
-        <p id="sum-skus">— SKUs</p>
-        <p id="sum-rrp">Total RRP: — AUD</p>
-        <p><strong id="sum-wholesale">Wholesale (target): — AUD</strong></p>
-        <p><strong id="sum-quick">Quick Sale (target): — AUD</strong></p>
+      <div class="proof-card">
+        <h4>Retail Pricing Evidence</h4>
+        <a href="https://retykle.com/products/marleen-molenaar-pyjama-set-2-8y" target="_blank" rel="noopener">Retykle Pricing Proof</a>
+        <p>Shows premium retail/resale pricing for individual pieces.</p>
+      </div>
+      <div class="proof-card">
+        <h4>Media Coverage</h4>
+        <a href="https://www.scmp.com/article/533820/eastern-premise" target="_blank" rel="noopener">South China Morning Post</a>
+        <p>2006 profile: “running a children’s clothing design company under her own name.”</p>
       </div>
     </div>
-  </footer>
+  </div>
 
+  <!-- FILTERS -->
+  <div class="filters">
+    <div class="row">
+      <select id="catSel"><option value="">All Categories</option></select>
+      <input id="q" placeholder="Search name, colour, description…" />
+    </div>
+    <div class="meta">
+      <div>Showing <b id="visible-count">0</b> items</div>
+      <div class="muted" id="diag">Loaded detailed_inventory.csv • headers: SKU | Brand | Item_Name | Description | Category | Size | Colour | Qty | Anchor_Price</div>
+    </div>
+  </div>
+
+  <!-- PRODUCT GRID -->
+  <div class="grid" id="grid"></div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <h4>Contact</h4>
+      <p><strong>Gary Flax:</strong> <a href="tel:+61414242142">+61 414 242 142</a></p>
+      <p><strong>Location:</strong> Vaucluse, Sydney NSW</p>
+      <p><strong>Viewing:</strong> Weekdays 5pm+, Weekends anytime</p>
+      <p><strong>Brand:</strong> Marleen Molenaar</p>
+      <p class="fine">All items new with original manufacturer tags.</p>
+    </div>
+    <div>
+      <h4>Collection Summary</h4>
+      <p id="sum-pieces">— pieces</p>
+      <p id="sum-skus">— SKUs</p>
+      <p id="sum-rrp">Total RRP: — AUD</p>
+      <p><strong id="sum-wholesale">Wholesale (target): $20,000 AUD</strong></p>
+      <p><strong id="sum-quick">Quick Sale (target): $12,000 AUD</strong></p>
+    </div>
+  </div>
+</footer>
+
+<!-- Papa Parse -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
-/* ================= CONFIG ================= */
-const WHOLESALE_TOTAL_TARGET_AUD = 20000;  // adjust if needed
+/* ==== CONFIG (same targets as your footer card) ==== */
+const WHOLESALE_TOTAL_TARGET_AUD = 20000;
 const QUICKSALE_TOTAL_TARGET_AUD  = 12000;
-const CSV_CANDIDATES = ['detailed_inventory.csv','detailed_inventory (1).csv','Detailed_Inventory.csv'];
 
-/* ================= Helpers ================= */
-const norm = s => (s||'').toString().trim();
-const lc   = s => norm(s).toLowerCase();
-const toNum = x => { if(x==null) return 0; const s=String(x).replace(/[^\d.,-]/g,'').replace(/,/g,''); return parseFloat(s)||0; };
-const aud = v => isFinite(v) ? `\$${v.toFixed(2)} AUD` : '—';
-
-/* ================= CSV loader (delimiter + schema auto-detect) ================= */
-function detectDelimiter(text){
-  const first = text.split(/\r?\n/).find(l=>/[,\t;]/.test(l)) || '';
-  const counts = {',':(first.match(/,/g)||[]).length,'\t':(first.match(/\t/g)||[]).length,';':(first.match(/;/g)||[]).length};
-  return Object.entries(counts).sort((a,b)=>b[1]-a[1])[0][0] || ',';
-}
-function splitRow(line, delim){
-  const re = new RegExp(`("([^"]|"")*"|[^${delim}]+)`, 'g');
-  return (line.match(re)||[]).map(s=>s.replace(/^"|"$/g,'').replace(/""/g,'"').trim());
-}
-function parseCSV(text){
-  const delim = detectDelimiter(text);
-  const lines = text.replace(/\r/g,'').split('\n').filter(l=>l.trim());
-  const header = splitRow(lines.shift(),delim);
-
-  const hdrLC = header.map(h=>lc(h));
-  const find = (...alts)=> alts.map(lc).map(a=>hdrLC.indexOf(a)).find(i=>i>=0);
-
-  // Accept many header aliases:
-  const map = {
-    sku: find('sku'),
-    brand: find('brand'),
-    item: find('item_name','name','product','new product names'),
-    desc: find('description','desc'),
-    category: find('category'),
-    subcat: find('subcategory','sub category','sub-category'),
-    size: find('size'), // present in long format
-    colour: find('colour','color'),
-    qty: find('qty','quantity','total qty','total quantity'),
-    rrp: find('anchor_price','rrp','retail','retail price'),
-    discounted: find('discounted_price','wholesale','wholesale price'),
-    // wide-format size columns (2..14)
-    s2:   find('size_2','2','size2','size 2'),
-    s4:   find('size_4','4','size4','size 4'),
-    s6:   find('size_6','6','size6','size 6'),
-    s8:   find('size_8','8','size8','size 8'),
-    s10:  find('size_10','10','size10','size 10'),
-    s12:  find('size_12','12','size12','size 12'),
-    s14:  find('size_14','14','size14','size 14'),
-  };
-
-  const rows = lines.map(line=>{
-    const c = splitRow(line,delim);
-    const get = i => (i>=0? c[i] : '');
-    return {
-      SKU: get(map.sku), Brand:get(map.brand),
-      Item_Name:get(map.item), Description:get(map.desc),
-      Category:get(map.category), Subcategory:get(map.subcat),
-      Size:get(map.size), Colour:get(map.colour),
-      Qty:get(map.qty), Anchor_Price:get(map.rrp),
-      Discounted_Price:get(map.discounted),
-      // wide sizes
-      SZ2:get(map.s2), SZ4:get(map.s4), SZ6:get(map.s6), SZ8:get(map.s8),
-      SZ10:get(map.s10), SZ12:get(map.s12), SZ14:get(map.s14)
-    };
-  });
-
-  return {rows,header,map,delim};
-}
-
-/* ================= Schema normalisation ================= */
-/* Convert either schema (long or wide) into a unified long array with Size + Qty per row */
-function normaliseToLong(rows){
-  const out=[];
-  for(const r of rows){
-    const hasWide = [r.SZ2,r.SZ4,r.SZ6,r.SZ8,r.SZ10,r.SZ12,r.SZ14].some(v=>String(v||'').trim()!=='');
-    if(hasWide){
-      const pairs = [['2',r.SZ2],['4',r.SZ4],['6',r.SZ6],['8',r.SZ8],['10',r.SZ10],['12',r.SZ12],['14',r.SZ14]];
-      for(const [sz,val] of pairs){
-        const q = toNum(val);
-        if(q>0){
-          out.push({...r, Size:sz, Qty:q});
-        }
-      }
-    }else{
-      // already long
-      out.push({...r, Qty:toNum(r.Qty)});
-    }
-  }
-  return out;
-}
-
-/* Group by Item_Name + Colour + Subcategory */
-function keyOf(r){ return [r.Item_Name||'', r.Colour||'', r.Subcategory||''].map(v=>lc(v)).join(' • '); }
-
-function aggregateItems(longRows){
-  const groups = new Map();
-  for(const r of longRows){
-    const name = norm(r.Item_Name);
-    if(!name) continue;
-    const qty = toNum(r.Qty);
-    const rrp = toNum(r.Anchor_Price);
-    const key = keyOf(r);
-
-    if(!groups.has(key)){
-      groups.set(key,{
-        Item_Name:name, Colour:norm(r.Colour), Subcategory:norm(r.Subcategory),
-        Description:norm(r.Description), Category:norm(r.Category),
-        sizes:{}, qtyTotal:0, rrps:{}, rrpsSeen:[]
-      });
-    }
-    const g = groups.get(key);
-    const sz = norm(r.Size);
-    if(sz){ g.sizes[sz]=(g.sizes[sz]||0)+qty; }
-    g.qtyTotal += qty;
-    if(rrp>0){ g.rrps[rrp]=(g.rrps[rrp]||0)+qty; g.rrpsSeen.push(rrp); }
-  }
-
-  const result=[];
-  for(const g of groups.values()){
-    // mode RRP
-    let unitRRP=0, best=-1;
-    for(const [p,c] of Object.entries(g.rrps)){ const pv=+p; if(c>best){best=c; unitRRP=pv;} }
-    if(unitRRP<=0 && g.rrpsSeen.length){ unitRRP=g.rrpsSeen.reduce((a,b)=>a+b,0)/g.rrpsSeen.length; }
-    result.push({
-      name:g.Item_Name, colour:g.Colour, subcat:g.Subcategory, desc:g.Description, category:g.Category,
-      sizes:g.sizes, qty:g.qtyTotal, rrpUnit:unitRRP
-    });
-  }
-  return result;
-}
-
-/* ============ Image rules (your mapping) ============ */
-const IMG = s=>`images/${s}`;
+/* ==== IMAGE MAPPING (from your notes image1…image33) ==== */
+const IMG = name => `images/${name}`;
 const IMAGE_RULES = [
-  { image:IMG('image1_small.jpg'),  keywords:['ella','princess','gown','pink'] },
-  { image:IMG('image2_small.jpg'),  keywords:['cora','sleeveless','short','flower','blue'] },
-  { image:IMG('image2_small.jpg'),  keywords:['cora','sleeveless','short','flower','light','blue'] },
-  { image:IMG('image3_small.jpg'),  keywords:['cora','sleeveless','short','flower','pink'] },
-  { image:IMG('image4_small.jpg'),  keywords:['ava','singlet','top','pants','green','yellow'] },
-  { image:IMG('image5_small.jpg'),  keywords:['harper','shorts','vest','lemon'] },
-  { image:IMG('image5_small.jpg'),  keywords:['harper','shorts','vest','green'] },
-  { image:IMG('image6_small.jpg'),  keywords:['ruby','pyjama','boob','tube','short','pink'] },
-  { image:IMG('image7_small.jpg'),  keywords:['ella','semi','pajama','pink'] },
-  { image:IMG('image8_small.jpg'),  keywords:['grace','nightie','bow','off-white','organic'] },
-  { image:IMG('image9_small.jpg'),  keywords:['isabella','nightdress','check','blue'] },
-  { image:IMG('image9_small.jpg'),  keywords:['isabella','nightdress','check','pink'] },
-  { image:IMG('image10_small.jpg'), keywords:['mia','shirt','long','sleeve','blue'] },
-  { image:IMG('image10_small.jpg'), keywords:['mia','shirt','lilac'] },
-  { image:IMG('image11_small.jpg'), keywords:['ella','suzy','90','pink'] },
-  { image:IMG('image12_small.jpg'), keywords:['suzy','90','pink'] },
-  { image:IMG('image13_small.jpg'), keywords:['suzy','90','pink'] },
-  { image:IMG('image14_small.jpg'), keywords:['charlotte','suzy','90','blue'] },
-  { image:IMG('image15_small.jpg'), keywords:['eliana','suzy','90','sleeveless','lemon','flower'] },
-  { image:IMG('image16_small.jpg'), keywords:['cora','suzy','90','night','sleeveless','flower','blue'] },
-  { image:IMG('image17_small.jpg'), keywords:['jack','boy','paj','blue','brown'] },
-  { image:IMG('image18_small.jpg'), keywords:['oliver','gary','long','paj','black','check'] },
-  { image:IMG('image19_small.jpg'), keywords:['thomas','boy','paj','short'] },
-  { image:IMG('image19_small.jpg'), keywords:['noah','short','stripe'] },
-  { image:IMG('image20_small.jpg'), keywords:['maisie','baby','top','pants','pink'] },
-  { image:IMG('image21_small.jpg'), keywords:['olivia','girls','long','paj'] },
-  { image:IMG('image22_small.jpg'), keywords:['aria','ladies','long','paj'] },
-  { image:IMG('image23_small.jpg'), keywords:['layla','ladies','short','paj','sleeveless'] },
-  { image:IMG('image24_small.jpg'), keywords:['layla','short','nightie','sleeveless','floral','yellow'] },
-  { image:IMG('image25_small.jpg'), keywords:['sophia','shirt'] },
-  { image:IMG('image26_small.jpg'), keywords:['summer','dressing','gown'] },
-  { image:IMG('image27_small.jpg'), keywords:['maya','gown','leopard'] },
-  { image:IMG('image28_small.jpg'), keywords:['josh','gown','check'] },
-  { image:IMG('image29_small.jpg'), keywords:['jack','gown','brown'] },
-  { image:IMG('image30_small.jpg'), keywords:['fireman','raincoat','yellow','no','hat'] },
-  { image:IMG('image31_small.jpg'), keywords:['candy','raincoat','hat','pink'] },
-  { image:IMG('image32_small.jpg'), keywords:['candy','raincoat','pink','no','hat'] },
-  { image:IMG('image33_small.jpg'), keywords:['fireman','raincoat','yellow','hat'] },
+  {img:IMG('image1_small.jpg'),  match:['ella','princess','gown','pink']},
+  {img:IMG('image2_small.jpg'),  match:['cora','sleeveless','short','flower','blue']},
+  {img:IMG('image3_small.jpg'),  match:['cora','sleeveless','short','flower','pink']},
+  {img:IMG('image4_small.jpg'),  match:['ava','singlet','green','yellow']},
+  {img:IMG('image5_small.jpg'),  match:['harper','shorts','vest']},
+  {img:IMG('image6_small.jpg'),  match:['ruby','boob','tube','shorts']},
+  {img:IMG('image7_small.jpg'),  match:['ella','semi','pj']},
+  {img:IMG('image8_small.jpg'),  match:['grace','night','1 bow','off white']},
+  {img:IMG('image9_small.jpg'),  match:['isabella','nightdress','no collar']},
+  {img:IMG('image10_small.jpg'), match:['mia','shirt','ls']},
+  {img:IMG('image11_small.jpg'), match:['suzy','ls','pink']},
+  {img:IMG('image12_small.jpg'), match:['suzy','pink']},
+  {img:IMG('image13_small.jpg'), match:['suzy','pink']},
+  {img:IMG('image14_small.jpg'), match:['charlotte','suzy','light blue']},
+  {img:IMG('image15_small.jpg'), match:['eliana','lemon','flowers']},
+  {img:IMG('image16_small.jpg'), match:['cora','nighty','sleeveless','flower','blue']},
+  {img:IMG('image17_small.jpg'), match:['jack','boys','blue top','brown pants']},
+  {img:IMG('image18_small.jpg'), match:['oliver','long','black','check']},
+  {img:IMG('image19_small.jpg'), match:['thomas','short','grey','blue']},
+  {img:IMG('image20_small.jpg'), match:['maisie','baby']},
+  {img:IMG('image21_small.jpg'), match:['olivia','girls','long','pj']},
+  {img:IMG('image22_small.jpg'), match:['aria','ladies','long','pj']},
+  {img:IMG('image23_small.jpg'), match:['layla','ladies','short','pj','sleeveless']},
+  {img:IMG('image24_small.jpg'), match:['layla','short','night']},
+  {img:IMG('image25_small.jpg'), match:['sophia','women','shirt']},
+  {img:IMG('image26_small.jpg'), match:['summer','dressing','gown']},
+  {img:IMG('image27_small.jpg'), match:['maya','gown','leopard']},
+  {img:IMG('image28_small.jpg'), match:['josh','gown','check']},
+  {img:IMG('image29_small.jpg'), match:['jack','gown','brown']},
+  {img:IMG('image30_small.jpg'), match:['fireman','raincoat','no hat','yellow']},
+  {img:IMG('image31_small.jpg'), match:['candy','raincoat','hat','pink']},
+  {img:IMG('image32_small.jpg'), match:['candy','raincoat','no hat','pink']},
+  {img:IMG('image33_small.jpg'), match:['fireman','raincoat','hat','yellow']},
 ];
+const PLACEHOLDER = IMG('placeholder.webp');
 
-function resolveImage(name, desc, colour){
-  const text = [lc(name), lc(desc), lc(colour)].join(' ');
+/* ==== helpers ==== */
+const money = n => isFinite(n)?'$'+n.toLocaleString('en-AU',{maximumFractionDigits:0}):'—';
+const num = v => {
+  if(v==null) return 0;
+  const s = String(v).replace(/[^0-9.\-]/g,'');
+  const n = parseFloat(s);
+  return isFinite(n)?n:0;
+};
+const norm = s => (s||'').toString().toLowerCase();
+
+function guessImage(row){
+  const hay = `${norm(row.Item_Name)} ${norm(row.Description)} ${norm(row.Colour)}`;
   for(const r of IMAGE_RULES){
-    if(r.keywords.every(k=>text.includes(k))) return r.image;
+    if(r.match.every(m => hay.includes(m))) return r.img;
   }
-  return 'images/placeholder.webp';
+  return PLACEHOLDER;
 }
 
-/* ================= UI helpers ================= */
-function sizesToChips(sizes){
-  const entries = Object.entries(sizes)
-    .filter(([,q])=> toNum(q)>0)
-    .sort((a,b)=>{
-      const ia=parseFloat(a[0]), ib=parseFloat(b[0]);
-      if(!isNaN(ia)&&!isNaN(ib)) return ia-ib;
-      if(!isNaN(ia)) return -1; if(!isNaN(ib)) return 1;
-      return a[0].localeCompare(b[0]);
+/* ==== render ==== */
+const grid = document.getElementById('grid');
+const sizeTiles = document.getElementById('size-tiles');
+const sizeNote  = document.getElementById('size-note');
+const heroPill  = document.getElementById('hero-pill');
+const sumPieces = document.getElementById('sum-pieces');
+const sumSkus   = document.getElementById('sum-skus');
+const sumRRP    = document.getElementById('sum-rrp');
+const sumWholesale = document.getElementById('sum-wholesale');
+const sumQuick     = document.getElementById('sum-quick');
+const visibleCount = document.getElementById('visible-count');
+const catSel = document.getElementById('catSel');
+const q = document.getElementById('q');
+
+/* read CSV */
+Papa.parse('detailed_inventory.csv', {
+  download:true, header:true, skipEmptyLines:true,
+  complete: res => {
+    let rows = res.data.map(r => ({
+      SKU: (r.SKU||'').trim(),
+      Brand: (r.Brand||'').trim(),
+      Item_Name: (r.Item_Name||'').trim(),
+      Description: (r.Description||'').trim(),
+      Category: (r.Category||'').trim(),
+      Size: (r.Size||'').trim(),
+      Colour: (r.Colour||'').trim(),
+      Qty: num(r.Qty),
+      RRP: num(r.RRP || r.Anchor_Price),
+      Discounted: num(r.Discounted_Price)
+    })).filter(r => r.Item_Name);
+
+    if(!rows.length){
+      heroPill.textContent = 'No items loaded — check CSV headers.';
+      return;
+    }
+
+    /* totals */
+    const totalPieces = rows.reduce((a,b)=>a + (b.Qty||0), 0);
+    const totalSkus   = rows.length;
+    const totalRRP    = rows.reduce((a,b)=>a + (b.RRP||0)*(b.Qty||0), 0);
+
+    /* pricing factors (per-item) so sums hit targets */
+    const wholesaleFactor = totalRRP ? (WHOLESALE_TOTAL_TARGET_AUD / totalRRP) : 0;
+    const quickFactor     = totalRRP ? (QUICKSALE_TOTAL_TARGET_AUD  / totalRRP) : 0;
+
+    /* counters */
+    heroPill.textContent = `${totalPieces.toLocaleString()} pieces • ${totalSkus.toLocaleString()} SKUs`;
+    sumPieces.textContent = `${totalPieces.toLocaleString()} pieces`;
+    sumSkus.textContent   = `${totalSkus.toLocaleString()} SKUs`;
+    sumRRP.textContent    = `Total RRP: ${money(totalRRP)}`;
+    sumWholesale.textContent = `Wholesale (target): ${money(WHOLESALE_TOTAL_TARGET_AUD)}`;
+    sumQuick.textContent     = `Quick Sale (target): ${money(QUICKSALE_TOTAL_TARGET_AUD)}`;
+
+    /* categories for filter */
+    const cats = [...new Set(rows.map(r=>r.Category).filter(Boolean))].sort();
+    cats.forEach(c => {
+      const o = document.createElement('option');
+      o.value=c; o.textContent=c;
+      catSel.appendChild(o);
     });
-  return entries.map(([s,q])=>`<span>${s} (${q})</span>`).join('');
-}
-function cardHTML(item, unitWholesale){
-  const img = resolveImage(item.name,item.desc,item.colour);
-  return `
-    <div class="card">
-      <div class="imgbox"><img src="${img}" alt="${item.name}" loading="lazy"
-        onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'placeholder',innerHTML:'Photo<br>Coming Soon'}))"></div>
-      <div class="body">
-        <div class="title">${item.name}</div>
-        <div class="muted">${[item.desc,item.colour].filter(Boolean).join(' • ')}</div>
-        <div class="sizes"><strong>Sizes:</strong> ${sizesToChips(item.sizes) || '—'}</div>
-        <div class="muted">Qty: ${item.qty || '—'}</div>
-        <div class="price-line">
-          <span class="tag">RRP: ${aud(item.rrpUnit)}</span>
-          <span class="tag">Wholesale: ${aud(unitWholesale)}</span>
-        </div>
-      </div>
-    </div>`;
-}
 
-/* ================= MAIN ================= */
-(async function(){
-  const diag = document.getElementById('diag');
-  const grid = document.getElementById('grid');
-
-  try{
-    // Fetch CSV (try candidates)
-    let csvText=null, csvPath=null;
-    for(const p of CSV_CANDIDATES){
-      const r = await fetch(p,{cache:'no-store'});
-      if(r.ok){ csvText = await r.text(); csvPath=p; break; }
+    /* size tiles: if per-size columns are NOT present, show one total tile + note */
+    const hasPerSize = false; // this CSV has no per-size numeric columns
+    sizeTiles.innerHTML = '';
+    if(!hasPerSize){
+      sizeNote.style.display = 'block';
+      const div = document.createElement('div');
+      div.className='size-tile';
+      div.innerHTML = `<b>All sizes</b><span>${totalPieces.toLocaleString()} pieces</span>`;
+      sizeTiles.appendChild(div);
     }
-    if(!csvText) throw new Error('CSV not found at repo root (expected detailed_inventory.csv)');
 
-    // Parse and normalise
-    const parsed = parseCSV(csvText);
-    const longRows = normaliseToLong(parsed.rows);
-
-    // Totals
-    const totalPieces = longRows.reduce((s,r)=> s + toNum(r.Qty), 0);
-    const totalRRP    = longRows.reduce((s,r)=> s + (toNum(r.Anchor_Price)*toNum(r.Qty)), 0);
-
-    // Group into product cards
-    const items = aggregateItems(longRows);
-    const totalSKUs = items.length;
-
-    // Set header/summary
-    document.getElementById('hero-pill').textContent =
-      `${(totalPieces||0).toLocaleString()} pieces • ${totalSKUs} SKUs`;
-    document.getElementById('sum-pieces').textContent   = `${(totalPieces||0).toLocaleString()} pieces`;
-    document.getElementById('sum-skus').textContent     = `${totalSKUs} SKUs`;
-    document.getElementById('sum-rrp').textContent      = `Total RRP: ${aud(totalRRP)}`;
-    document.getElementById('sum-wholesale').textContent= `Wholesale (target): ${aud(WHOLESALE_TOTAL_TARGET_AUD)}`;
-    document.getElementById('sum-quick').textContent    = `Quick Sale (target): ${aud(QUICKSALE_TOTAL_TARGET_AUD)}`;
-
-    // Size tiles (from longRows)
-    (function buildSizeTiles(){
-      const totals={};
-      for(const r of longRows){
-        const s = norm(r.Size); const q = toNum(r.Qty);
-        if(!s || q<=0) continue;
-        totals[s]=(totals[s]||0)+q;
-      }
-      const ordered = Object.entries(totals).sort((a,b)=>{
-        const ia=parseFloat(a[0]), ib=parseFloat(b[0]);
-        if(!isNaN(ia)&&!isNaN(ib)) return ia-ib;
-        if(!isNaN(ia)) return -1; if(!isNaN(ib)) return 1;
-        return a[0].localeCompare(b[0]);
-      });
-      document.getElementById('size-tiles').innerHTML = ordered.map(([k,v])=>`
-        <div class="size-tile"><b>Size ${k}</b><span>${(v||0).toLocaleString()} pieces</span></div>
-      `).join('');
-      // populate size filter
-      document.getElementById('size').innerHTML =
-        '<option value="">All Sizes</option>' + ordered.map(([k])=>`<option>${k}</option>`).join('');
-    })();
-
-    // Category filter options
-    const uniq = arr => [...new Set(arr.filter(Boolean))].sort((a,b)=>a.localeCompare(b));
-    document.getElementById('category').innerHTML =
-      '<option value="">All Categories</option>' + uniq(longRows.map(r=>norm(r.Category))).map(s=>`<option>${s}</option>`).join('');
-
-    // Compute wholesale unit price factor to hit total target
-    const factorW = totalRRP>0 ? (WHOLESALE_TOTAL_TARGET_AUD / totalRRP) : 0;
-
-    // Render with filters
-    const sizeSel = document.getElementById('size');
-    const catSel  = document.getElementById('category');
-    const qInput  = document.getElementById('q');
-
-    function matchesQ(item,q){
-      if(!q) return true;
-      const hay = [item.name,item.desc,item.colour,item.category,item.subcat].join(' ').toLowerCase();
-      return hay.includes(q.toLowerCase());
-    }
-    function rowHasSize(item, target){ if(!target) return true; return toNum(item.sizes[target])>0; }
-
+    /* render cards */
     function render(){
-      const q  = qInput.value.trim();
-      const sz = sizeSel.value;
-      const cat= catSel.value;
+      const term = norm(q.value);
+      const cat  = catSel.value;
+      let filtered = rows.filter(r => {
+        if(cat && r.Category!==cat) return false;
+        if(term){
+          const hay = `${r.SKU} ${r.Item_Name} ${r.Description} ${r.Colour} ${r.Category}`;
+          if(!norm(hay).includes(term)) return false;
+        }
+        return true;
+      });
 
-      const filtered = items.filter(it =>
-        matchesQ(it,q) &&
-        rowHasSize(it,sz) &&
-        (!cat || lc(it.category)===lc(cat))
-      );
+      grid.innerHTML='';
+      filtered.forEach(r => {
+        const imgSrc = guessImage(r);
+        const wholesaleEach = Math.max(1, Math.round((r.RRP||0) * wholesaleFactor));
+        const quickEach     = Math.max(1, Math.round((r.RRP||0) * quickFactor));
 
-      const html = filtered.map(it => cardHTML(it, it.rrpUnit * factorW)).join('');
-      document.getElementById('visible-count').textContent = filtered.length;
-      grid.innerHTML = html || '<div class="muted">No results.</div>';
+        const card = document.createElement('div');
+        card.className='card';
+        card.innerHTML = `
+          <div class="imgbox">
+            <img src="${imgSrc}" alt="${r.Item_Name}" onerror="this.src='images/placeholder.webp'"/>
+          </div>
+          <div class="body">
+            <div class="title">${r.Item_Name}</div>
+            <div class="muted">${r.Description || '—'}</div>
+            <div class="muted">Colour: ${r.Colour || '—'} · SKU: ${r.SKU || '—'}</div>
+            <div class="sizes">
+              <span>Qty: ${r.Qty||0}</span>
+              <span>Size: ${r.Size||'Mixed'}</span>
+            </div>
+            <div class="price-line">
+              <span class="tag">RRP: ${money(r.RRP||0)}</span>
+              <span class="tag">Wholesale(each): ${money(wholesaleEach)}</span>
+              <span class="tag">Quick(each): ${money(quickEach)}</span>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      visibleCount.textContent = filtered.length;
     }
-    qInput.addEventListener('input', render);
-    sizeSel.addEventListener('change', render);
-    catSel.addEventListener('change', render);
+
+    q.addEventListener('input',render);
+    catSel.addEventListener('change',render);
     render();
-
-    // Diagnostics so you can see what was detected
-    const m = parsed.map, h = parsed.header;
-    function ok(i){return (i>=0?'✓':'—')}
-    document.getElementById('diag').innerHTML =
-      `Loaded <b>${csvPath}</b> • delimiter <b>${parsed.delim==='\\t'?'TAB':parsed.delim}</b> • headers: 
-       name ${ok(m.item)} | rrp ${ok(m.rrp)} | qty ${ok(m.qty)} | size ${ok(m.size)} | 
-       wide-sizes [2:${ok(m.s2)} 4:${ok(m.s4)} 6:${ok(m.s6)} 8:${ok(m.s8)} 10:${ok(m.s10)} 12:${ok(m.s12)} 14:${ok(m.s14)}]`;
-
-  }catch(e){
-    console.error(e);
-    document.getElementById('hero-pill').textContent = 'Could not load CSV';
-    document.getElementById('grid').innerHTML = '<div class="muted">Error loading products.</div>';
-    document.getElementById('diag').innerHTML = `<span class="warn">${e.message}</span> — Ensure <b>detailed_inventory.csv</b> is at repo root and is a real CSV (not .xlsx).`;
+  },
+  error: () => {
+    document.getElementById('hero-pill').textContent = 'Error loading products. Please check detailed_inventory.csv';
   }
-})();
+});
 </script>
 </body>
 </html>
