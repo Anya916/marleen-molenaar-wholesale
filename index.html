@@ -5,311 +5,308 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Marleen Molenaar Collection — Wholesale Catalogue</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#f7f7fb; --card:#ffffff; --ink:#1f2240; --muted:#6b6f8a;
-    --primary:#6b4de6; --pill:#efeaff; --ok:#12a87a; --chip:#f1f3f8;
-    --shadow:0 8px 24px rgba(31,34,64,.08)
+    --bg:#f5f6fb; --card:#ffffff; --muted:#717790; --ink:#1a1f36;
+    --brand-1:#6b44ff; --brand-2:#9c6bff; --brand-3:#c1a6ff;
+    --chip:#eef1ff; --chip-ink:#3b3ee6; --ok:#1a7f37; --warn:#b54708;
+    --shadow: 0 6px 18px rgba(18,23,78,.12);
+    --radius:16px;
   }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-  header{background:linear-gradient(135deg,#7d5df0 0%,#5b43e0 100%);color:#fff;padding:56px 20px 28px;border-bottom-left-radius:24px;border-bottom-right-radius:24px;box-shadow:var(--shadow)}
-  .wrap{max-width:1060px;margin:0 auto;padding:0 16px}
-  h1{margin:0 0 10px;font-size:44px;line-height:1.05;font-weight:800}
-  .meta{display:inline-block;background:rgba(255,255,255,.16);backdrop-filter:blur(2px);border-radius:999px;padding:10px 18px;font-weight:600}
-  .section{margin:22px 0}
-  .card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:18px}
-  .grid{display:grid;gap:14px}
-  .sizes{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
-  .size-pill{background:var(--pill);border-radius:12px;padding:18px 16px}
-  .size-pill b{display:block;font-size:20px}
-  .proof-grid{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-  .proof h3{margin:0 0 8px}
-  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
-  select,input[type="search"]{appearance:none;border:1px solid #e4e7f1;background:#fff;border-radius:10px;padding:10px 12px;color:var(--ink)}
-  input[type="search"]{flex:1;min-width:240px}
-  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin:14px 0 32px}
-  .item{background:var(--card);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
-  .imgbox{height:280px;display:flex;align-items:center;justify-content:center;background:#faf9ff}
-  .imgbox img{max-height:100%;max-width:100%;object-fit:contain}
-  .ph{color:#c0c3d6;font-size:14px}
-  .content{padding:16px}
-  .name{font-weight:700;margin:0 0 6px}
-  .desc{color:var(--muted);margin:0 0 10px;font-size:14px;min-height:36px}
-  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}
-  .chip{background:var(--chip);border-radius:999px;padding:6px 10px;font-size:12px}
-  footer{background:#171a2e;color:#e7ebff;margin-top:28px}
-  footer .wrap{display:grid;grid-template-columns:2fr 1fr;gap:18px;padding:28px 16px}
-  footer h3{color:#cfd5ff;margin:0 0 12px}
-  a{color:#3d37ff;text-decoration:none}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);font:16px/1.45 "Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial}
+  .hero{background:linear-gradient(135deg,var(--brand-1),var(--brand-2));color:#fff;padding:56px 20px 28px}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 14px}
+  h1{margin:0 0 14px;font-size:44px;line-height:1.05;font-weight:800}
+  .meta{display:inline-block;margin-top:8px;background:rgba(255,255,255,.18);backdrop-filter:saturate(120%) blur(3px);border-radius:999px;padding:10px 16px;font-weight:600}
+  .panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin:14px 0}
+  .grid-7{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:14px}
+  .sizepill{background:#f3f2ff;border:1px solid #e4e1ff;border-radius:14px;padding:18px;text-align:center}
+  .sizepill b{display:block;font-size:18px}
+  .proof{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  .proof .card{background:var(--card);border-radius:14px;padding:18px;border:1px solid #e9e9f7}
+  .proof a{color:#3b3ee6;text-decoration:none;font-weight:600}
+  .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:6px 0 10px}
+  select, input[type="search"]{background:#fff;border:1px solid #e3e5ef;border-radius:12px;padding:10px 12px;min-width:160px}
+  .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  @media (max-width:980px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:680px){.cards{grid-template-columns:1fr}}
+  .card{background:var(--card);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;border:1px solid #eceffd}
+  .card .img{display:block;background:#f6f7fb url('placeholder.webp') center/120px no-repeat;aspect-ratio:4/5}
+  .card img{width:100%;height:100%;object-fit:contain;display:block}
+  .card .body{padding:16px}
+  .title{font-weight:700;font-size:20px;margin:0 0 6px}
   .muted{color:var(--muted)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 8px}
+  .chip{background:var(--chip);border:1px solid #dfe3ff;color:var(--chip-ink);border-radius:999px;padding:6px 10px;font-weight:600;font-size:13px}
+  .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .tag{background:#f7f8ff;border:1px dashed #e3e5ff;border-radius:10px;padding:8px 10px;font-weight:700;font-size:13px}
+  .price{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+  .price .rrp{background:#eef9f1;color:#0f5132;border:1px solid #cfead6}
+  .price .wh{background:#fff8ef;color:#7a3e07;border:1px solid #f4dfc3}
+  footer{background:#121528;color:#dfe2ff;margin-top:40px}
+  footer .wrap{padding:28px 14px}
+  footer b{color:#fff}
+  .sr{position:absolute;left:-9999px}
 </style>
 </head>
 <body>
-<header>
-  <div class="wrap">
-    <h1>Marleen Molenaar Collection</h1>
-    <div id="meta" class="meta">Loading totals…</div>
-  </div>
-</header>
+  <header class="hero">
+    <div class="wrap">
+      <h1>Marleen Molenaar Collection</h1>
+      <div id="heroMeta" class="meta">Loading totals…</div>
+    </div>
+  </header>
 
-<main class="wrap">
-  <!-- Size breakdown -->
-  <section class="section card">
-    <h2 style="margin:0 0 8px">🧵 Size Breakdown — Pieces Available</h2>
-    <div id="sizeGrid" class="grid sizes"></div>
-  </section>
+  <main class="wrap">
 
-  <!-- Proof links -->
-  <section class="section card">
-    <h2 style="margin:0 0 12px">🏆 Verified Luxury Credentials &amp; Proof Links</h2>
-    <div class="grid proof-grid">
-      <div class="proof card" style="box-shadow:none">
-        <h3>Lane Crawford Luxury Retailer</h3>
-        <p><a href="https://www.lanecrawford.com/brand/700351/marleen-molenaar-sleepwear/women" target="_blank" rel="noopener">View Brand Page</a></p>
-        <p class="muted">Hong Kong’s premier luxury department store — equivalent to Harrods. Establishes brand positioning.</p>
+    <!-- SIZE BREAKDOWN -->
+    <section class="panel">
+      <h3 style="margin:0 0 6px;">🧵 Size Breakdown — Pieces Available</h3>
+      <div id="sizesRow" class="grid-7">
+        <!-- Pills inserted by JS -->
       </div>
-      <div class="proof card" style="box-shadow:none">
-        <h3>Retail Pricing Evidence</h3>
-        <p><a href="https://www.retykle.com" target="_blank" rel="noopener">Retykle Pricing Proof</a></p>
-        <p class="muted">Shows premium retail/resale pricing for individual pieces.</p>
+    </section>
+
+    <!-- PROOF LINKS -->
+    <section class="panel">
+      <h3 style="margin:0 0 10px;">🏆 Verified Luxury Credentials &amp; Proof Links</h3>
+      <div class="proof">
+        <div class="card">
+          <h4 style="margin:0 0 6px;">Lane Crawford Luxury Retailer</h4>
+          <a href="https://www.lanecrawford.com/brand/700351/marleen-molenaar-sleepwear/women" target="_blank" rel="noopener">View Brand Page</a>
+          <p class="muted">Hong Kong’s premier luxury department store — equivalent to Harrods. Establishes brand positioning.</p>
+        </div>
+        <div class="card">
+          <h4 style="margin:0 0 6px;">Retail Pricing Evidence</h4>
+          <a href="https://www.retykle.com/" target="_blank" rel="noopener">Retykle Pricing Proof</a>
+          <p class="muted">Shows premium retail/resale pricing for individual pieces.</p>
+        </div>
+        <div class="card">
+          <h4 style="margin:0 0 6px;">Media Coverage</h4>
+          <a href="https://www.scmp.com/article/533820/eastern-premise" target="_blank" rel="noopener">South China Morning Post</a>
+          <p class="muted">2006 profile: “running a children’s clothing design company under her own name.”</p>
+        </div>
       </div>
-      <div class="proof card" style="box-shadow:none">
-        <h3>Media Coverage</h3>
-        <p><a href="https://www.scmp.com/article/533820/eastern-premise" target="_blank" rel="noopener">South China Morning Post</a></p>
-        <p class="muted">2006 profile: “running a children’s clothing design company under her own name.”</p>
+    </section>
+
+    <!-- CONTROLS -->
+    <section class="toolbar">
+      <label class="sr" for="sizeFilter">Size</label>
+      <select id="sizeFilter">
+        <option value="">All Sizes</option>
+        <option>2</option><option>4</option><option>6</option>
+        <option>8</option><option>10</option><option>12</option><option>14</option>
+      </select>
+
+      <label class="sr" for="catFilter">Category</label>
+      <select id="catFilter"><option value="">All Categories</option></select>
+
+      <input id="searchBox" type="search" placeholder="Search name, colour, description" />
+    </section>
+
+    <!-- CARDS -->
+    <section id="cards" class="cards" aria-live="polite"></section>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex;gap:28px;justify-content:space-between;flex-wrap:wrap;">
+      <div>
+        <h3 style="margin:0 0 10px;">Contact Information</h3>
+        <p><b>Gary Flax:</b> +61 414 242 142</p>
+        <p><b>Location:</b> Vaucluse, Sydney NSW</p>
+        <p><b>Viewing:</b> Weekdays 5pm+, Weekends anytime</p>
+        <p><b>Access:</b> Ground floor, driveway access for easy pickup</p>
+      </div>
+      <div>
+        <h3 style="margin:0 0 10px;">Collection Summary</h3>
+        <p><b id="ftPieces">—</b> pieces across <b id="ftSkus">—</b> SKUs</p>
+        <p>Organized in <b>50</b> boxes for easy pickup</p>
+        <p>Storage: Professional organization system</p>
+        <p><b>Wholesale:</b> <span id="ftWholesale">—</span> • <b>Quick sale:</b> <span id="ftQuick">—</span></p>
       </div>
     </div>
-  </section>
-
-  <!-- Filters -->
-  <div class="toolbar">
-    <select id="sizeFilter">
-      <option value="">All Sizes</option>
-      <option>2</option><option>4</option><option>6</option><option>8</option>
-      <option>10</option><option>12</option><option>14</option>
-    </select>
-    <select id="catFilter"><option value="">All Categories</option></select>
-    <input id="q" type="search" placeholder="Search name, colour, description">
-  </div>
-
-  <!-- Items -->
-  <div id="cards" class="cards"></div>
-</main>
-
-<footer>
-  <div class="wrap">
-    <div>
-      <h3>Contact Information</h3>
-      <p><b>Gary Flax</b> • +61 414 242 142</p>
-      <p>Location: Vaucluse, Sydney NSW</p>
-      <p>Viewing: Weekdays 5pm+, Weekends anytime</p>
-      <p>Access: Ground floor, driveway access for easy pickup</p>
-    </div>
-    <div>
-      <h3>Collection Summary</h3>
-      <p id="footPieces">—</p>
-      <p>Organized in <b>50 boxes</b> for easy pickup</p>
-      <p>Storage: Professional organization system</p>
-      <p id="pricesFoot" class="muted">Wholesale • Quick sale available</p>
-    </div>
-  </div>
-</footer>
+  </footer>
 
 <script>
-(async function(){
-  const csvUrl = 'detailed_inventory.csv';
-  const imgMapUrl = 'image_map.csv';
-  const placeholder = 'images/placeholder.webp';
+(async () => {
+  // ---------- helpers ----------
+  const $ = s => document.querySelector(s);
+  const norm = s => (s||'').toString().toLowerCase().replace(/[^a-z0-9]+/g,'').trim();
 
-  // simple robust CSV
-  const parseCSV = (text) => {
-    if (!text) return [];
-    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1); // BOM
-    const rows = [];
-    let i=0, field='', row=[], q=false;
-    while(i < text.length){
-      const c = text[i];
-      if (q){
-        if (c === '"'){ if (text[i+1] === '"'){ field+='"'; i++; } else { q=false; } }
-        else field += c;
-      }else{
-        if (c === '"'){ q=true; }
-        else if (c === ','){ row.push(field.trim()); field=''; }
-        else if (c === '\n' || c === '\r'){
-          if (field.length || row.length) { row.push(field.trim()); rows.push(row); row=[]; field=''; }
-          if (c === '\r' && text[i+1] === '\n') i++;
-        }else field += c;
-      }
-      i++;
-    }
-    if (field.length || row.length){ row.push(field.trim()); rows.push(row); }
-    const headers = rows.shift().map(h => h.trim().toLowerCase());
-    return rows.map(r => Object.fromEntries(headers.map((h,idx)=>[h,r[idx]??''])));
-  };
+  // Parse "2×4, 4×2, 8×6" → {2:4, 4:2, 8:6}
+  function parseSizeString(s){
+    const out = {2:0,4:0,6:0,8:0,10:0,12:0,14:0};
+    if(!s) return out;
+    s.replace(/x/g,'×'); // normalise any ASCII x
+    s.split(/\s*,\s*/).forEach(pair=>{
+      const m = pair.match(/^\s*(2|4|6|8|10|12|14)\s*[×x]\s*(\d+)\s*$/i);
+      if(m){ out[m[1]] += Number(m[2]); }
+    });
+    return out;
+  }
 
-  const [invTxt, mapTxt] = await Promise.all([
-    fetch(csvUrl).then(r=>r.ok?r.text():Promise.resolve('')),
-    fetch(imgMapUrl).then(r=>r.ok?r.text():Promise.resolve(''))
+  // Fetch CSV → array of objects
+  async function csv(url){
+    const res = await fetch(url+`?v=${Date.now()}`); // bust cache while iterating
+    const text = await res.text();
+    const rows = text.trim().split(/\r?\n/).map(r=>r.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/));
+    const header = rows.shift().map(h=>h.trim().toLowerCase());
+    return rows.map(r=>{
+      const obj = {};
+      r.forEach((v,i)=> obj[header[i]] = v.replace(/^"|"$/g,''));
+      return obj;
+    });
+  }
+
+  // ---------- load data ----------
+  const [items, imgMap] = await Promise.all([
+    csv('detailed_inventory.csv'),
+    csv('image_map.csv').catch(()=>[])
   ]);
 
-  const invRows = parseCSV(invTxt);
-  const mapRows = parseCSV(mapTxt);
+  // Build image lookup by name
+  const imgByName = {};
+  imgMap.forEach(r=>{
+    if(r.name && r.image) imgByName[norm(r.name)] = r.image;
+  });
 
-  // helper: pick value by possible header names
-  const pick = (o, names) => {
-    const keys = Object.keys(o);
-    for (const want of names){
-      const k = keys.find(x => x.toLowerCase() === want.toLowerCase());
-      if (k && o[k] !== undefined) return o[k];
-    }
-    return '';
-  };
-
-  // build image map (supports image,name OR image,item)
-  const imageMap = new Map();
-  for (const r of mapRows){
-    const img = pick(r,['image']);
-    const nm = pick(r,['name','item']);
-    if (!img || !nm) continue;
-    imageMap.set(nm.toLowerCase(), img);
-  }
-
-  // normalise and roll up inventory
-  const byKey = new Map(); // key: name|colour
+  // Precompute size counts + totals
   let totalPieces = 0;
-  const sizeTotals = {2:0,4:0,6:0,8:0,10:0,12:0,14:0};
-  const seenCats = new Set();
+  const topSizes = {2:0,4:0,6:0,8:0,10:0,12:0,14:0};
+  const categories = new Set();
 
-  for (const r of invRows){
-    const name = (pick(r,['Item_Name','name']) || '').trim();
-    if (!name) continue;
+  // Clean + enrich records
+  items.forEach(it=>{
+    // expected columns: sku,brand,item_name,description,category,subcategory,size,colour,gender,condition,qty,rrp,wholesale_price,channel
+    it.qty = Number(it.qty||0);
+    it.rrp = Number(it.rrp||0);
+    it.wholesale_price = Number(it.wholesale_price||0);
+    const sizeStr = (it.size||'').trim();
 
-    const desc   = pick(r,['Description']) || '';
-    const cat    = pick(r,['Category']) || '';
-    const colour = (pick(r,['Colour','Color']) || '').trim();
-    const size   = (pick(r,['Size']) || '').toString().trim(); // can be "2","4",...
-    const qtyVal = pick(r,['Qty','QTY','qty','Quantity','quantity']) || '0';
-    const qty    = parseFloat(String(qtyVal).replace(/[^0-9.-]/g,'')) || 0;
-
-    const rrpVal = pick(r,['RRP','Anchor_Price']) || '';
-    const whVal  = pick(r,['Wholesale','Discounted_Price']) || '';
-    const rrp    = parseFloat(String(rrpVal).replace(/[^0-9.-]/g,'')) || 0;
-    const wh     = parseFloat(String(whVal).replace(/[^0-9.-]/g,'')) || 0;
-
-    seenCats.add(cat);
-
-    const key = (name + '|' + colour).toLowerCase();
-    if (!byKey.has(key)){
-      byKey.set(key, {name, desc, cat, colour, qty:0, sizes:new Map(), rrp:0, wholesale:0});
+    // a) row is a single-size row (size = 2/4/6/8/10/12/14)
+    if (/^(2|4|6|8|10|12|14)$/i.test(sizeStr)) {
+      topSizes[sizeStr] += it.qty;
+      totalPieces += it.qty;
+      it._sizes = {[sizeStr]: it.qty};
     }
-    const item = byKey.get(key);
-    item.qty += qty;
-    totalPieces += qty;
-    if (size) { item.sizes.set(size, (item.sizes.get(size)||0) + qty); }
-    item.rrp = Math.max(item.rrp, rrp);
-    item.wholesale = Math.max(item.wholesale, wh);
+    // b) row encodes multiple sizes, e.g. "2×4, 4×2..."
+    else if (/[×x]/.test(sizeStr)) {
+      const map = parseSizeString(sizeStr);
+      it._sizes = map;
+      const sum = Object.values(map).reduce((a,b)=>a+b,0);
+      totalPieces += sum;
+      Object.keys(map).forEach(k=> topSizes[k] += map[k]);
+    }
+    // c) fallback – treat qty but don’t contribute to size breakdown
+    else{
+      totalPieces += it.qty;
+      it._sizes = {};
+    }
 
-    if (sizeTotals[size] !== undefined) sizeTotals[size] += qty;
+    categories.add(it.category||'Uncategorised');
+
+    // Image
+    const key = norm(it.item_name || it.name);
+    it._img = imgByName[key] || '';
+  });
+
+  // ---------- UI: hero + size pills ----------
+  $('#heroMeta').textContent = `${totalPieces.toLocaleString()} pieces • ${new Set(items.map(i=>i.sku)).size} SKUs • 50 boxes`;
+  $('#ftPieces').textContent = totalPieces.toLocaleString();
+  $('#ftSkus').textContent = new Set(items.map(i=>i.sku)).size;
+  // Estimate sums based on your current wholesale column
+  const sumWholesale = items.reduce((a,b)=> a + (b.wholesale_price||0)*(Object.values(b._sizes).reduce((x,y)=>x+y,0) || b.qty||0), 0);
+  const quickSale = 12000; // your stated quick sale goal
+  $('#ftWholesale').textContent = sumWholesale.toLocaleString('en-AU',{style:'currency',currency:'AUD'});
+  $('#ftQuick').textContent = quickSale.toLocaleString('en-AU',{style:'currency',currency:'AUD'});
+
+  const sizeOrder = [2,4,6,8,10,12,14];
+  const sizeRow = $('#sizesRow');
+  sizeOrder.forEach(s=>{
+    const n = topSizes[s]||0;
+    const d = document.createElement('div');
+    d.className='sizepill';
+    d.innerHTML = `<b>Size ${s}</b>${n.toLocaleString()} pieces`;
+    d.dataset.size = s;
+    d.addEventListener('click',()=>{
+      $('#sizeFilter').value = String(s);
+      render();
+      window.scrollTo({top: sizeRow.parentElement.offsetTop + sizeRow.parentElement.offsetHeight + 10, behavior:'smooth'});
+    });
+    sizeRow.appendChild(d);
+  });
+
+  // ---------- UI: category filter options ----------
+  const catSel = $('#catFilter');
+  [...categories].sort().forEach(c=>{
+    const o = document.createElement('option');
+    o.value = c; o.textContent = c; catSel.appendChild(o);
+  });
+
+  // ---------- render cards ----------
+  const cards = $('#cards');
+  function badgeSizes(map){
+    const chips = [];
+    sizeOrder.forEach(s=>{
+      const q = map[s]||0;
+      if(q>0) chips.push(`<span class="chip">${s}×${q}</span>`);
+    });
+    return chips.join('') || `<span class="chip">No size data</span>`;
   }
-
-  // header meta
-  document.getElementById('meta').textContent =
-    `${totalPieces.toLocaleString()} pieces • ${byKey.size} SKUs • 50 boxes`;
-
-  // size tiles
-  const sg = document.getElementById('sizeGrid'); sg.innerHTML='';
-  Object.keys(sizeTotals).forEach(s=>{
-    const div = document.createElement('div');
-    div.className='size-pill';
-    div.innerHTML = `<b>Size ${s}</b><span class="muted">${sizeTotals[s]} pieces</span>`;
-    sg.appendChild(div);
-  });
-
-  // category filter options
-  const catFilter = document.getElementById('catFilter');
-  [...seenCats].filter(Boolean).sort().forEach(c=>{
-    const opt = document.createElement('option'); opt.textContent=c; catFilter.appendChild(opt);
-  });
-
-  // image resolver: try (name+colour) → name → fuzzy contains
-  const resolveImage = (name, colour) => {
-    const key1 = (name + ' (' + colour + ')').toLowerCase();
-    const key2 = (name + ' - ' + colour).toLowerCase();
-    const key3 = (name + '|' + colour).toLowerCase();
-
-    if (imageMap.has((name+' '+colour).toLowerCase())) return imageMap.get((name+' '+colour).toLowerCase());
-    if (imageMap.has(key1)) return imageMap.get(key1);
-    if (imageMap.has(key2)) return imageMap.get(key2);
-    if (imageMap.has(key3)) return imageMap.get(key3);
-
-    if (imageMap.has(name.toLowerCase())) return imageMap.get(name.toLowerCase());
-
-    // fuzzy: any map name containing inventory name
-    const hit = [...imageMap.keys()].find(k => k.includes(name.toLowerCase()));
-    return hit ? imageMap.get(hit) : '';
-  };
-
-  // items array (photos-first)
-  const items = [...byKey.values()].sort((a,b)=>{
-    const aHas = !!resolveImage(a.name,a.colour);
-    const bHas = !!resolveImage(b.name,b.colour);
-    if (aHas !== bHas) return aHas? -1 : 1;
-    return a.name.localeCompare(b.name);
-  });
-
-  // render
-  const cards = document.getElementById('cards');
-  const fmtAUD = n => n ? `$${n.toFixed(2)} AUD` : '—';
-  const passFilters = it => {
-    const sz  = document.getElementById('sizeFilter').value;
-    const cat = document.getElementById('catFilter').value;
-    const q   = document.getElementById('q').value.toLowerCase();
-    if (sz && !it.sizes.has(sz)) return false;
-    if (cat && it.cat !== cat) return false;
-    if (q){
-      const hay = `${it.name} ${it.desc} ${it.colour}`.toLowerCase();
-      if (!hay.includes(q)) return false;
-    }
-    return true;
-  };
+  function cardHtml(it){
+    const qty = Object.values(it._sizes).reduce((a,b)=>a+b,0) || it.qty || 0;
+    const rrp = it.rrp ? it.rrp : null;
+    const wh  = it.wholesale_price ? it.wholesale_price : null;
+    const img = it._img ? it._img : 'placeholder.webp';
+    const imgTag = `<div class="img">${img==='placeholder.webp' ? '' : `<img src="${img}" alt="">`}</div>`;
+    return `
+    <article class="card">
+      ${imgTag}
+      <div class="body">
+        <h3 class="title">${it.item_name || it.name || 'Unnamed'}</h3>
+        <div class="muted">${it.description || ''} ${it.colour ? ` • Colour: ${it.colour}`:''}</div>
+        <div class="chips">${badgeSizes(it._sizes)}</div>
+        <div class="tags">
+          <span class="tag">Qty: ${qty}</span>
+          ${rrp ? `<span class="tag price rrp">RRP: ${Number(rrp).toLocaleString('en-AU',{style:'currency',currency:'AUD'})}</span>`:''}
+          ${wh  ? `<span class="tag price wh">Wholesale: ${Number(wh).toLocaleString('en-AU',{style:'currency',currency:'AUD'})}</span>`:''}
+        </div>
+      </div>
+    </article>`;
+  }
 
   function render(){
-    cards.innerHTML='';
-    items.forEach(it=>{
-      if (!passFilters(it)) return;
+    const sizeF = $('#sizeFilter').value.trim();
+    const catF  = $('#catFilter').value.trim();
+    const q     = $('#searchBox').value.trim().toLowerCase();
 
-      const imgPath = resolveImage(it.name, it.colour) || placeholder;
-      const sizesHtml = [...it.sizes.entries()]
-        .sort((a,b)=>Number(a[0])-Number(b[0]))
-        .map(([s,c])=>`<span class="chip">${s} × ${c}</span>`).join('') || '<span class="chip">Sizes: —</span>';
-
-      const el = document.createElement('div');
-      el.className='item';
-      el.innerHTML = `
-        <div class="imgbox">
-          ${imgPath ? `<img loading="lazy" src="${imgPath}" alt="${it.name}">` : `<div class="ph">Photo Coming Soon</div>`}
-        </div>
-        <div class="content">
-          <h3 class="name">${it.name}</h3>
-          <p class="desc">${[it.desc, it.colour?`Colour: ${it.colour}`:''].filter(Boolean).join(' • ')}</p>
-          <div class="chips">${sizesHtml}</div>
-          <div class="chips">
-            <span class="chip"><b>Qty:</b>&nbsp;${it.qty}</span>
-            <span class="chip"><b>RRP:</b>&nbsp;${fmtAUD(it.rrp)}</span>
-            <span class="chip"><b>Wholesale:</b>&nbsp;${fmtAUD(it.wholesale)}</span>
-          </div>
-        </div>`;
-      cards.appendChild(el);
+    const filtered = items.filter(it=>{
+      // size filter: include card if it has >0 pieces for that size
+      if(sizeF){
+        const n = (it._sizes && it._sizes[sizeF]) || 0;
+        if(n<=0) return false;
+      }
+      if(catF && (it.category||'') !== catF) return false;
+      if(q){
+        const hay = [
+          it.item_name, it.name, it.description, it.colour, it.category, it.subcategory
+        ].join(' ').toLowerCase();
+        if(!hay.includes(q)) return false;
+      }
+      return true;
     });
 
-    // footer summary
-    document.getElementById('footPieces').innerHTML =
-      `<b>${totalPieces.toLocaleString()}</b> pieces across <b>${items.length}</b> SKUs`;
+    // sort: show cards with images first
+    filtered.sort((a,b)=> (b._img?1:0) - (a._img?1:0));
+
+    cards.innerHTML = filtered.map(cardHtml).join('');
   }
 
-  ['sizeFilter','catFilter','q'].forEach(id=>document.getElementById(id).addEventListener('input',render));
+  $('#sizeFilter').addEventListener('change', render);
+  $('#catFilter').addEventListener('change', render);
+  $('#searchBox').addEventListener('input', render);
+
   render();
 })();
 </script>
