@@ -72,25 +72,6 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
     <div id="sizes" class="grid7"></div>
   </section>
 
-  <!-- Proof links -->
-  <section class="kvgrid">
-    <div class="kv">
-      <h4>🏆 Lane Crawford Luxury Retailer</h4>
-      <a href="https://www.lanecrawford.com/brand/700351/marleen-molenaar-sleepwear/women" target="_blank" rel="noopener">View Brand Page</a>
-      <div class="sub">Hong Kong’s premier luxury department store — equivalent to Harrods. Establishes brand positioning.</div>
-    </div>
-    <div class="kv">
-      <h4>💰 Retail Pricing Evidence</h4>
-      <a href="https://www.retykle.com/search?q=marleen%20molenaar" target="_blank" rel="noopener">Retykle Pricing Proof</a>
-      <div class="sub">Shows premium retail/resale pricing for individual pieces.</div>
-    </div>
-    <div class="kv">
-      <h4>📰 Media Coverage</h4>
-      <a href="https://www.scmp.com/article/533820/eastern-premise" target="_blank" rel="noopener">South China Morning Post</a>
-      <div class="sub">2006 profile: “running a children’s clothing design company under her own name.”</div>
-    </div>
-  </section>
-
   <!-- Filters + Grid -->
   <section class="card">
     <div class="controls">
@@ -101,8 +82,7 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
       </select>
       <select id="catFilter">
         <option value="">All Categories</option>
-        <option>Children's</option><option>Ladies</option><option>Sleep/Lounge (Unisex)</option>
-        <option>Boys</option><option>Baby</option><option>Outerwear</option>
+        <option>Children's</option><option>Ladies</option><option>Boys</option><option>Baby</option><option>Unisex</option>
       </select>
       <input id="search" type="search" placeholder="Search name, colour, description" />
     </div>
@@ -129,17 +109,17 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
     </div>
     <div class="footCard">
       <h3>Collection Summary</h3>
-      <p><span id="sumPieces">—</span> pieces across <span id="sumSkus">—</span> SKUs<br>
-         Organised in <strong>50</strong> boxes for easy pickup</p>
+      <p><span id="sumPieces">—</span> pieces across <span id="sumSkus">—</span> SKUs</p>
     </div>
   </div>
 </footer>
 
 <script>
-/* ---- CSV helpers (quote-safe) ---- */
+/* ---------------- CSV + JSON helpers (quote-safe) ---------------- */
 function parseCSV(text){
   const rows=[]; const lines=text.replace(/\r/g,"").split("\n");
-  const head = splitCSVLine(lines.shift());
+  if(!lines.length) return rows;
+  const head = splitCSVLine(lines.shift()).map(h=>h.trim());
   for(const line of lines){
     if(!line || !line.trim()) continue;
     const cells = splitCSVLine(line);
@@ -160,127 +140,211 @@ function splitCSVLine(s){
   out.push(cur);
   return out;
 }
+async function fetchCSV(url){ const r=await fetch(url+'?t='+Date.now()); if(!r.ok) throw new Error(url+': '+r.status); return parseCSV(await r.text()); }
+async function fetchJSON(url){ const r=await fetch(url+'?t='+Date.now()); if(!r.ok) throw new Error(url+': '+r.status); return await r.json(); }
 
-/* ---- Formatting ---- */
-const money = v => new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD'}).format(+v||0);
-const fmt = v => (+v||0).toLocaleString('en-AU');
+/* ---------------- Formatting ---------------- */
+const moneyAU = v => new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD'}).format(+v||0);
+const fmtInt  = v => (+v||0).toLocaleString('en-AU');
+const lc = s => (s||'').toString().trim().toLowerCase();
 
-/* ---- App ---- */
-const INV_URL='detailed_inventory.csv';
-const MAP_URL='image_map.csv';
+/* ---------------- Config (filenames as you have them) ---------------- */
+const INV_URL='detailed_inventory.csv'; // wide file
+const MAP_URL='image_map.csv';          // columns: image,name
+const METRICS_URL='summary_metrics.json';
 const PLACEHOLDER='images/placeholder.webp';
-const QUICK_SALE=12000;
+const QUICK_SALE_TARGET = 12000;
 
-let INVENTORY=[], IMAGE_MAP=new Map();
+/* ---------------- App state ---------------- */
+let INVENTORY=[], IMAGE_MAP=[], METRICS=null;
 
-async function fetchCSV(url){ const r=await fetch(url+'?t='+Date.now()); return parseCSV(await r.text()); }
-
-function coerceNumbers(r){
-  ["rrp","wholesale_price","size2","size4","size6","size8","size10","size12","size14","qty"].forEach(k=> r[k]=Number(r[k]||0));
-  return r;
+/* ---------------- Image matching ----------------
+   Priority: exact name match -> contains match (case-insensitive)
+   Multiple images per name: first wins (stable order from CSV).
+--------------------------------------------------*/
+function buildImageMatchers(rows){
+  const exact = new Map();   // name -> image
+  const list  = [];          // [{nameLC,image}]
+  for(const r of rows){
+    const name=(r.name||'').trim(); const image=(r.image||'').trim();
+    if(!name || !image) continue;
+    const nlc = lc(name);
+    if(!exact.has(nlc)) exact.set(nlc, image);
+    list.push({nameLC:nlc, image});
+  }
+  return { exact, list };
+}
+function pickImageFor(itemName, matchers){
+  const n = lc(itemName);
+  if(!n) return '';
+  // exact
+  if(matchers.exact.has(n)) return matchers.exact.get(n);
+  // contains: choose the first pattern whose name is contained in itemName
+  for(const m of matchers.list){
+    if(n.includes(m.nameLC)) return m.image;
+  }
+  return '';
 }
 
-function applyImage(r){
-  // Prefer inventory image; fallback to image_map by item_name (case-insensitive)
-  if(r.image && r.image.startsWith('images/')) return r.image;
-  const key=(r.item_name||"").toLowerCase().trim();
-  return IMAGE_MAP.get(key) || PLACEHOLDER;
+/* ---------------- Inventory helpers ---------------- */
+function coerceWideRow(r){
+  // numeric fields
+  const num = k => Number((r[k]??'').toString().replace(/[^\d.\-]/g,''))||0;
+  const sizes = {2:num('size2'),4:num('size4'),6:num('size6'),8:num('size8'),
+                 10:num('size10'),12:num('size12'),14:num('size14')};
+  const total = num('total_qty') || Object.values(sizes).reduce((a,b)=>a+b,0);
+  return {
+    sku: r.sku||'',
+    brand: r.brand||'',
+    item_name: r.item_name||'',
+    description: r.description||'',
+    category: r.category||'',
+    subcategory: r.subcategory||'',
+    gender: r.gender||'',
+    condition: r.condition||'',
+    colour: r.colour||'',
+    rrp: num('rrp'),
+    sizes,
+    size2: sizes[2], size4: sizes[4], size6: sizes[6], size8: sizes[8],
+    size10: sizes[10], size12: sizes[12], size14: sizes[14],
+    qty: total,
+    wholesale_price: 0 // you can compute a factor if you wish
+  };
 }
 
+/* ---------------- Rendering ---------------- */
 function sizePills(r){
   const out=[];
-  [[2,"size2"],[4,"size4"],[6,"size6"],[8,"size8"],[10,"size10"],[12,"size12"],[14,"size14"]].forEach(([n,k])=>{
+  [[2,'size2'],[4,'size4'],[6,'size6'],[8,'size8'],[10,'size10'],[12,'size12'],[14,'size14']].forEach(([n,k])=>{
     const v=+r[k]||0; if(v>0) out.push(`<span class="chip">${n}×${v}</span>`);
   });
-  return out.join("");
+  return out.join('');
 }
 
-function renderTotals(rows){
+function renderMetricsFromJSON(metrics){
+  // Headline
+  const pieces = metrics.total_pieces||0;
+  const skus   = metrics.distinct_items||0;
+  document.getElementById('heroPill').textContent = `${fmtInt(pieces)} pieces • ${fmtInt(skus)} SKUs`;
+  document.getElementById('sumPieces').textContent = fmtInt(pieces);
+  document.getElementById('sumSkus').textContent   = fmtInt(skus);
+
+  // Size tiles
+  const sizes = metrics.sizes||{};
+  const order = [2,4,6,8,10,12,14];
+  document.getElementById('sizes').innerHTML =
+    order.map(s=>`
+      <div class="sizepill"><b>Size ${s}</b><span class="sub">${fmtInt(sizes[String(s)]||0)} pieces</span></div>
+    `).join('');
+}
+
+function renderMetricsFromInventory(rows){
   const pieces = rows.reduce((a,b)=>a+(+b.qty||0),0);
-  const skus = rows.length;
-  document.getElementById('heroPill').textContent = `${fmt(pieces)} pieces • ${fmt(skus)} SKUs • 50 boxes`;
-  document.getElementById('sumPieces').textContent = fmt(pieces);
-  document.getElementById('sumSkus').textContent = fmt(skus);
+  const skus   = rows.length;
+  document.getElementById('heroPill').textContent = `${fmtInt(pieces)} pieces • ${fmtInt(skus)} SKUs`;
+  document.getElementById('sumPieces').textContent = fmtInt(pieces);
+  document.getElementById('sumSkus').textContent   = fmtInt(skus);
 
-  const sizeTotals={2:0,4:0,6:0,8:0,10:0,12:0,14:0};
+  const totals={2:0,4:0,6:0,8:0,10:0,12:0,14:0};
   rows.forEach(r=>{
-    sizeTotals[2]+=r.size2; sizeTotals[4]+=r.size4; sizeTotals[6]+=r.size6;
-    sizeTotals[8]+=r.size8; sizeTotals[10]+=r.size10; sizeTotals[12]+=r.size12; sizeTotals[14]+=r.size14;
+    totals[2]+=r.size2; totals[4]+=r.size4; totals[6]+=r.size6; totals[8]+=r.size8;
+    totals[10]+=r.size10; totals[12]+=r.size12; totals[14]+=r.size14;
   });
-  const sizes=document.getElementById('sizes');
-  sizes.innerHTML=[2,4,6,8,10,12,14].map(s=>`
-    <div class="sizepill"><b>Size ${s}</b><span class="sub">${fmt(sizeTotals[s])} pieces</span></div>
-  `).join("");
-
-  const wholesaleTotal = rows.reduce((a,r)=> a + (+r.wholesale_price||0)*(+r.qty||0),0);
-  document.getElementById('sumWholesale').textContent = money(wholesaleTotal);
-  document.getElementById('sumQuick').textContent = money(QUICK_SALE);
+  document.getElementById('sizes').innerHTML =
+    [2,4,6,8,10,12,14].map(s=>`
+      <div class="sizepill"><b>Size ${s}</b><span class="sub">${fmtInt(totals[s])} pieces</span></div>
+    `).join('');
 }
 
-function filterRows(rows){
+function renderList(rows, matchers){
+  const grid=document.getElementById('grid');
+  const empty=document.getElementById('empty');
+
+  // Filters
   const size = document.getElementById('sizeFilter').value;
   const cat  = document.getElementById('catFilter').value;
   const q    = document.getElementById('search').value.trim().toLowerCase();
-  return rows.filter(r=>{
-    if(size){ if((+r['size'+size]||0)===0) return false; }
+
+  const filtered = rows.filter(r=>{
+    if(size && (+r['size'+size]||0)===0) return false;
     if(cat && r.category!==cat && r.subcategory!==cat) return false;
     if(q){
-      const hay=(r.item_name+" "+r.description+" "+r.colour+" "+r.category+" "+r.subcategory).toLowerCase();
+      const hay=(r.item_name+' '+r.description+' '+r.colour+' '+r.category+' '+r.subcategory).toLowerCase();
       if(!hay.includes(q)) return false;
     }
     return true;
   });
-}
 
-function renderList(rows){
-  const grid=document.getElementById('grid');
-  const empty=document.getElementById('empty');
-  // show items with images first
-  const prepared = rows.map(r=>({...r,__img:applyImage(r),__miss:0}))
-                       .map(r=>({...r,__miss: r.__img===PLACEHOLDER?1:0}))
-                       .sort((a,b)=> a.__miss-b.__miss || (a.item_name||"").localeCompare(b.item_name||""));
+  // Image selection (exact → contains)
+  const prepared = filtered.map(r=>{
+    const img = pickImageFor(r.item_name, matchers) || PLACEHOLDER;
+    return {...r, __img:img, __miss: img===PLACEHOLDER?1:0};
+  }).sort((a,b)=> a.__miss-b.__miss || (a.item_name||'').localeCompare(b.item_name||''));
+
   grid.innerHTML = prepared.map(r=>`
     <article class="item">
       <div class="pic">${r.__img?`<img src="${r.__img}" alt="${r.item_name}">`:`<div style="color:#94a3b8">Photo Coming Soon</div>`}</div>
       <div class="meta">
         <h3>${r.item_name||'—'}</h3>
-        <div class="sub">${r.description||''}${r.colour?` • Colour: ${r.colour}`:''}</div>
+        <div class="sub">${[r.description, r.colour].filter(Boolean).join(' • ')}</div>
         <div class="chips">${sizePills(r)}</div>
         <div class="row">
-          <div class="badge"><strong>Qty:</strong>&nbsp;${fmt(r.qty||0)}</div>
-          <div class="badge"><strong>RRP:</strong>&nbsp;${r.rrp?money(r.rrp):'—'}</div>
-          <div class="badge"><strong>Wholesale:</strong>&nbsp;${r.wholesale_price?money(r.wholesale_price):'—'}</div>
+          <div class="badge"><strong>Qty:</strong>&nbsp;${fmtInt(r.qty||0)}</div>
+          <div class="badge"><strong>RRP:</strong>&nbsp;${r.rrp?moneyAU(r.rrp):'—'}</div>
         </div>
       </div>
     </article>
-  `).join("");
+  `).join('');
 
   empty.style.display = prepared.length ? "none" : "";
 }
 
+/* ---------------- Boot ---------------- */
 async function start(){
-  const [invRaw,mapRaw] = await Promise.all([fetchCSV(INV_URL), fetchCSV(MAP_URL)]);
-  // build image map (name -> image), lowercased
-  IMAGE_MAP.clear();
-  mapRaw.forEach(r=>{
-    if(r.name && r.image){
-      IMAGE_MAP.set(String(r.name).toLowerCase().trim(), r.image);
+  try{
+    // Load all sources (JSON is optional)
+    const [invRows, mapRows] = await Promise.all([
+      fetchCSV(INV_URL),
+      fetchCSV(MAP_URL)
+    ]).catch(e=>{ throw e; });
+
+    // Try metrics JSON; if it fails, we compute later
+    try{ METRICS = await fetchJSON(METRICS_URL); } catch(e){ METRICS = null; }
+
+    // Build matchers from image map
+    IMAGE_MAP = mapRows;
+    const matchers = buildImageMatchers(IMAGE_MAP);
+
+    // Coerce inventory
+    INVENTORY = invRows.map(coerceWideRow);
+
+    // Render metrics
+    if(METRICS && typeof METRICS.total_pieces === 'number'){
+      renderMetricsFromJSON(METRICS);
+    } else {
+      renderMetricsFromInventory(INVENTORY);
     }
-  });
 
-  INVENTORY = invRaw.map(coerceNumbers);
+    // Wholesale totals (naive example: set wholesale as 40% of RRP per unit)
+    const WHOLESALE_FACTOR = 0.4;
+    const withWholesale = INVENTORY.map(r => ({...r, wholesale_price: (r.rrp||0)*WHOLESALE_FACTOR }));
+    const wholesaleTotal = withWholesale.reduce((a,r)=> a + (r.wholesale_price||0)*(r.qty||0), 0);
+    document.getElementById('sumWholesale').textContent = moneyAU(wholesaleTotal);
+    document.getElementById('sumQuick').textContent     = moneyAU(QUICK_SALE_TARGET);
 
-  // totals
-  renderTotals(INVENTORY);
-  // list
-  const rerender = ()=>{
-    renderList(filterRows(INVENTORY));
-  };
-  ['sizeFilter','catFilter','search'].forEach(id=>{
-    const el=document.getElementById(id);
-    el.addEventListener('input',rerender); el.addEventListener('change',rerender);
-  });
-  rerender();
+    // Set up filters
+    const rerender = ()=> renderList(withWholesale, matchers);
+    ['sizeFilter','catFilter','search'].forEach(id=>{
+      const el=document.getElementById(id);
+      el.addEventListener('input',rerender); el.addEventListener('change',rerender);
+    });
+    rerender();
+
+  }catch(err){
+    console.error(err);
+    document.getElementById('heroPill').textContent = 'Load error — check filenames & local server';
+    document.getElementById('grid').innerHTML = '<div class="empty">Could not load data. Ensure index.html, detailed_inventory.csv, image_map.csv, and summary_metrics.json are in the same folder.</div>';
+  }
 }
 start();
 </script>
