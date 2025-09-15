@@ -1,167 +1,3 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Marleen Molenaar Collection — Wholesale Catalogue</title>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#f6f7fb; --card:#ffffff; --ink:#0e1025; --ink2:#4b4f69; --muted:#8b92a7;
-  --brand1:#6f4cf6; --brand2:#9b66ff; --chip:#eef0fb; --border:#e7e8f1; --shadow:0 10px 26px rgba(25,26,54,.08);
-  --foot:#0f1129; --footCard:#161b33; --ok:#1bd19a;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
-a{color:#4e5bff;text-decoration:none;font-weight:600}
-.header{
-  padding:56px 20px 110px;
-  background:radial-gradient(1100px 520px at 15% -10%,rgba(255,255,255,.35),transparent),
-             linear-gradient(135deg,var(--brand1),var(--brand2));
-  color:#fff;
-}
-.wrap{max-width:1160px;margin:0 auto}
-.h1{font-size:clamp(34px,5vw,64px);font-weight:800;letter-spacing:.2px;margin:0 0 10px}
-.tag{display:inline-block;margin-top:16px;padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.16);backdrop-filter:blur(3px);font-weight:700}
-.panel{margin-top:-70px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:18px; padding:18px; box-shadow:var(--shadow); margin:16px 0}
-
-.grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:12px}
-@media (max-width:980px){.grid7{grid-template-columns:repeat(3,1fr)}}
-@media (max-width:620px){.grid7{grid-template-columns:repeat(2,1fr)}}
-
-.sizepill{
-  background:linear-gradient(180deg,#fff, #f6f7ff);
-  border:1px solid var(--border);border-radius:16px;padding:14px 12px;text-align:center;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.7);
-}
-.sizepill b{display:block;font-size:18px;margin-bottom:4px}
-.sizepill .sub{color:#61698a;font-weight:600}
-
-.kvgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-@media (max-width:980px){.kvgrid{grid-template-columns:1fr}}
-.kv{padding:16px;border:1px solid var(--border);border-radius:16px;background:#fff;display:grid;gap:8px}
-.kv h4{margin:0 0 4px;font-size:16px}
-.kv a{display:inline-block;padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:#fafbff}
-
-.controls{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
-select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-radius:12px;background:#fff;font-weight:600}
-.gridCards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-@media (max-width:980px){.gridCards{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:650px){.gridCards{grid-template-columns:1fr}}
-.item{background:#fff;border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
-.pic{background:#f4f5fa;height:260px;display:flex;align-items:center;justify-content:center}
-.pic img{max-width:95%;max-height:95%;object-fit:contain}
-.meta{padding:16px 18px 18px}
-.meta h3{margin:0 0 4px;font-size:20px}
-.sub{color:var(--ink2);font-size:14px;margin-bottom:10px}
-.chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{background:var(--chip);border:1px dashed var(--border);padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700;color:#2b3159}
-.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.badge{background:#f6f7fb;border:1px solid var(--border);border-radius:999px;padding:6px 12px;font-weight:700}
-.empty{padding:16px;color:#8a90a7}
-
-/* footer */
-.footer{background:var(--foot);color:#eaf0ff;margin-top:28px}
-.footer .wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;padding:26px 20px}
-@media (max-width:820px){.footer .wrap{grid-template-columns:1fr}}
-.footCard{background:var(--footCard);border-radius:18px;padding:18px 20px}
-.footCard h3{color:#aeb8ff;margin:0 0 10px}
-
-/* big totals in footer */
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
-@media (max-width:540px){.stats{grid-template-columns:1fr}}
-.stat{
-  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);
-  border-radius:16px;padding:16px 14px;
-}
-.stat small{color:#9fb3ff;display:block;margin-bottom:6px;font-weight:700;letter-spacing:.2px}
-.stat b{display:block;font-size:24px;line-height:1.1}
-.stat .ok{color:var(--ok)}
-</style>
-</head>
-<body>
-<header class="header">
-  <div class="wrap">
-    <h1 class="h1">Marleen Molenaar Collection</h1>
-    <div id="heroPill" class="tag">Loading…</div>
-  </div>
-</header>
-
-<main class="wrap panel">
-  <!-- Size breakdown -->
-  <section class="card">
-    <h2 style="margin:0 0 10px">🧵 Size Breakdown — Pieces Available</h2>
-    <div id="sizes" class="grid7"></div>
-  </section>
-
-  <!-- Proof links -->
-  <section class="kvgrid">
-    <div class="kv">
-      <h4>🏆 Lane Crawford Luxury Retailer</h4>
-      <a href="https://www.lanecrawford.com/brand/700351/marleen-molenaar-sleepwear/women">View Brand Page</a>
-      <div class="sub">Hong Kong’s premier luxury department store — equivalent to Harrods. Establishes brand positioning.</div>
-    </div>
-    <div class="kv">
-      <h4>💰 Retail Pricing Evidence</h4>
-      <a href="https://www.retykle.com/search?q=marleen%20molenaar">Retykle Pricing Proof</a>
-      <div class="sub">Shows premium retail/resale pricing for individual pieces.</div>
-    </div>
-    <div class="kv">
-      <h4>📰 Media Coverage</h4>
-      <a href="https://www.scmp.com/article/533820/eastern-premise">South China Morning Post</a>
-      <div class="sub">2006 profile: “running a children’s clothing design company under her own name.”</div>
-    </div>
-  </section>
-
-  <!-- Filters + Grid -->
-  <section class="card">
-    <div class="controls">
-      <select id="sizeFilter">
-        <option value="">All Sizes</option>
-        <option>2</option><option>4</option><option>6</option><option>8</option>
-        <option>10</option><option>12</option><option>14</option>
-      </select>
-      <select id="catFilter">
-        <option value="">All Categories</option>
-        <option>Children's</option><option>Ladies</option><option>Boys</option><option>Baby</option><option>Unisex</option>
-      </select>
-      <input id="search" type="search" placeholder="Search name, colour, description" />
-    </div>
-
-    <div id="grid" class="gridCards"></div>
-    <div id="empty" class="empty" style="display:none">No results.</div>
-  </section>
-</main>
-
-<footer class="footer">
-  <div class="wrap">
-    <div class="footCard">
-      <h3>Contact Information</h3>
-      <p><strong>Gary Flax:</strong> +61 414 242 142<br>
-         <strong>Location:</strong> Vaucluse, Sydney NSW<br>
-         <strong>Viewing:</strong> Weekdays 5pm+, Weekends anytime<br>
-         <strong>Brand:</strong> Marleen Molenaar<br>
-         <strong>Access:</strong> Ground floor, driveway access for easy pickup</p>
-      <div class="stats">
-        <div class="stat">
-          <small>Wholesale (target)</small>
-          <b id="sumWholesaleFooter" class="ok">—</b>
-        </div>
-        <div class="stat">
-          <small>Quick sale (target)</small>
-          <b id="sumQuickFooter">—</b>
-        </div>
-      </div>
-    </div>
-    <div class="footCard">
-      <h3>Collection Summary</h3>
-      <p><span id="sumPieces">—</span> pieces across <span id="sumSkus">—</span> SKUs</p>
-    </div>
-  </div>
-</footer>
-
 <script>
 /* ---------------- helpers: CSV + JSON (quote-safe, header-normalised) ---------------- */
 function splitCSVLine(s){
@@ -200,7 +36,7 @@ async function fetchJSON(url){
 /* ---------------- formatting ---------------- */
 const moneyAU = v => new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD'}).format(+v||0);
 const fmtInt  = v => (+v||0).toLocaleString('en-AU');
-const lc = s => (s||'').toString().trim().toLowerCase();
+const lc = s => (s||'').toString().replace(/\uFEFF/g,'').trim().toLowerCase();  // strip BOM, trim, lower
 const num = v => Number((v??'').toString().replace(/[^\d.\-]/g,''))||0;
 
 /* ---------------- config ---------------- */
@@ -208,11 +44,11 @@ const INV_URL='detailed_inventory.csv';     // wide inventory (size2..size14)
 const MAP_URL='image_map.csv';              // image,name
 const METRICS_URL='summary_metrics.json';   // optional
 const PLACEHOLDER='images/placeholder.webp';
-const WHOLESALE_FACTOR = 0.40;              // adjust if you like
+const WHOLESALE_FACTOR = 0.40;
 const QUICK_SALE_TARGET = 12000;
 
 /* ---------------- global state ---------------- */
-let INVENTORY=[], MATCHERS=null, METRICS=null;
+let INVENTORY=[], IMG_INDEX=new Map(), METRICS=null;
 
 /* ---------------- header-agnostic inventory normaliser ---------------- */
 function normaliseRow(row){
@@ -246,9 +82,7 @@ function normaliseRow(row){
 /* ---------------- aggregate duplicates (name+colour+subcategory) ---------------- */
 function aggregateInventory(rows){
   const keyOf = r => [
-    (r.item_name||'').trim().toLowerCase(),
-    (r.colour||'').trim().toLowerCase(),
-    (r.subcategory||'').trim().toLowerCase()
+    lc(r.item_name||''), lc(r.colour||''), lc(r.subcategory||'')
   ].join(' | ');
 
   const map = new Map();
@@ -279,42 +113,30 @@ function aggregateInventory(rows){
   return Array.from(map.values());
 }
 
-/* ---------------- image matchers (exact → contains) ---------------- */
-function buildImageMatchers(mapRows){
-  const exact = new Map();
-  const list  = [];
-  for(const raw of mapRows){
-    const keys = Object.keys(raw);
-    const m={}; keys.forEach(k=> m[lc(k)]=raw[k]);
-    const name = (m['name']||'').toString().trim();
-    const image= (m['image']||'').toString().trim();
-    if(!name || !image) continue;
-    const key = lc(name);
-    if(!exact.has(key)) exact.set(key, image);
-    list.push({nameLC:key, image});
-  }
-  return { exact, list };
-}
-function pickImageFor(itemName, matchers){
-  const n = lc(itemName);
-  if(!n) return '';
-  if(matchers.exact.has(n)) return matchers.exact.get(n);
-  for(const m of matchers.list){ if(n.includes(m.nameLC)) return m.image; }
-  return '';
-}
-
-/* ----------- sanitize images: hide “money/coin/bag/icon/ai” pictures ----------- */
+/* ---------------- build EXACT image index (name → image) ---------------- */
 const IMAGE_BLOCKLIST = [
   'money','coin','coins','cash','bag','dollar','usd','aud','eur','yen','gbp',
   'wallet','bank','finance','stock','chart','icon','vector','illustration','ai'
 ];
-function sanitizeImage(path){
-  if(!path) return '';
-  const p = lc(path);
-  for(const bad of IMAGE_BLOCKLIST){
-    if(p.includes(bad)) return ''; // fall back to placeholder
+function buildImageIndex(mapRows){
+  const idx = new Map();
+  for(const raw of mapRows){
+    // case-insensitive headers
+    const m={}; Object.keys(raw).forEach(k=> m[lc(k)]=raw[k]);
+    let name = (m['name']||'').toString();
+    let image= (m['image']||'').toString();
+    if(!name || !image) continue;
+    const key = lc(name);
+    // block obvious non-product images
+    const p = lc(image);
+    if(IMAGE_BLOCKLIST.some(b=> p.includes(b))) continue;
+    if(!idx.has(key)) idx.set(key, image);
   }
-  return path;
+  return idx;
+}
+function pickImageExact(itemName){
+  const key = lc(itemName||'');
+  return IMG_INDEX.get(key) || ''; // EXACT ONLY; no substring fallback
 }
 
 /* ---------------- UI helpers ---------------- */
@@ -333,32 +155,38 @@ function renderMetricsFromJSON(metrics){
   const pieces = metrics.total_pieces||0;
   const skus   = metrics.distinct_items||0;
   document.getElementById('heroPill').textContent = `${fmtInt(pieces)} pieces • ${fmtInt(skus)} SKUs`;
-  document.getElementById('sumPieces').textContent = fmtInt(pieces);
-  document.getElementById('sumSkus').textContent   = fmtInt(skus);
+  document.getElementById('sumPieces')?.textContent = fmtInt(pieces);
+  document.getElementById('sumSkus')?.textContent   = fmtInt(skus);
 
   const sizes = metrics.sizes||{};
   const order=[2,4,6,8,10,12,14];
-  document.getElementById('sizes').innerHTML =
-    order.map(s=>`<div class="sizepill"><b>Size ${s}</b><span class="sub">${fmtInt(sizes[String(s)]||0)} pieces</span></div>`).join('');
+  const sizesEl = document.getElementById('sizes');
+  if(sizesEl){
+    sizesEl.innerHTML =
+      order.map(s=>`<div class="sizepill"><b>Size ${s}</b><span class="sub">${fmtInt(sizes[String(s)]||0)} pieces</span></div>`).join('');
+  }
 }
 function renderMetricsFromInventory(rows){
   const pieces = rows.reduce((a,b)=>a+(+b.qty||0),0);
   const skus   = rows.length;
   document.getElementById('heroPill').textContent = `${fmtInt(pieces)} pieces • ${fmtInt(skus)} SKUs`;
-  document.getElementById('sumPieces').textContent = fmtInt(pieces);
-  document.getElementById('sumSkus').textContent   = fmtInt(skus);
+  document.getElementById('sumPieces')?.textContent = fmtInt(pieces);
+  document.getElementById('sumSkus')?.textContent   = fmtInt(skus);
 
   const totals={2:0,4:0,6:0,8:0,10:0,12:0,14:0};
   rows.forEach(r=>{
     totals[2]+=r.size2; totals[4]+=r.size4; totals[6]+=r.size6; totals[8]+=r.size8;
     totals[10]+=r.size10; totals[12]+=r.size12; totals[14]+=r.size14;
   });
-  document.getElementById('sizes').innerHTML =
-    [2,4,6,8,10,12,14].map(s=>`<div class="sizepill"><b>Size ${s}</b><span class="sub">${fmtInt(totals[s])} pieces</span></div>`).join('');
+  const sizesEl = document.getElementById('sizes');
+  if(sizesEl){
+    sizesEl.innerHTML =
+      [2,4,6,8,10,12,14].map(s=>`<div class="sizepill"><b>Size ${s}</b><span class="sub">${fmtInt(totals[s])} pieces</span></div>`).join('');
+  }
 }
 
-/* ---------------- list rendering (STRICT size filter) ---------------- */
-function renderList(rows, matchers){
+/* ---------------- list rendering (STRICT size filter + EXACT images) ---------------- */
+function renderList(rows){
   const grid=document.getElementById('grid');
   const empty=document.getElementById('empty');
 
@@ -380,9 +208,7 @@ function renderList(rows, matchers){
   });
 
   const prepared = filtered.map(r=>{
-    const chosen = pickImageFor(r.item_name, matchers);
-    const clean  = sanitizeImage(chosen);
-    const img    = clean || PLACEHOLDER;
+    const img = pickImageExact(r.item_name) || PLACEHOLDER;
     return {...r, __img:img, __miss: img===PLACEHOLDER?1:0};
   }).sort((a,b)=> a.__miss-b.__miss || (a.item_name||'').localeCompare(b.item_name||''));
 
@@ -411,8 +237,8 @@ async function start(){
     const [inv, map] = await Promise.all([fetchCSV(INV_URL), fetchCSV(MAP_URL)]);
     // normalise rows, then aggregate duplicates
     INVENTORY = aggregateInventory(inv.rows.map(normaliseRow));
-    // image matchers
-    MATCHERS = buildImageMatchers(map.rows);
+    // EXACT image index
+    IMG_INDEX = buildImageIndex(map.rows);
 
     // metrics (JSON if present; otherwise compute)
     try {
@@ -422,13 +248,15 @@ async function start(){
       renderMetricsFromInventory(INVENTORY);
     }
 
-    // totals (simple wholesale calc) — write them into footer stats
+    // footer totals
     const wholesaleTotal = INVENTORY.reduce((a,r)=> a + (r.rrp*WHOLESALE_FACTOR)*(r.qty||0), 0);
-    document.getElementById('sumWholesaleFooter').textContent = moneyAU(wholesaleTotal);
-    document.getElementById('sumQuickFooter').textContent     = moneyAU(QUICK_SALE_TARGET);
+    const wEl = document.getElementById('sumWholesaleFooter');
+    const qEl = document.getElementById('sumQuickFooter');
+    if(wEl) wEl.textContent = moneyAU(wholesaleTotal);
+    if(qEl) qEl.textContent = moneyAU(QUICK_SALE_TARGET);
 
     // filters
-    const rerender = ()=> renderList(INVENTORY, MATCHERS);
+    const rerender = ()=> renderList(INVENTORY);
     ['sizeFilter','catFilter','search'].forEach(id=>{
       const el=document.getElementById(id);
       el.addEventListener('input',rerender); el.addEventListener('change',rerender);
@@ -437,11 +265,12 @@ async function start(){
   }catch(err){
     console.error(err);
     document.getElementById('heroPill').textContent = 'Load error — check filenames';
-    document.getElementById('grid').innerHTML =
-      '<div class="empty">Could not load data. Ensure index.html, detailed_inventory.csv, image_map.csv, and summary_metrics.json are in the same folder/repo path.</div>';
+    const grid=document.getElementById('grid');
+    if(grid){
+      grid.innerHTML =
+        '<div class="empty">Could not load data. Ensure index.html, detailed_inventory.csv, image_map.csv, and summary_metrics.json are in the same folder/repo path.</div>';
+    }
   }
 }
 start();
 </script>
-</body>
-</html>
