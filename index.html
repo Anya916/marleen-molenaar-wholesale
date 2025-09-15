@@ -116,19 +116,8 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
 
 <script>
 /* ---------------- CSV + JSON helpers (quote-safe) ---------------- */
-function parseCSV(text){
-  const rows=[]; const lines=text.replace(/\r/g,"").split("\n");
-  if(!lines.length) return rows;
-  const head = splitCSVLine(lines.shift()).map(h=>h.trim());
-  for(const line of lines){
-    if(!line || !line.trim()) continue;
-    const cells = splitCSVLine(line);
-    const obj={};
-    head.forEach((h,i)=> obj[h]=cells[i]!==undefined?cells[i]:"");
-    rows.push(obj);
-  }
-  return rows;
-}
+<script>
+/* ---------------- helpers: CSV + JSON (quote-safe, header-normalised) ---------------- */
 function splitCSVLine(s){
   const out=[]; let cur=""; let q=false;
   for(let i=0;i<s.length;i++){
@@ -140,104 +129,126 @@ function splitCSVLine(s){
   out.push(cur);
   return out;
 }
-async function fetchCSV(url){ const r=await fetch(url+'?t='+Date.now()); if(!r.ok) throw new Error(url+': '+r.status); return parseCSV(await r.text()); }
-async function fetchJSON(url){ const r=await fetch(url+'?t='+Date.now()); if(!r.ok) throw new Error(url+': '+r.status); return await r.json(); }
+function parseCSVToArray(text){
+  const lines=text.replace(/\r/g,"").split("\n").filter(l=>l.trim().length);
+  if(!lines.length) return {rows:[], headers:[]};
+  const headers = splitCSVLine(lines.shift()).map(h=>h.trim());
+  const rows = lines.map(line=>{
+    const cells=splitCSVLine(line); const obj={};
+    headers.forEach((h,i)=> obj[h]=cells[i]!==undefined?cells[i]:"");
+    return obj;
+  });
+  return {rows, headers};
+}
+async function fetchCSV(url){
+  const r=await fetch(url+'?t='+Date.now());
+  if(!r.ok) throw new Error(`${url}: HTTP ${r.status}`);
+  return parseCSVToArray(await r.text());
+}
+async function fetchJSON(url){
+  const r=await fetch(url+'?t='+Date.now());
+  if(!r.ok) throw new Error(`${url}: HTTP ${r.status}`);
+  return await r.json();
+}
 
-/* ---------------- Formatting ---------------- */
+/* ---------------- formatting ---------------- */
 const moneyAU = v => new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD'}).format(+v||0);
 const fmtInt  = v => (+v||0).toLocaleString('en-AU');
 const lc = s => (s||'').toString().trim().toLowerCase();
+const num = v => Number((v??'').toString().replace(/[^\d.\-]/g,''))||0;
 
-/* ---------------- Config (filenames as you have them) ---------------- */
-const INV_URL='detailed_inventory.csv'; // wide file
-const MAP_URL='image_map.csv';          // columns: image,name
-const METRICS_URL='summary_metrics.json';
+/* ---------------- config ---------------- */
+const INV_URL='detailed_inventory.csv';     // wide inventory (size2..size14)
+const MAP_URL='image_map.csv';              // image,name
+const METRICS_URL='summary_metrics.json';   // optional
 const PLACEHOLDER='images/placeholder.webp';
+const WHOLESALE_FACTOR = 0.40;              // adjust if you like
 const QUICK_SALE_TARGET = 12000;
 
-/* ---------------- App state ---------------- */
-let INVENTORY=[], IMAGE_MAP=[], METRICS=null;
+/* ---------------- global state ---------------- */
+let INVENTORY=[], MATCHERS=null, METRICS=null;
 
-/* ---------------- Image matching ----------------
-   Priority: exact name match -> contains match (case-insensitive)
-   Multiple images per name: first wins (stable order from CSV).
---------------------------------------------------*/
-function buildImageMatchers(rows){
-  const exact = new Map();   // name -> image
-  const list  = [];          // [{nameLC,image}]
-  for(const r of rows){
-    const name=(r.name||'').trim(); const image=(r.image||'').trim();
+/* ---------------- header-agnostic access ---------------- */
+function normaliseRow(row){
+  // Build case-insensitive map
+  const m = {}; for(const k of Object.keys(row)){ m[lc(k)]=row[k]; }
+  // read helpers (fallback to '')
+  const g = key => m[key] ?? '';
+
+  // sizes
+  const sizes = {
+    2 : num(g('size2')),   4 : num(g('size4')),   6 : num(g('size6')),
+    8 : num(g('size8')),   10: num(g('size10')), 12: num(g('size12')),
+    14: num(g('size14'))
+  };
+  const totalQty = num(g('total_qty'));
+  const qty = totalQty>0 ? totalQty : Object.values(sizes).reduce((a,b)=>a+b,0);
+
+  return {
+    sku: g('sku'),
+    brand: g('brand'),
+    item_name: g('item_name') || g('name') || g('title'),
+    description: g('description'),
+    category: g('category'),
+    subcategory: g('subcategory'),
+    gender: g('gender'),
+    condition: g('condition'),
+    colour: g('colour') || g('color'),
+    rrp: num(g('rrp')),
+    size2:sizes[2], size4:sizes[4], size6:sizes[6],
+    size8:sizes[8], size10:sizes[10], size12:sizes[12], size14:sizes[14],
+    qty
+  };
+}
+
+/* ---------------- image matchers ----------------
+   Works with header variants (image/name or Image/Name).
+   Priority: exact (full name) → contains (substring).
+-------------------------------------------------------------------------*/
+function buildImageMatchers(mapRows){
+  const exact = new Map();
+  const list  = [];
+  for(const raw of mapRows){
+    const keys = Object.keys(raw);
+    const m={}; keys.forEach(k=> m[lc(k)]=raw[k]);
+    const name = (m['name']||'').toString().trim();
+    const image= (m['image']||'').toString().trim();
     if(!name || !image) continue;
-    const nlc = lc(name);
-    if(!exact.has(nlc)) exact.set(nlc, image);
-    list.push({nameLC:nlc, image});
+    const key = lc(name);
+    if(!exact.has(key)) exact.set(key, image);
+    list.push({nameLC:key, image});
   }
   return { exact, list };
 }
 function pickImageFor(itemName, matchers){
   const n = lc(itemName);
   if(!n) return '';
-  // exact
-  if(matchers.exact.has(n)) return matchers.exact.get(n);
-  // contains: choose the first pattern whose name is contained in itemName
-  for(const m of matchers.list){
+  if(matchers.exact.has(n)) return matchers.exact.get(n);       // exact
+  for(const m of matchers.list){                                // contains
     if(n.includes(m.nameLC)) return m.image;
   }
   return '';
 }
 
-/* ---------------- Inventory helpers ---------------- */
-function coerceWideRow(r){
-  // numeric fields
-  const num = k => Number((r[k]??'').toString().replace(/[^\d.\-]/g,''))||0;
-  const sizes = {2:num('size2'),4:num('size4'),6:num('size6'),8:num('size8'),
-                 10:num('size10'),12:num('size12'),14:num('size14')};
-  const total = num('total_qty') || Object.values(sizes).reduce((a,b)=>a+b,0);
-  return {
-    sku: r.sku||'',
-    brand: r.brand||'',
-    item_name: r.item_name||'',
-    description: r.description||'',
-    category: r.category||'',
-    subcategory: r.subcategory||'',
-    gender: r.gender||'',
-    condition: r.condition||'',
-    colour: r.colour||'',
-    rrp: num('rrp'),
-    sizes,
-    size2: sizes[2], size4: sizes[4], size6: sizes[6], size8: sizes[8],
-    size10: sizes[10], size12: sizes[12], size14: sizes[14],
-    qty: total,
-    wholesale_price: 0 // you can compute a factor if you wish
-  };
-}
-
-/* ---------------- Rendering ---------------- */
-function sizePills(r){
+/* ---------------- UI bits ---------------- */
+function sizeChips(r){
   const out=[];
-  [[2,'size2'],[4,'size4'],[6,'size6'],[8,'size8'],[10,'size10'],[12,'size12'],[14,'size14']].forEach(([n,k])=>{
-    const v=+r[k]||0; if(v>0) out.push(`<span class="chip">${n}×${v}</span>`);
-  });
+  [[2,'size2'],[4,'size4'],[6,'size6'],[8,'size8'],[10,'size10'],[12,'size12'],[14,'size14']]
+    .forEach(([n,k])=>{ const v=+r[k]||0; if(v>0) out.push(`<span class="chip">${n}×${v}</span>`); });
   return out.join('');
 }
-
 function renderMetricsFromJSON(metrics){
-  // Headline
   const pieces = metrics.total_pieces||0;
   const skus   = metrics.distinct_items||0;
   document.getElementById('heroPill').textContent = `${fmtInt(pieces)} pieces • ${fmtInt(skus)} SKUs`;
   document.getElementById('sumPieces').textContent = fmtInt(pieces);
   document.getElementById('sumSkus').textContent   = fmtInt(skus);
 
-  // Size tiles
   const sizes = metrics.sizes||{};
-  const order = [2,4,6,8,10,12,14];
+  const order=[2,4,6,8,10,12,14];
   document.getElementById('sizes').innerHTML =
-    order.map(s=>`
-      <div class="sizepill"><b>Size ${s}</b><span class="sub">${fmtInt(sizes[String(s)]||0)} pieces</span></div>
-    `).join('');
+    order.map(s=>`<div class="sizepill"><b>Size ${s}</b><span class="sub">${fmtInt(sizes[String(s)]||0)} pieces</span></div>`).join('');
 }
-
 function renderMetricsFromInventory(rows){
   const pieces = rows.reduce((a,b)=>a+(+b.qty||0),0);
   const skus   = rows.length;
@@ -251,16 +262,12 @@ function renderMetricsFromInventory(rows){
     totals[10]+=r.size10; totals[12]+=r.size12; totals[14]+=r.size14;
   });
   document.getElementById('sizes').innerHTML =
-    [2,4,6,8,10,12,14].map(s=>`
-      <div class="sizepill"><b>Size ${s}</b><span class="sub">${fmtInt(totals[s])} pieces</span></div>
-    `).join('');
+    [2,4,6,8,10,12,14].map(s=>`<div class="sizepill"><b>Size ${s}</b><span class="sub">${fmtInt(totals[s])} pieces</span></div>`).join('');
 }
-
-function renderList(rows, matchers){
+function renderList(rows){
   const grid=document.getElementById('grid');
   const empty=document.getElementById('empty');
 
-  // Filters
   const size = document.getElementById('sizeFilter').value;
   const cat  = document.getElementById('catFilter').value;
   const q    = document.getElementById('search').value.trim().toLowerCase();
@@ -275,9 +282,8 @@ function renderList(rows, matchers){
     return true;
   });
 
-  // Image selection (exact → contains)
   const prepared = filtered.map(r=>{
-    const img = pickImageFor(r.item_name, matchers) || PLACEHOLDER;
+    const img = pickImageFor(r.item_name, MATCHERS) || PLACEHOLDER;
     return {...r, __img:img, __miss: img===PLACEHOLDER?1:0};
   }).sort((a,b)=> a.__miss-b.__miss || (a.item_name||'').localeCompare(b.item_name||''));
 
@@ -287,10 +293,11 @@ function renderList(rows, matchers){
       <div class="meta">
         <h3>${r.item_name||'—'}</h3>
         <div class="sub">${[r.description, r.colour].filter(Boolean).join(' • ')}</div>
-        <div class="chips">${sizePills(r)}</div>
+        <div class="chips">${sizeChips(r)}</div>
         <div class="row">
           <div class="badge"><strong>Qty:</strong>&nbsp;${fmtInt(r.qty||0)}</div>
           <div class="badge"><strong>RRP:</strong>&nbsp;${r.rrp?moneyAU(r.rrp):'—'}</div>
+          <div class="badge"><strong>Wholesale:</strong>&nbsp;${r.rrp?moneyAU(r.rrp*${WHOLESALE_FACTOR}):'—'}</div>
         </div>
       </div>
     </article>
@@ -299,54 +306,44 @@ function renderList(rows, matchers){
   empty.style.display = prepared.length ? "none" : "";
 }
 
-/* ---------------- Boot ---------------- */
+/* ---------------- start ---------------- */
 async function start(){
   try{
-    // Load all sources (JSON is optional)
-    const [invRows, mapRows] = await Promise.all([
-      fetchCSV(INV_URL),
-      fetchCSV(MAP_URL)
-    ]).catch(e=>{ throw e; });
+    const [inv, map] = await Promise.all([fetchCSV(INV_URL), fetchCSV(MAP_URL)]);
+    // normalise inventory rows
+    INVENTORY = inv.rows.map(normaliseRow);
+    // build image matchers
+    MATCHERS = buildImageMatchers(map.rows);
 
-    // Try metrics JSON; if it fails, we compute later
-    try{ METRICS = await fetchJSON(METRICS_URL); } catch(e){ METRICS = null; }
-
-    // Build matchers from image map
-    IMAGE_MAP = mapRows;
-    const matchers = buildImageMatchers(IMAGE_MAP);
-
-    // Coerce inventory
-    INVENTORY = invRows.map(coerceWideRow);
-
-    // Render metrics
-    if(METRICS && typeof METRICS.total_pieces === 'number'){
+    // summary metrics: use JSON if present, else compute from inventory
+    try {
+      METRICS = await fetchJSON(METRICS_URL);
       renderMetricsFromJSON(METRICS);
-    } else {
+    } catch(e) {
       renderMetricsFromInventory(INVENTORY);
     }
 
-    // Wholesale totals (naive example: set wholesale as 40% of RRP per unit)
-    const WHOLESALE_FACTOR = 0.4;
-    const withWholesale = INVENTORY.map(r => ({...r, wholesale_price: (r.rrp||0)*WHOLESALE_FACTOR }));
-    const wholesaleTotal = withWholesale.reduce((a,r)=> a + (r.wholesale_price||0)*(r.qty||0), 0);
+    // totals (wholesale quick calc)
+    const wholesaleTotal = INVENTORY.reduce((a,r)=> a + (r.rrp*${WHOLESALE_FACTOR})*(r.qty||0), 0);
     document.getElementById('sumWholesale').textContent = moneyAU(wholesaleTotal);
-    document.getElementById('sumQuick').textContent     = moneyAU(QUICK_SALE_TARGET);
+    document.getElementById('sumQuick').textContent     = moneyAU(${QUICK_SALE_TARGET});
 
-    // Set up filters
-    const rerender = ()=> renderList(withWholesale, matchers);
+    // filters
+    const rerender = ()=> renderList(INVENTORY);
     ['sizeFilter','catFilter','search'].forEach(id=>{
       const el=document.getElementById(id);
       el.addEventListener('input',rerender); el.addEventListener('change',rerender);
     });
     rerender();
-
   }catch(err){
     console.error(err);
     document.getElementById('heroPill').textContent = 'Load error — check filenames & local server';
-    document.getElementById('grid').innerHTML = '<div class="empty">Could not load data. Ensure index.html, detailed_inventory.csv, image_map.csv, and summary_metrics.json are in the same folder.</div>';
+    document.getElementById('grid').innerHTML =
+      '<div class="empty">Could not load data. Ensure index.html, detailed_inventory.csv, image_map.csv, and summary_metrics.json are in the same folder/repo path.</div>';
   }
 }
 start();
+</script>
 </script>
 </body>
 </html>
