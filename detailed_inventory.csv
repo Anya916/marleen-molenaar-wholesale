@@ -1,15 +1,37 @@
-item_name,description,colour,category,subcategory,image,size2,size4,size6,size8,size10,size12,size14,qty,rrp,wholesale_price
-Ella Princess Gown,Girls long gown,Pink,Children's,Gown,images/image1_small.jpg,5,8,10,12,10,8,5,58,59,38
-Cora Set,Girls sleeveless top + shorts,Blue,Children's,Pyjamas,images/image2_small.jpg,4,6,8,10,8,6,4,46,45,29
-Cora Set,Girls sleeveless top + shorts,Pink,Children's,Pyjamas,images/image3_small.jpg,3,6,9,9,7,5,3,42,45,29
-Ava Set,Girls singlet top + pants,Green/Yellow,Children's,Pyjamas,images/image4_small.jpg,4,6,6,8,6,4,2,36,49,31
-Harper Set,Girls shorts + vest,Lemon,Children's,Pyjamas,images/image5_small.jpg,3,6,9,9,7,5,3,42,39,25
-Ruby Set,Girls boob tube + shorts,Check Pink,Children's,Pyjamas,images/image6_small.jpg,2,4,6,8,6,4,2,32,42,27
-Ella Semi-Pyjama,Girls semi-pyjama,Pink,Children's,Pyjamas,images/image7_small.jpg,4,6,8,8,6,4,2,38,45,29
-Grace Nightie,Girls nightie with bow,Off-White,Children's,Nightdress,images/image8_small.jpg,3,5,7,7,5,3,2,32,55,36
-Isabella Nightdress,Girls nightdress no collar,Blue Check,Children's,Nightdress,images/image9_small.jpg,3,5,7,7,5,3,2,32,55,36
-Isabella Nightdress,Girls nightdress no collar,Pink Check,Children's,Nightdress,images/image9_small.jpg,2,4,6,6,4,2,2,26,55,36
-Mia Shirt,Girls shirt LS,Blue,Children's,Daywear,images/image10_small.jpg,2,4,6,6,4,2,2,26,48,31
-Mia Shirt,Girls shirt LS,Lilac,Children's,Daywear,images/image10_small.jpg,2,4,6,6,4,2,2,26,48,31
-Ella Suzy Nightie,Girls long nightie,Pink Suzy,Children's,Nightdress,images/image11_small.jpg,3,5,7,7,5,3,2,32,52,34
-… (repeat this pattern for all 129 SKUs) …
+sku,brand,item_name,description,category,subcategory,gender,condition,colour,rrp,size2,size4,size6,size8,size10,size12,size14,total_qty
+MM_0001,Marleen Molenaar,Ella Princess Gown,Girls long gown,Children's,Girls Gown,Girls,New,Pink,279.03,5,5,5,5,5,5,5,35
+MM_0002,Marleen Molenaar,Cora Set (Blue),Girls sleeveless top + shorts - 1 Flower,Children's,Girls PJ Set,Girls,New,Blue,111.72,4,4,2,2,1,0,0,13
+MM_0003,Marleen Molenaar,Cora Set (Pink),Girls sleeveless top + shorts - 1 Flower,Children's,Girls PJ Set,Girls,New,Pink,111.72,6,6,5,5,3,1,1,27
+MM_0004,Marleen Molenaar,Ava Set,Girls singlet top + pants,Children's,Girls Set,Girls,New,Green/Yellow,120.54,4,4,11,13,7,0,0,39
+MM_0005,Marleen Molenaar,Harper Set (Lemon),Girls shorts + vest,Children's,Girls Set,Girls,New,Lemon/Green,120.54,4,5,5,7,4,1,0,26
+MM_0006,Marleen Molenaar,Ruby Set,Girls boob tube + shorts,Children's,Girls PJ Shorty,Girls,New,Check Pink,120.54,2,3,5,4,4,0,0,18
+MM_0007,Marleen Molenaar,Ella Semi-Pyjama,Girls semi-pyjama,Children's,Girls PJ Set,Girls,New,Pink,124.95,7,6,8,9,7,5,0,42
+MM_0008,Marleen Molenaar,Grace Nightie,Girls nightie with bow,Children's,Nightdress,Girls,New,Off-White Organic,120.54,0,0,13,9,10,0,0,32
+MM_0009,Marleen Molenaar,Isabella Nightdress (Blue Check),Girls nightdress no collar,Children's,Nightdress,Girls,New,Blue Check,120.54,8,6,10,10,9,0,0,43
+MM_0010,Marleen Molenaar,Isabella Nightdress (Pink Check),Girls nightdress no collar,Children's,Nightdress,Girls,New,Pink Check,120.54,3,3,8,10,8,3,0,35
+MM_0011,Marleen Molenaar,Mia Shirt (Blue),Girls shirt LS,Children's,Girls Shirt,Girls,New,Blue,124.95,6,7,9,9,9,0,0,40
+MM_0012,Marleen Molenaar,Mia Shirt (Lilac),Girls LS sleep shirt,Children's,Girls Shirt,Girls,New,Lilac,124.95,3,6,11,12,10,10,8,60
+MM_0013,Marleen Molenaar,Ella Suzy 90,Girls nightie LS,Children's,Nightdress,Girls,New,Pink Suzy,124.95,18,16,5,5,5,0,0,49
+MM_0014,Marleen Molenaar,Charlotte LR Suzy 90,Girls nightie SS + 1 Bow,Children's,Nightdress,Girls,New,Light Blue,120.54,0,0,5,14,5,0,0,24
+MM_0015,Marleen Molenaar,Eliana LR Suzy 90,Girls nightie sleeveless,Children's,Nightdress,Girls,New,Lemon with Flowers,87.62,22,9,13,5,5,0,0,54
+MM_0016,Marleen Molenaar,Cora LR Suzy 90,Girls nightie sleeveless,Children's,Nightdress,Girls,New,Blue 1-Flower,73.36,0,4,5,5,5,0,0,19
+MM_0017,Marleen Molenaar,Jack Boys PJ (Blue/Brown),Boys PJ LS + Long Pants,Boys,Boys PJ,Boys,New,Blue Top / Brown Pants,133.65,0,0,20,15,12,0,0,47
+MM_0018,Marleen Molenaar,Oliver Gary Long PJ,Boys PJ LS + Long Pants,Boys,Boys PJ,Boys,New,Black Check,133.65,0,0,20,27,15,0,0,62
+MM_0019,Marleen Molenaar,Thomas Shorty PJ,Boys PJ SS + Short Pants,Boys,Boys PJ Shorty,Boys,New,Grey Shirt / Blue Shorts,87.62,0,5,8,7,5,0,0,25
+MM_0020,Marleen Molenaar,Noah Shorty PJ,Boys PJ SS + Short Pants,Boys,Boys PJ Shorty,Boys,New,Various Stripes,87.62,0,0,9,10,8,0,0,27
+MM_0021,Marleen Molenaar,Maisie Baby Set,Baby top & long pants,Baby,Baby Set,Baby,New,Pink,133.77,0,8,20,8,0,0,0,36
+MM_0022,Marleen Molenaar,Olivia Ladies Long PJs (Pink),Ladies Long PJs,Ladies,Ladies PJs,Women,New,Candy Pink,152.86,11,8,9,9,9,0,0,46
+MM_0023,Marleen Molenaar,Aria Ladies Long PJs (Light Blue),Ladies Long PJs,Ladies,Ladies PJs,Women,New,Light Blue,152.86,11,2,9,7,7,0,0,36
+MM_0024,Marleen Molenaar,Layla Ladies Short PJs,Ladies shorty PJ + sleeveless top,Ladies,Ladies PJs,Women,New,Floral,161.70,20,19,26,21,40,0,0,126
+MM_0025,Marleen Molenaar,Layla Ladies Short Nighty,Ladies short nighty sleeveless,Ladies,Nightdress,Women,New,Floral Yellow,120.54,5,5,5,5,5,5,25,55
+MM_0026,Marleen Molenaar,Sophia Shirt (Off-White),Women’s shirt LS,Ladies,Shirt,Women,New,Off White,105.84,0,0,20,14,0,0,0,34
+MM_0027,Marleen Molenaar,Sophia Shirt (Blue),Women’s shirt LS,Ladies,Shirt,Women,New,Blue,105.84,0,0,14,14,14,0,0,42
+MM_0028,Marleen Molenaar,Summer Dressing Gown (Lilac),Ladies dressing gown,Ladies,Dressing Gown,Women,New,Lilac,186.63,12,12,12,12,12,0,0,60
+MM_0029,Marleen Molenaar,Summer Dressing Gown (Lemon),Ladies dressing gown,Ladies,Dressing Gown,Women,New,Lemon,186.63,15,10,10,10,10,0,0,55
+MM_0030,Marleen Molenaar,Summer Dressing Gown (Blue),Ladies dressing gown,Ladies,Dressing Gown,Women,New,Blue,186.63,16,11,11,11,11,0,0,60
+MM_0031,Marleen Molenaar,Maya Gown (Leopard),Girls dressing gown,Children's,Girls Gown,Girls,New,Leopard,279.03,30,30,30,30,30,30,30,210
+MM_0032,Marleen Molenaar,Josh Gown (Check),Boys dressing gown,Boys,Boys Gown,Boys,New,Check,279.03,20,24,20,20,20,0,0,104
+MM_0033,Marleen Molenaar,Jack Gown (Brown),Boys dressing gown,Boys,Boys Gown,Boys,New,Brown,279.03,19,22,20,20,20,0,0,101
+MM_0034,Marleen Molenaar,Fireman Raincoat + Hat,Raincoat and hat,Unisex,Raincoat,Unisex,New,Yellow,133.77,12,12,12,12,12,0,0,60
+MM_0035,Marleen Molenaar,Candy Raincoat + Hat,Raincoat and hat,Unisex,Raincoat,Unisex,New,Pink,133.77,40,30,20,15,10,0,0,115
+MM_0036,Marleen Molenaar,Candy Raincoat (No Hat),Raincoat no hat,Unisex,Raincoat,Unisex,New,Pink,133.77,35,20,15,10,10,0,0,90
