@@ -99,17 +99,17 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
   <!-- Proof links -->
   <section class="kvgrid">
     <div class="kv">
-      <h4>🏆 Lane Crawford Luxury Retailer</h4>
+      <h4> Lane Crawford Luxury Retailer</h4>
       <a href="https://www.lanecrawford.com/brand/700351/marleen-molenaar-sleepwear/women" target="_blank" rel="noopener">View Brand Page</a>
       <div class="sub">Hong Kong’s premier luxury department store — equivalent to Harrods. Establishes brand positioning.</div>
     </div>
     <div class="kv">
-      <h4>💰 Retail Pricing Evidence</h4>
+      <h4> Retail Pricing Evidence</h4>
       <a href="https://www.retykle.com/search?q=marleen%20molenaar" target="_blank" rel="noopener">Retykle Pricing Proof</a>
       <div class="sub">Shows premium retail/resale pricing for individual pieces.</div>
     </div>
     <div class="kv">
-      <h4>📰 Media Coverage</h4>
+      <h4> Media Coverage</h4>
       <a href="https://www.scmp.com/article/533820/eastern-premise" target="_blank" rel="noopener">South China Morning Post</a>
       <div class="sub">2006 profile: “running a children’s clothing design company under her own name.”</div>
     </div>
@@ -164,6 +164,8 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
 
 <script>
 /* ---------------- helpers: CSV + JSON (quote-safe, header-normalised) ---------------- */
+
+/* ---------------- config ---------------- */
 function splitCSVLine(s){
   const out=[]; let cur=""; let q=false;
   for(let i=0;i<s.length;i++){
@@ -203,224 +205,6 @@ const fmtInt  = v => (+v||0).toLocaleString('en-AU');
 const lc = s => (s||'').toString().trim().toLowerCase();
 const num = v => Number((v??'').toString().replace(/[^\d.\-]/g,''))||0;
 
-/* ---------------- config ---------------- */
-const INV_URL='detailed_inventory.csv';     // wide inventory (size2..size14)
-const MAP_URL='image_map.csv';              // image,name
-const METRICS_URL='summary_metrics.json';   // optional
-const PLACEHOLDER='images/placeholder.webp';
-const WHOLESALE_FACTOR = 0.40;              // adjust if you like
-const QUICK_SALE_TARGET = 12000;
-
-/* ---------------- global state ---------------- */
-let INVENTORY=[], MATCHERS=null, METRICS=null;
-
-/* ---------------- header-agnostic inventory normaliser ---------------- */
-function normaliseRow(row){
-  const m = {}; for(const k of Object.keys(row)){ m[lc(k)]=row[k]; }
-  const g = key => m[key] ?? '';
-  const sizes = {
-    2 : num(g('size2')),   4 : num(g('size4')),   6 : num(g('size6')),
-    8 : num(g('size8')),   10: num(g('size10')), 12: num(g('size12')),
-    14: num(g('size14'))
-  };
-  const totalQty = num(g('total_qty'));
-  const qty = totalQty>0 ? totalQty : Object.values(sizes).reduce((a,b)=>a+b,0);
-
-  return {
-    sku: g('sku'),
-    brand: g('brand'),
-    item_name: g('item_name') || g('name') || g('title'),
-    description: g('description'),
-    category: g('category'),
-    subcategory: g('subcategory'),
-    gender: g('gender'),
-    condition: g('condition'),
-    colour: g('colour') || g('color'),
-    rrp: num(g('rrp')),
-    size2:sizes[2], size4:sizes[4], size6:sizes[6],
-    size8:sizes[8], size10:sizes[10], size12:sizes[12], size14:sizes[14],
-    qty
-  };
-}
-
-/* ---------------- aggregate duplicates (name+colour+subcategory) ---------------- */
-function aggregateInventory(rows){
-  const keyOf = r => [
-    (r.item_name||'').trim().toLowerCase(),
-    (r.colour||'').trim().toLowerCase(),
-    (r.subcategory||'').trim().toLowerCase()
-  ].join(' | ');
-
-  const map = new Map();
-  for (const r of rows){
-    const k = keyOf(r);
-    if (!map.has(k)){
-      map.set(k, {
-        sku: r.sku, brand: r.brand,
-        item_name: r.item_name, description: r.description,
-        category: r.category, subcategory: r.subcategory,
-        gender: r.gender, condition: r.condition, colour: r.colour,
-        rrp: Number(r.rrp||0),
-        size2:0, size4:0, size6:0, size8:0, size10:0, size12:0, size14:0,
-        qty:0
-      });
-    }
-    const g = map.get(k);
-    g.size2 += Number(r.size2||0);
-    g.size4 += Number(r.size4||0);
-    g.size6 += Number(r.size6||0);
-    g.size8 += Number(r.size8||0);
-    g.size10+= Number(r.size10||0);
-    g.size12+= Number(r.size12||0);
-    g.size14+= Number(r.size14||0);
-    g.qty   += Number(r.qty||0);
-    if (!g.rrp && Number(r.rrp||0)>0) g.rrp = Number(r.rrp||0);
-  }
-  return Array.from(map.values());
-}
-
-/* ---------------- image matchers (exact → contains) ---------------- */
-function buildImageMatchers(mapRows){
-  const exact = new Map();
-  const list  = [];
-  for(const raw of mapRows){
-    const keys = Object.keys(raw);
-    const m={}; keys.forEach(k=> m[lc(k)]=raw[k]);
-    const name = (m['name']||'').toString().trim();
-    const image= (m['image']||'').toString().trim();
-    if(!name || !image) continue;
-    const key = lc(name);
-    if(!exact.has(key)) exact.set(key, image);
-    list.push({nameLC:key, image});
-  }
-  return { exact, list };
-}
-function pickImageFor(itemName, matchers){
-  const n = lc(itemName);
-  if(!n) return '';
-  if(matchers.exact.has(n)) return matchers.exact.get(n);
-  for(const m of matchers.list){ if(n.includes(m.nameLC)) return m.image; }
-  return '';
-}
-
-/* ---------------- UI helpers ---------------- */
-function sizeChips(r){
-  const parts = [];
-  const SIZES = [[2,'size2'],[4,'size4'],[6,'size6'],[8,'size8'],[10,'size10'],[12,'size12'],[14,'size14']];
-  for (const [n,k] of SIZES){
-    const v = Number(r[k]||0);
-    if (v>0){
-      parts.push(`<span class="chip" title="Size ${n}: ${v} pieces"><b>Size ${n}</b> (${v} pcs)</span>`);
-    }
-  }
-  return parts.join('');
-}
-function renderMetricsFromJSON(metrics){
-  const pieces = metrics.total_pieces||0;
-  const skus   = metrics.distinct_items||0;
-  document.getElementById('heroPill').textContent = `${fmtInt(pieces)} pieces • ${fmtInt(skus)} SKUs`;
-  document.getElementById('sumPieces').textContent = fmtInt(pieces);
-  document.getElementById('sumSkus').textContent   = fmtInt(skus);
-
-  const sizes = metrics.sizes||{};
-  const order=[2,4,6,8,10,12,14];
-  document.getElementById('sizes').innerHTML =
-    order.map(s=>`<div class="sizepill"><b>Size ${s}</b><span class="sub">${fmtInt(sizes[String(s)]||0)} pieces</span></div>`).join('');
-}
-function renderMetricsFromInventory(rows){
-  const pieces = rows.reduce((a,b)=>a+(+b.qty||0),0);
-  const skus   = rows.length;
-  document.getElementById('heroPill').textContent = `${fmtInt(pieces)} pieces • ${fmtInt(skus)} SKUs`;
-  document.getElementById('sumPieces').textContent = fmtInt(pieces);
-  document.getElementById('sumSkus').textContent   = fmtInt(skus);
-
-  const totals={2:0,4:0,6:0,8:0,10:0,12:0,14:0};
-  rows.forEach(r=>{
-    totals[2]+=r.size2; totals[4]+=r.size4; totals[6]+=r.size6; totals[8]+=r.size8;
-    totals[10]+=r.size10; totals[12]+=r.size12; totals[14]+=r.size14;
-  });
-  document.getElementById('sizes').innerHTML =
-    [2,4,6,8,10,12,14].map(s=>`<div class="sizepill"><b>Size ${s}</b><span class="sub">${fmtInt(totals[s])} pieces</span></div>`).join('');
-}
-function renderList(rows, matchers){
-  const grid=document.getElementById('grid');
-  const empty=document.getElementById('empty');
-
-  const size = document.getElementById('sizeFilter').value;
-  const cat  = document.getElementById('catFilter').value;
-  const q    = document.getElementById('search').value.trim().toLowerCase();
-
-  const filtered = rows.filter(r=>{
-    if(size && (+r['size'+size]||0)===0) return false;
-    if(cat && r.category!==cat && r.subcategory!==cat) return false;
-    if(q){
-      const hay=(r.item_name+' '+r.description+' '+r.colour+' '+r.category+' '+r.subcategory).toLowerCase();
-      if(!hay.includes(q)) return false;
-    }
-    return true;
-  });
-
-  const prepared = filtered.map(r=>{
-    const img = pickImageFor(r.item_name, matchers) || PLACEHOLDER;
-    return {...r, __img:img, __miss: img===PLACEHOLDER?1:0};
-  }).sort((a,b)=> a.__miss-b.__miss || (a.item_name||'').localeCompare(b.item_name||''));
-
-  grid.innerHTML = prepared.map(r=>`
-    <article class="item">
-      <div class="pic">${r.__img?`<img src="${r.__img}" alt="${r.item_name}">`:`<div style="color:#94a3b8">Photo Coming Soon</div>`}</div>
-      <div class="meta">
-        <h3>${r.item_name||'—'}</h3>
-        <div class="sub">${[r.description, r.colour].filter(Boolean).join(' • ')}</div>
-        <div class="chips">${sizeChips(r)}</div>
-        <div class="row">
-          <div class="badge"><strong>Qty:</strong>&nbsp;${fmtInt(r.qty||0)}</div>
-          <div class="badge"><strong>RRP:</strong>&nbsp;${r.rrp?moneyAU(r.rrp):'—'}</div>
-          <div class="badge"><strong>Wholesale:</strong>&nbsp;${r.rrp?moneyAU(r.rrp*WHOLESALE_FACTOR):'—'}</div>
-        </div>
-      </div>
-    </article>
-  `).join('');
-
-  empty.style.display = prepared.length ? "none" : "";
-}
-
-/* ---------------- start ---------------- */
-async function start(){
-  try{
-    const [inv, map] = await Promise.all([fetchCSV(INV_URL), fetchCSV(MAP_URL)]);
-    // normalise rows, then aggregate duplicates
-    INVENTORY = aggregateInventory(inv.rows.map(normaliseRow));
-    // image matchers
-    MATCHERS = buildImageMatchers(map.rows);
-
-    // metrics (JSON if present; otherwise compute)
-    try {
-      METRICS = await fetchJSON(METRICS_URL);
-      renderMetricsFromJSON(METRICS);
-    } catch(e) {
-      renderMetricsFromInventory(INVENTORY);
-    }
-
-    // totals (simple wholesale calc) — write them into footer stats
-    const wholesaleTotal = INVENTORY.reduce((a,r)=> a + (r.rrp*WHOLESALE_FACTOR)*(r.qty||0), 0);
-    document.getElementById('sumWholesaleFooter').textContent = moneyAU(wholesaleTotal);
-    document.getElementById('sumQuickFooter').textContent     = moneyAU(QUICK_SALE_TARGET);
-
-    // filters
-    const rerender = ()=> renderList(INVENTORY, MATCHERS);
-    ['sizeFilter','catFilter','search'].forEach(id=>{
-      const el=document.getElementById(id);
-      el.addEventListener('input',rerender); el.addEventListener('change',rerender);
-    });
-    rerender();
-  }catch(err){
-    console.error(err);
-    document.getElementById('heroPill').textContent = 'Load error — check filenames';
-    document.getElementById('grid').innerHTML =
-      '<div class="empty">Could not load data. Ensure index.html, detailed_inventory.csv, image_map.csv, and summary_metrics.json are in the same folder/repo path.</div>';
-  }
-}
-start();
 </script>
 </body>
 </html>
