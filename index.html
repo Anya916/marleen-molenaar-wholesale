@@ -10,6 +10,7 @@
 :root{
   --bg:#f6f7fb; --card:#ffffff; --ink:#0e1025; --ink2:#4b4f69; --muted:#8b92a7;
   --brand1:#6f4cf6; --brand2:#9b66ff; --chip:#eef0fb; --border:#e7e8f1; --shadow:0 10px 26px rgba(25,26,54,.08);
+  --foot:#0f1129; --footCard:#161b33; --ok:#1bd19a;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
@@ -25,15 +26,25 @@ a{color:#4e5bff;text-decoration:none;font-weight:600}
 .tag{display:inline-block;margin-top:16px;padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.16);backdrop-filter:blur(3px);font-weight:700}
 .panel{margin-top:-70px}
 .card{background:var(--card);border:1px solid var(--border);border-radius:18px; padding:18px; box-shadow:var(--shadow); margin:16px 0}
+
 .grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:12px}
 @media (max-width:980px){.grid7{grid-template-columns:repeat(3,1fr)}}
 @media (max-width:620px){.grid7{grid-template-columns:repeat(2,1fr)}}
-.sizepill{background:#fafbff;border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center}
-.sizepill b{font-size:20px}
+
+.sizepill{
+  background:linear-gradient(180deg,#fff, #f6f7ff);
+  border:1px solid var(--border);border-radius:16px;padding:14px 12px;text-align:center;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7);
+}
+.sizepill b{display:block;font-size:18px;margin-bottom:4px}
+.sizepill .sub{color:#61698a;font-weight:600}
+
 .kvgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 @media (max-width:980px){.kvgrid{grid-template-columns:1fr}}
-.kv{padding:16px;border:1px solid var(--border);border-radius:14px;background:#fff}
-.kv h4{margin:0 0 6px;font-size:16px}
+.kv{padding:16px;border:1px solid var(--border);border-radius:16px;background:#fff;display:grid;gap:8px}
+.kv h4{margin:0 0 4px;font-size:16px}
+.kv a{display:inline-block;padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:#fafbff}
+
 .controls{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
 select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-radius:12px;background:#fff;font-weight:600}
 .gridCards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
@@ -46,15 +57,28 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
 .meta h3{margin:0 0 4px;font-size:20px}
 .sub{color:var(--ink2);font-size:14px;margin-bottom:10px}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{background:var(--chip);border:1px dashed var(--border);padding:5px 10px;border-radius:999px;font-size:12px;font-weight:700;color:#2b3159}
+.chip{background:var(--chip);border:1px dashed var(--border);padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700;color:#2b3159}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .badge{background:#f6f7fb;border:1px solid var(--border);border-radius:999px;padding:6px 12px;font-weight:700}
 .empty{padding:16px;color:#8a90a7}
-.footer{background:#0f1129;color:#eaf0ff;margin-top:28px}
-.footer .wrap{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:26px 20px}
+
+/* footer */
+.footer{background:var(--foot);color:#eaf0ff;margin-top:28px}
+.footer .wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;padding:26px 20px}
 @media (max-width:820px){.footer .wrap{grid-template-columns:1fr}}
-.footCard{background:#161b33;border-radius:18px;padding:18px 20px}
+.footCard{background:var(--footCard);border-radius:18px;padding:18px 20px}
 .footCard h3{color:#aeb8ff;margin:0 0 10px}
+
+/* big totals in footer */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+@media (max-width:540px){.stats{grid-template-columns:1fr}}
+.stat{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);
+  border-radius:16px;padding:16px 14px;
+}
+.stat small{color:#9fb3ff;display:block;margin-bottom:6px;font-weight:700;letter-spacing:.2px}
+.stat b{display:block;font-size:24px;line-height:1.1}
+.stat .ok{color:var(--ok)}
 </style>
 </head>
 <body>
@@ -72,7 +96,7 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
     <div id="sizes" class="grid7"></div>
   </section>
 
-  <!-- Proof links (restored) -->
+  <!-- Proof links -->
   <section class="kvgrid">
     <div class="kv">
       <h4>🏆 Lane Crawford Luxury Retailer</h4>
@@ -108,11 +132,6 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
 
     <div id="grid" class="gridCards"></div>
     <div id="empty" class="empty" style="display:none">No results.</div>
-
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:14px">
-      <div class="badge"><strong>Wholesale:</strong> <span id="sumWholesale">—</span></div>
-      <div class="badge"><strong>Quick sale:</strong> <span id="sumQuick">A$12,000.00</span></div>
-    </div>
   </section>
 </main>
 
@@ -125,6 +144,16 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
          <strong>Viewing:</strong> Weekdays 5pm+, Weekends anytime<br>
          <strong>Brand:</strong> Marleen Molenaar<br>
          <strong>Access:</strong> Ground floor, driveway access for easy pickup</p>
+      <div class="stats">
+        <div class="stat">
+          <small>Wholesale (target)</small>
+          <b id="sumWholesaleFooter" class="ok">—</b>
+        </div>
+        <div class="stat">
+          <small>Quick sale (target)</small>
+          <b id="sumQuickFooter">—</b>
+        </div>
+      </div>
     </div>
     <div class="footCard">
       <h3>Collection Summary</h3>
@@ -372,10 +401,10 @@ async function start(){
       renderMetricsFromInventory(INVENTORY);
     }
 
-    // totals (simple wholesale calc)
+    // totals (simple wholesale calc) — write them into footer stats
     const wholesaleTotal = INVENTORY.reduce((a,r)=> a + (r.rrp*WHOLESALE_FACTOR)*(r.qty||0), 0);
-    document.getElementById('sumWholesale').textContent = moneyAU(wholesaleTotal);
-    document.getElementById('sumQuick').textContent     = moneyAU(QUICK_SALE_TARGET);
+    document.getElementById('sumWholesaleFooter').textContent = moneyAU(wholesaleTotal);
+    document.getElementById('sumQuickFooter').textContent     = moneyAU(QUICK_SALE_TARGET);
 
     // filters
     const rerender = ()=> renderList(INVENTORY, MATCHERS);
@@ -386,7 +415,7 @@ async function start(){
     rerender();
   }catch(err){
     console.error(err);
-    document.getElementById('heroPill').textContent = 'Load error — check filenames & local server';
+    document.getElementById('heroPill').textContent = 'Load error — check filenames';
     document.getElementById('grid').innerHTML =
       '<div class="empty">Could not load data. Ensure index.html, detailed_inventory.csv, image_map.csv, and summary_metrics.json are in the same folder/repo path.</div>';
   }
