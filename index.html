@@ -11,6 +11,7 @@
   --bg:#f6f7fb; --card:#ffffff; --ink:#0e1025; --ink2:#4b4f69; --border:#e7e8f1; --chip:#eef0fb;
   --brand1:#6f4cf6; --brand2:#9b66ff; --foot:#0f1129; --footCard:#161b33; --shadow:0 10px 26px rgba(25,26,54,.08);
 }
+*{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
 a{color:#4e5bff;text-decoration:none;font-weight:600}
 .header{padding:56px 20px 110px;background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#fff}
@@ -108,52 +109,148 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
 </footer>
 
 <script>
+/* ---------- config ---------- */
 const INV_URL='detailed_inventory.csv';
 const MAP_URL='image_map.csv';
 const PLACEHOLDER='images/placeholder.webp';
-const WHOLESALE_FACTOR=0.40, QUICK_SALE_TARGET=12000;
+const WHOLESALE_FACTOR=0.40;
+const QUICK_SALE_TARGET=12000;
 
-const lc=s=> (s||'').toString().trim().toLowerCase();
-const num=v=> Number((v??'').toString().replace(/[^\d.\-]/g,''))||0;
+/* ---------- utils ---------- */
+const lc = s => (s||'').toString().trim().toLowerCase();
+const n  = v => Number((v??'').toString().replace(/[^\d.\-]/g,''))||0;
 const money=v=> new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD'}).format(v||0);
-const fmt=v=> (+v||0).toLocaleString('en-AU');
+const fmt  =v=> (+v||0).toLocaleString('en-AU');
 
-function splitCSVLine(s){const out=[];let cur="";let q=false;for(let i=0;i<s.length;i++){const c=s[i];if(c=='"'){if(q&&s[i+1]=='"'){cur+='"';i++;}else{q=!q;}}else if(c==","&&!q){out.push(cur);cur="";}else cur+=c;}out.push(cur);return out;}
-function parseCSV(txt){const lines=txt.replace(/\r/g,"").split("\n").filter(l=>l.trim());const head=splitCSVLine(lines.shift());return lines.map(l=>{const c=splitCSVLine(l);const o={};head.forEach((h,i)=>o[h]=c[i]||"");return o;});}
-async function fetchCSV(url){const r=await fetch(url);return parseCSV(await r.text());}
-async function fetchJSON(url){const r=await fetch(url);return await r.json();}
+/* simple CSV (works for your current files; no embedded commas) */
+function parseCSV(txt){
+  const lines = txt.replace(/\r/g,'').trim().split('\n').filter(Boolean);
+  const head  = lines.shift().split(',').map(h=>h.trim());
+  return lines.map(line=>{
+    const cells = line.split(',');
+    const row={}; head.forEach((h,i)=> row[h]=cells[i]??'');
+    return row;
+  });
+}
+async function fetchCSV(url){
+  const r=await fetch(url);
+  if(!r.ok) throw new Error('Failed '+url+' '+r.status);
+  return parseCSV(await r.text());
+}
 
-function normalise(r){return{
-  item_name:r.item_name||r.name, description:r.description, category:r.category, subcategory:r.subcategory,
-  colour:r.colour, rrp:num(r.rrp),
-  size2:num(r.size2),size4:num(r.size4),size6:num(r.size6),size8:num(r.size8),size10:num(r.size10),size12:num(r.size12),size14:num(r.size14),
-  qty:num(r.total_qty)|| (num(r.size2)+num(r.size4)+num(r.size6)+num(r.size8)+num(r.size10)+num(r.size12)+num(r.size14))
-};}
-
-function aggregate(rows){const map=new Map();for(const r of rows){const k=[lc(r.item_name),lc(r.colour||''),lc(r.subcategory||'')].join('|');if(!map.has(k))map.set(k,{...r});else{const g=map.get(k);['size2','size4','size6','size8','size10','size12','size14','qty'].forEach(f=>g[f]+=r[f]);}}return [...map.values()];}
-
+/* ---------- images: EXACT match only ---------- */
 let IMG_INDEX=new Map();
-function buildImageIndex(rows){rows.forEach(r=>{if(r.image&&r.name){IMG_INDEX.set(lc(r.name),r.image);}});}
-function pickImage(n){return IMG_INDEX.get(lc(n))||PLACEHOLDER;}
+function buildImageIndex(rows){
+  IMG_INDEX.clear();
+  rows.forEach(r=>{
+    if(r.image && r.name) IMG_INDEX.set(lc(r.name), r.image);
+  });
+}
+function pickImage(itemName){
+  return IMG_INDEX.get(lc(itemName)) || PLACEHOLDER;
+}
 
-function sizeChips(r){const out=[];[[2,'size2'],[4,'size4'],[6,'size6'],[8,'size8'],[10,'size10'],[12,'size12'],[14,'size14']].forEach(([n,f])=>{if(r[f]>0)out.push(`<span class="chip"><b>Size ${n}</b> (${r[f]} pcs)</span>`);});return out.join('');}
+/* ---------- inventory: NEVER use total_qty; sum sizes only ---------- */
+function normalise(r){
+  const size2=n(r.size2), size4=n(r.size4), size6=n(r.size6), size8=n(r.size8),
+        size10=n(r.size10), size12=n(r.size12), size14=n(r.size14);
+  const qty = size2+size4+size6+size8+size10+size12+size14; // <- authoritative
+  return {
+    item_name: r.item_name||r.name||'',
+    description: r.description||'',
+    category: r.category||'',
+    subcategory: r.subcategory||'',
+    colour: r.colour||'',
+    rrp: n(r.rrp),
+    size2,size4,size6,size8,size10,size12,size14,
+    qty
+  };
+}
 
-function renderMetrics(rows){const pcs=rows.reduce((a,b)=>a+b.qty,0),skus=rows.length;document.getElementById('heroPill').textContent=`${fmt(pcs)} pieces • ${fmt(skus)} SKUs`;document.getElementById('sumPieces').textContent=fmt(pcs);document.getElementById('sumSkus').textContent=fmt(skus);
-const t={2:0,4:0,6:0,8:0,10:0,12:0,14:0};rows.forEach(r=>{for(const k in t){t[k]+=r['size'+k];}});document.getElementById('sizes').innerHTML=Object.keys(t).map(s=>`<div class="sizepill"><b>Size ${s}</b><span class="sub">${fmt(t[s])} pcs</span></div>`).join('');
-const w=rows.reduce((a,r)=>a+(r.rrp*WHOLESALE_FACTOR)*r.qty,0);document.getElementById('sumWholesaleFooter').textContent=money(w);document.getElementById('sumQuickFooter').textContent=money(QUICK_SALE_TARGET);}
+/* ---------- UI helpers ---------- */
+function sizeChips(r){
+  const out=[];
+  [[2,'size2'],[4,'size4'],[6,'size6'],[8,'size8'],[10,'size10'],[12,'size12'],[14,'size14']].forEach(([s,k])=>{
+    if(r[k]>0) out.push(`<span class="chip"><b>Size ${s}</b> (${r[k]} pcs)</span>`);
+  });
+  return out.join('');
+}
+function renderMetrics(rows){
+  // pieces = sum of sizes for ALL items
+  const pieces = rows.reduce((a,r)=> a+r.qty, 0);
+  const skus   = rows.length; // no merging — each distinct row stays distinct
+  document.getElementById('heroPill').textContent = `${fmt(pieces)} pieces • ${fmt(skus)} SKUs`;
+  document.getElementById('sumPieces').textContent = fmt(pieces);
+  document.getElementById('sumSkus').textContent   = fmt(skus);
 
-function renderList(rows){const size=document.getElementById('sizeFilter').value,cat=document.getElementById('catFilter').value,q=document.getElementById('search').value.toLowerCase();
-const f=rows.filter(r=>{if(size&&!(r['size'+size]>0))return false;if(cat&&r.category!==cat&&r.subcategory!==cat)return false;if(q&&!`${r.item_name} ${r.description} ${r.colour}`.toLowerCase().includes(q))return false;return true;});
-const grid=document.getElementById('grid');grid.innerHTML=f.map(r=>`<article class="item"><div class="pic"><img src="${pickImage(r.item_name)}" alt="${r.item_name}"></div><div class="meta"><h3>${r.item_name}</h3><div class="sub">${[r.description,r.colour].filter(Boolean).join(' • ')}</div><div class="chips">${sizeChips(r)}</div><div class="row"><div class="badge"><strong>Qty:</strong>&nbsp;${fmt(r.qty)}</div><div class="badge"><strong>RRP:</strong>&nbsp;${money(r.rrp)}</div><div class="badge"><strong>Wholesale:</strong>&nbsp;${money(r.rrp*WHOLESALE_FACTOR)}</div></div></div></article>`).join('');
-document.getElementById('empty').style.display=f.length?"none":"";}
+  const totals={2:0,4:0,6:0,8:0,10:0,12:0,14:0};
+  rows.forEach(r=>{
+    totals[2]+=r.size2; totals[4]+=r.size4; totals[6]+=r.size6; totals[8]+=r.size8;
+    totals[10]+=r.size10; totals[12]+=r.size12; totals[14]+=r.size14;
+  });
+  const sizesEl=document.getElementById('sizes');
+  sizesEl.innerHTML = [2,4,6,8,10,12,14].map(s=>`
+    <div class="sizepill"><b>Size ${s}</b><span class="sub">${fmt(totals[s])} pcs</span></div>
+  `).join('');
 
-async function start(){try{
-  const [inv,map]=await Promise.all([fetchCSV(INV_URL),fetchCSV(MAP_URL)]);
-  const inventory=aggregate(inv.map(normalise));buildImageIndex(map);
-  renderMetrics(inventory);
-  ['sizeFilter','catFilter','search'].forEach(id=>document.getElementById(id).addEventListener('input',()=>renderList(inventory)));
-  renderList(inventory);
-}catch(e){console.error(e);document.getElementById('grid').innerHTML='<div class="empty">Error loading files</div>';}}
+  const wholesale = rows.reduce((a,r)=> a + (r.rrp*WHOLESALE_FACTOR)*r.qty, 0);
+  document.getElementById('sumWholesaleFooter').textContent = money(wholesale);
+  document.getElementById('sumQuickFooter').textContent     = money(QUICK_SALE_TARGET);
+}
+function renderList(rows){
+  const size=document.getElementById('sizeFilter').value;
+  const cat =document.getElementById('catFilter').value;
+  const q   =document.getElementById('search').value.trim().toLowerCase();
+
+  const filtered = rows.filter(r=>{
+    if(size && !(r['size'+size]>0)) return false; // strict size filter
+    if(cat && r.category!==cat && r.subcategory!==cat) return false;
+    if(q){
+      const hay=(r.item_name+' '+r.description+' '+r.colour+' '+r.category+' '+r.subcategory).toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  const grid=document.getElementById('grid');
+  grid.innerHTML = filtered.map(r=>`
+    <article class="item">
+      <div class="pic"><img src="${pickImage(r.item_name)}" alt="${r.item_name}"></div>
+      <div class="meta">
+        <h3>${r.item_name}</h3>
+        <div class="sub">${[r.description,r.colour].filter(Boolean).join(' • ')}</div>
+        <div class="chips">${sizeChips(r)}</div>
+        <div class="row">
+          <div class="badge"><strong>Qty:</strong>&nbsp;${fmt(r.qty)}</div>
+          <div class="badge"><strong>RRP:</strong>&nbsp;${r.rrp?money(r.rrp):'—'}</div>
+          <div class="badge"><strong>Wholesale:</strong>&nbsp;${r.rrp?money(r.rrp*WHOLESALE_FACTOR):'—'}</div>
+        </div>
+      </div>
+    </article>
+  `).join('');
+
+  document.getElementById('empty').style.display = filtered.length ? 'none' : '';
+}
+
+/* ---------- start ---------- */
+async function start(){
+  try{
+    const [inv, map] = await Promise.all([fetchCSV(INV_URL), fetchCSV(MAP_URL)]);
+    const inventory = inv.map(normalise); // NO aggregation — keeps Fireman SKUs separate
+    buildImageIndex(map);
+
+    renderMetrics(inventory);
+    ['sizeFilter','catFilter','search'].forEach(id=>{
+      document.getElementById(id).addEventListener('input',()=>renderList(inventory));
+      document.getElementById(id).addEventListener('change',()=>renderList(inventory));
+    });
+    renderList(inventory);
+  }catch(e){
+    console.error(e);
+    document.getElementById('grid').innerHTML='<div class="empty">Error loading files</div>';
+    document.getElementById('heroPill').textContent='Load error';
+  }
+}
 start();
 </script>
 </body>
