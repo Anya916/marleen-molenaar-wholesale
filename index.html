@@ -6,54 +6,88 @@
 <title>Marleen Molenaar Collection — Wholesale Catalogue</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
 <style>
 :root{
-  --bg:#f6f7fb; --card:#ffffff; --ink:#0e1025; --ink2:#4b4f69; --border:#e7e8f1; --chip:#eef0fb;
-  --brand1:#6f4cf6; --brand2:#9b66ff; --foot:#0f1129; --footCard:#161b33; --shadow:0 10px 26px rgba(25,26,54,.08);
+  --bg:#f6f7fb; --card:#ffffff; --ink:#0e1025; --ink2:#61698a; --border:#e7e8f1; --chip:#eef0fb;
+  --brand1:#6f72ff; --brand2:#5a60d1; --foot:#0f1129; --footCard:#161b33; --shadow:0 8px 20px rgba(18,20,38,.06);
+  --radius:14px;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
 a{color:#4e5bff;text-decoration:none;font-weight:600}
-.header{padding:56px 20px 110px;background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#fff}
+a:focus,select:focus,input:focus{outline:2px solid #6f72ff;outline-offset:2px}
+.header{
+  padding:56px 20px 96px;
+  background:linear-gradient(180deg,var(--brand1) 0%,var(--brand2) 100%);
+  color:#fff
+}
 .wrap{max-width:1160px;margin:0 auto}
-.h1{font-size:clamp(34px,5vw,64px);font-weight:800;margin:0 0 10px}
+.h1{font-size:clamp(34px,5vw,56px);font-weight:800;margin:0 0 10px}
 .tag{display:inline-block;margin-top:16px;padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.16);font-weight:700}
-.panel{margin-top:-70px}
-.card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:var(--shadow);margin:16px 0}
-.controls{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
-select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-radius:12px}
+.panel{margin-top:-60px}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin:16px 0}
+
+/* Controls (sticky) */
+.controls{
+  display:flex;gap:10px;flex-wrap:wrap;margin:10px 0;
+  position:sticky; top:8px; z-index:10; background:#fff; border:1px solid var(--border);
+  border-radius:12px; padding:8px
+}
+select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-radius:12px;font-weight:600}
+.activeFilters{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.activeFilter{background:#eef0fb;border:1px solid #dfe3f7;padding:4px 8px;border-radius:999px;font-size:12px}
+
+/* Grid */
 .gridCards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 @media(max-width:980px){.gridCards{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:650px){.gridCards{grid-template-columns:1fr}}
-.item{background:#fff;border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
-.pic{background:#f4f5fa;height:260px;display:flex;align-items:center;justify-content:center}
+.item{background:#fff;border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);transition:.2s}
+@media(hover:hover){.item:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(18,20,38,.10)}}
+
+/* Images with skeleton loader */
+.pic{position:relative;background:#f6f7fb;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center}
+.pic::before{
+  content:"";position:absolute;inset:0;border-bottom:1px solid var(--border);
+  background:linear-gradient(90deg,#f3f4f8, #eef0f6, #f3f4f8);background-size:200% 100%;animation:sh 1.3s infinite
+}
+.pic.loaded::before{display:none}
+@keyframes sh{0%{background-position:0 0}100%{background-position:-200% 0}}
 .pic img{max-width:95%;max-height:95%;object-fit:contain}
+
+/* Card meta */
 .meta{padding:16px 18px}
-.meta h3{margin:0 0 4px;font-size:20px}
+.meta h3{margin:0 0 4px;font-size:18px;font-weight:700}
 .sub{color:var(--ink2);font-size:14px;margin-bottom:10px}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{background:var(--chip);border:1px dashed var(--border);padding:5px 10px;border-radius:999px;font-size:12px;font-weight:600}
-.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.badge{background:#f6f7fb;border:1px solid var(--border);border-radius:999px;padding:6px 12px;font-weight:600}
+.chip{letter-spacing:.02em;text-transform:uppercase;padding:4px 8px;border-radius:999px;font-size:11px;background:var(--chip);border:1px dashed var(--border);font-weight:600}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;justify-content:space-between}
+.badge{background:#f6f7fb;border:1px solid var(--border);border-radius:999px;padding:6px 12px;font-weight:600;min-width:130px;text-align:right}
+.badge strong{float:left}
 
 /* Footer */
 .footer{background:var(--foot);color:#eaf0ff;margin-top:28px}
 .footer .wrap{display:grid;grid-template-columns:1.2fr 1fr;gap:18px;padding:26px 20px}
 @media(max-width:980px){.footer .wrap{grid-template-columns:1fr}}
-.footCard{background:var(--footCard);border-radius:18px;padding:18px 20px}
+.footCard{background:var(--footCard);border-radius:var(--radius);padding:18px 20px}
 .footCard h3{color:#aeb8ff;margin:0 0 10px}
 .stat{margin-top:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:14px}
 .stat small{color:#9fb3ff;display:block;margin-bottom:4px;font-weight:600}
 .stat b{font-size:20px}
 .smallnote{margin-top:8px;color:#aeb8ff;font-size:12px}
 
-/* Size breakdown moved to footer */
+/* Size breakdown in footer */
 .sizegrid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-top:10px}
 @media(max-width:980px){.sizegrid{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:620px){.sizegrid{grid-template-columns:repeat(3,1fr)}}
 .sizepill{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 8px;text-align:center}
 .sizepill b{display:block;color:#c9d5ff}
 .sizepill .sub{color:#aeb8ff;font-size:13px}
+
+/* Proof links card */
+.proofLinks a{display:inline-block;margin-right:10px;padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:#fff}
+
+/* Errors */
 .err{color:#ffb3b3;font-size:13px;margin-top:6px;display:none}
 </style>
 </head>
@@ -68,20 +102,28 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
 <main class="wrap panel">
   <section class="card">
     <div class="controls">
-      <select id="sizeFilter"><option value="">All Sizes</option><option>2</option><option>4</option><option>6</option><option>8</option><option>10</option><option>12</option><option>14</option></select>
-      <select id="catFilter"><option value="">All Categories</option><option>Children's</option><option>Ladies</option><option>Boys</option><option>Baby</option><option>Unisex</option></select>
-      <input id="search" type="search" placeholder="Search name, colour, description"/>
+      <select id="sizeFilter" aria-label="Filter by size">
+        <option value="">All Sizes</option><option>2</option><option>4</option><option>6</option>
+        <option>8</option><option>10</option><option>12</option><option>14</option>
+      </select>
+      <select id="catFilter" aria-label="Filter by category">
+        <option value="">All Categories</option>
+        <option>Children's</option><option>Ladies</option><option>Boys</option><option>Baby</option><option>Unisex</option>
+      </select>
+      <input id="search" type="search" placeholder="Search name, colour, description" aria-label="Search"/>
     </div>
+    <div class="activeFilters" id="activeFilters" style="display:none"></div>
+
     <div id="grid" class="gridCards"></div>
     <div id="empty" class="empty" style="display:none">No results.</div>
     <div id="errBox" class="err"></div>
   </section>
 
   <!-- Proof links -->
-  <section class="card">
+  <section class="card proofLinks">
     <h3 style="margin:0 0 8px">Brand Proof</h3>
     <div class="sub">Luxury positioning and retail pricing references.</div>
-    <div class="controls" style="margin-top:10px">
+    <div style="margin-top:10px">
       <a href="https://www.lanecrawford.com/brand/700351/marleen-molenaar-sleepwear/women">Lane Crawford</a>
       <a href="https://www.retykle.com/search?q=marleen%20molenaar">Retykle Pricing</a>
       <a href="https://www.scmp.com/article/533820/eastern-premise">SCMP Profile</a>
@@ -93,7 +135,8 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
   <div class="wrap">
     <div class="footCard">
       <h3>Contact</h3>
-      <p><strong>Gary Flax:</strong> 02 9314 5774<br>Vaucluse, Sydney NSW<br>Viewing: Weekdays 5pm+, Weekends anytime</p>
+      <p><strong>Gary Flax:</strong> 02 9314 5774<br>Vaucluse, Sydney NSW<br>Viewing: Weekdays 5pm+, Weekends anytime<br>
+      <a href="tel:0293145774" style="color:#cfe3ff">Call now</a> · <a href="mailto:" style="color:#cfe3ff">Email</a></p>
 
       <div class="stat"><small>Wholesale (approx)</small><b id="sumWholesaleFooter">—</b></div>
       <div class="stat"><small>Quick sale (approx)</small><b id="sumQuickFooter">—</b></div>
@@ -103,127 +146,105 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
     <div class="footCard">
       <h3>Collection Summary</h3>
       <p><span id="sumPieces">—</span> pieces across <span id="sumSkus">—</span> SKUs</p>
-
-      <!-- Size breakdown moved here -->
       <div id="sizes" class="sizegrid"></div>
     </div>
   </div>
 </footer>
 
 <script>
-/* ---------- config ---------- */
+/* ====== Config ====== */
 const INV_URL='detailed_inventory.csv';
 const MAP_URL='image_map.csv';
-const METRICS_URL='summary_metrics.json';   // optional; used for footer "approx" display if present
+const METRICS_URL='summary_metrics.json'; // optional
 const PLACEHOLDER='images/placeholder.webp';
 const WHOLESALE_FACTOR=0.40;
 const QUICK_SALE=12000;
 
-/* ---------- utils ---------- */
+/* ====== Utils ====== */
 const lc = s => (s||'').toString().replace(/\uFEFF/g,'').trim().toLowerCase();
 const num = v => Number((v??'').toString().replace(/[^\d.\-]/g,''))||0;
 const money=v=> new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD'}).format(v||0);
 const fmt  =v=> (+v||0).toLocaleString('en-AU');
 
-/* robust CSV parser (quotes + commas) */
-function splitCSVLine(s){
-  const out=[]; let cur=""; let q=false;
-  for(let i=0;i<s.length;i++){
-    const c=s[i];
-    if(c=='"'){ if(q && s[i+1]=='"'){ cur+='"'; i++; } else { q=!q; } }
-    else if(c=="," && !q){ out.push(cur); cur=""; }
-    else cur+=c;
-  }
-  out.push(cur);
-  return out;
-}
+function splitCSVLine(s){const out=[];let cur="";let q=false;for(let i=0;i<s.length;i++){const c=s[i];if(c=='"'){if(q&&s[i+1]=='"'){cur+='"';i++;}else{q=!q;}}else if(c==","&&!q){out.push(cur);cur="";}else cur+=c;}out.push(cur);return out;}
 function parseCSV(text){
   const lines = text.replace(/\r/g,"").split("\n").filter(l=>l.trim().length);
   if(!lines.length) return {rows:[], headers:[]};
   const headers = splitCSVLine(lines.shift()).map(h=>h.trim());
   const rows = lines.map(line=>{
-    const cells=splitCSVLine(line);
-    const obj={}; headers.forEach((h,i)=> obj[h]=cells[i]!==undefined?cells[i]:"");
+    const cells=splitCSVLine(line); const obj={};
+    headers.forEach((h,i)=> obj[h]=cells[i]!==undefined?cells[i]:"");
     return obj;
   });
   return {rows, headers};
 }
-async function fetchCSV(url){
-  const r=await fetch(url+'?t='+Date.now());
-  if(!r.ok) throw new Error(`${url}: ${r.status}`);
-  return parseCSV(await r.text());
-}
-async function fetchJSON(url){
-  const r=await fetch(url+'?t='+Date.now());
-  if(!r.ok) throw new Error(`${url}: ${r.status}`);
-  return r.json();
-}
+async function fetchCSV(url){const r=await fetch(url+'?t='+Date.now()); if(!r.ok) throw new Error(`${url}: ${r.status}`); return parseCSV(await r.text());}
+async function fetchJSON(url){const r=await fetch(url+'?t='+Date.now()); if(!r.ok) throw new Error(`${url}: ${r.status}`); return r.json();}
 
-/* ---------- images: EXACT match; block AI-ish icons ---------- */
-const IMAGE_BLOCKLIST = [
-  'money','coin','coins','cash','bag','dollar','usd','aud','eur','yen','gbp',
-  'wallet','bank','finance','stock','chart','icon','vector','illustration','ai'
-];
+/* ====== Images: Exact-match + AI-ish filter ====== */
+const IMAGE_BLOCKLIST = ['money','coin','coins','cash','bag','dollar','usd','aud','eur','yen','gbp','wallet','bank','finance','stock','chart','icon','vector','illustration','ai'];
 let IMG_INDEX=new Map();
 function buildImageIndex(mapRows){
   IMG_INDEX.clear();
   mapRows.forEach(r=>{
-    const name = (r.name||'').toString().trim();
-    const image= (r.image||'').toString().trim();
+    const name=(r.name||'').toString().trim();
+    const image=(r.image||'').toString().trim();
     if(!name || !image) return;
-    const p = lc(image);
-    if(!p.startsWith('images/')) return; // only allow our images dir
+    const p=lc(image);
+    if(!p.startsWith('images/')) return;
     if(!(p.endsWith('.jpg')||p.endsWith('.jpeg')||p.endsWith('.png')||p.endsWith('.webp'))) return;
-    if(IMAGE_BLOCKLIST.some(w=> p.includes(w))) return; // drop AI-ish / icons
-    IMG_INDEX.set(lc(name), image);  // EXACT only
+    if(IMAGE_BLOCKLIST.some(w=> p.includes(w))) return;
+    if(!IMG_INDEX.has(lc(name))) IMG_INDEX.set(lc(name), image); // exact only
   });
 }
-function pickImage(itemName){
-  return IMG_INDEX.get(lc(itemName)) || PLACEHOLDER;
-}
+function pickImage(itemName){ return IMG_INDEX.get(lc(itemName)) || PLACEHOLDER; }
 
-/* ---------- inventory: qty = sum(size2..size14); no merging ---------- */
+/* ====== Inventory: qty = sum(size2..14); NO merging ====== */
 function normRow(raw){
   const m={}; Object.keys(raw).forEach(k=> m[lc(k)]=raw[k]);
   const g=k=> m[k] ?? '';
-  const sizes={
-    2:num(g('size2')),4:num(g('size4')),6:num(g('size6')),8:num(g('size8')),
-    10:num(g('size10')),12:num(g('size12')),14:num(g('size14'))
-  };
-  const qty = sizes[2]+sizes[4]+sizes[6]+sizes[8]+sizes[10]+sizes[12]+sizes[14];
+  const sizes={2:num(g('size2')),4:num(g('size4')),6:num(g('size6')),8:num(g('size8')),10:num(g('size10')),12:num(g('size12')),14:num(g('size14'))};
+  const qty=sizes[2]+sizes[4]+sizes[6]+sizes[8]+sizes[10]+sizes[12]+sizes[14];
   return {
+    sku: g('sku')||'',
     item_name: g('item_name')||g('name')||'',
     description: g('description')||'',
     category: g('category')||'',
     subcategory: g('subcategory')||'',
     colour: g('colour')||g('color')||'',
     rrp: num(g('rrp')),
-    size2:sizes[2], size4:sizes[4], size6:sizes[6], size8:sizes[8],
-    size10:sizes[10], size12:sizes[12], size14:sizes[14],
+    size2:sizes[2], size4:sizes[4], size6:sizes[6], size8:sizes[8], size10:sizes[10], size12:sizes[12], size14:sizes[14],
     qty
   };
 }
 
-/* ---------- UI ---------- */
+/* ====== UI helpers ====== */
 function sizeChips(r){
   const chips=[];
   [[2,'size2'],[4,'size4'],[6,'size6'],[8,'size8'],[10,'size10'],[12,'size12'],[14,'size14']].forEach(([s,k])=>{
-    if(r[k]>0) chips.push(`<span class="chip"><b>Size ${s}</b> (${r[k]} pcs)</span>`);
+    if(r[k]>0) chips.push(`<span class="chip"><b>SIZE ${s}</b> ${r[k]} pcs</span>`);
   });
   return chips.join('');
 }
-function renderFooterSizes(totals){
-  document.getElementById('sizes').innerHTML =
-    [2,4,6,8,10,12,14].map(s=>`
-      <div class="sizepill"><b>Size ${s}</b><span class="sub">${fmt(totals[s])} pcs</span></div>
-    `).join('');
+function footerSizes(tot){
+  document.getElementById('sizes').innerHTML = [2,4,6,8,10,12,14].map(s=>`
+    <div class="sizepill"><b>Size ${s}</b><span class="sub">${fmt(tot[s])} pcs</span></div>
+  `).join('');
 }
-function renderMetricsDisplay(pieces, skus, totals){
-  document.getElementById('heroPill').textContent = `Approx ${fmt(pieces)} pieces • ${fmt(skus)} SKUs`;
-  document.getElementById('sumPieces').textContent = fmt(pieces);
-  document.getElementById('sumSkus').textContent   = fmt(skus);
-  renderFooterSizes(totals);
+function updateActiveFilters(){
+  const f=document.getElementById('activeFilters');
+  const size=document.getElementById('sizeFilter').value;
+  const cat=document.getElementById('catFilter').value;
+  const q=document.getElementById('search').value.trim();
+  const bits=[];
+  if(size) bits.push(`<span class="activeFilter">Size: ${size}</span>`);
+  if(cat)  bits.push(`<span class="activeFilter">Category: ${cat}</span>`);
+  if(q)    bits.push(`<span class="activeFilter">Search: “${q}”</span>`);
+  f.innerHTML=bits.join('');
+  f.style.display = bits.length ? '' : 'none';
 }
+
+/* ====== Render ====== */
 function renderList(rows){
   const size=document.getElementById('sizeFilter').value;
   const cat =document.getElementById('catFilter').value;
@@ -233,45 +254,73 @@ function renderList(rows){
     if(size && !(r['size'+size]>0)) return false; // strict size filter
     if(cat && r.category!==cat && r.subcategory!==cat) return false;
     if(q){
-      const hay=(r.item_name+' '+r.description+' '+r.colour+' '+r.category+' '+r.subcategory).toLowerCase();
+      const hay=(r.item_name+' '+r.description+' '+r.colour+' '+r.category+' '+r.subcategory+' '+r.sku).toLowerCase();
       if(!hay.includes(q)) return false;
     }
     return true;
   });
 
   const grid=document.getElementById('grid');
-  grid.innerHTML = filtered.map(r=>`
+  grid.innerHTML = filtered.map(r=>{
+    const img = pickImage(r.item_name);
+    const id  = Math.random().toString(36).slice(2);
+    return `
     <article class="item">
-      <div class="pic"><img src="${pickImage(r.item_name)}" alt="${r.item_name}"></div>
+      <div class="pic" id="pic-${id}">
+        <img src="${img}" alt="${r.item_name}" loading="lazy" decoding="async"
+             onload="document.getElementById('pic-${id}').classList.add('loaded')">
+      </div>
       <div class="meta">
         <h3>${r.item_name}</h3>
         <div class="sub">${[r.description,r.colour].filter(Boolean).join(' • ')}</div>
-        <div class="chips">${sizeChips(r)}</div>
+        <div class="chips">
+          ${r.sku?`<span class="chip">SKU ${r.sku}</span>`:''}
+          ${r.category?`<span class="chip">${r.category}</span>`:''}
+          ${r.subcategory?`<span class="chip">${r.subcategory}</span>`:''}
+        </div>
+        <div class="chips" style="margin-top:6px">${sizeChips(r)}</div>
         <div class="row">
           <div class="badge"><strong>Qty:</strong>&nbsp;${fmt(r.qty)}</div>
           <div class="badge"><strong>RRP:</strong>&nbsp;${r.rrp?money(r.rrp):'—'}</div>
-          <div class="badge"><strong>Wholesale:</strong>&nbsp;${r.rrp?money(r.rrp*WHOLESALE_FACTOR):'—'}</div>
+          <div class="badge"><strong>Wholesale:</strong>&nbsp;${r.rrp?money(r.rrp*0.40):'—'}</div>
         </div>
       </div>
-    </article>
-  `).join('');
+    </article>`;
+  }).join('');
 
   document.getElementById('empty').style.display = filtered.length ? 'none' : '';
+  updateActiveFilters();
 }
 
-/* ---------- start ---------- */
+function renderFooterTotalsFromMetrics(metrics, computedPieces, skus, totalsFromInventory){
+  const pieces = Number(metrics?.total_pieces)||computedPieces;
+  const skusDisplay = Number(metrics?.distinct_items)||skus;
+  document.getElementById('heroPill').textContent = `Approx ${fmt(pieces)} pieces • ${fmt(skusDisplay)} SKUs`;
+  document.getElementById('sumPieces').textContent = fmt(pieces);
+  document.getElementById('sumSkus').textContent   = fmt(skusDisplay);
+
+  // Size breakdown: prefer metrics.sizes if present; else computed totals
+  const sizes = metrics?.sizes;
+  if(sizes){
+    const tot = {2:0,4:0,6:0,8:0,10:0,12:0,14:0};
+    Object.keys(tot).forEach(k=> tot[k]= Number(sizes[k])||0);
+    footerSizes(tot);
+  }else{
+    footerSizes(totalsFromInventory);
+  }
+}
+
+/* ====== Start ====== */
 async function start(){
   const errBox=document.getElementById('errBox');
   try{
     const [invCSV, mapCSV] = await Promise.all([fetchCSV(INV_URL), fetchCSV(MAP_URL)]);
+    const inventory = invCSV.rows.map(normRow); // KEEP EACH ROW (no merging)
 
-    // Inventory: keep every row distinct (so Fireman +Hat vs No Hat are separate)
-    const inventory = invCSV.rows.map(normRow);
-
-    // Exact image index with AI-ish/icon filtering
+    // exact image index with AI-ish/icon filtering
     buildImageIndex(mapCSV.rows);
 
-    // Compute actual totals from sizes (internal)
+    // Compute internal totals from sizes
     const totals={2:0,4:0,6:0,8:0,10:0,12:0,14:0};
     let computedPieces = 0;
     inventory.forEach(r=>{
@@ -281,19 +330,15 @@ async function start(){
     });
     const skus = inventory.length;
 
-    // Footer money
+    // Money
     const wholesale = inventory.reduce((a,r)=> a + (r.rrp*WHOLESALE_FACTOR)*r.qty, 0);
     document.getElementById('sumWholesaleFooter').textContent = money(wholesale);
     document.getElementById('sumQuickFooter').textContent     = money(QUICK_SALE);
 
-    // Prefer summary_metrics.json for displayed "approx" pieces if present
-    try{
-      const metrics = await fetchJSON(METRICS_URL);
-      const displayPieces = Number(metrics.total_pieces)||computedPieces;
-      renderMetricsDisplay(displayPieces, skus, totals);
-    }catch{  // no metrics file; show computed
-      renderMetricsDisplay(computedPieces, skus, totals);
-    }
+    // Prefer summary_metrics.json for display if present
+    let metrics=null;
+    try{ metrics = await fetchJSON(METRICS_URL); }catch{}
+    renderFooterTotalsFromMetrics(metrics, computedPieces, skus, totals);
 
     // Filters
     ['sizeFilter','catFilter','search'].forEach(id=>{
