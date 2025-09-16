@@ -17,11 +17,15 @@
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
 a{color:#4e5bff;text-decoration:none;font-weight:600}
 a:focus,select:focus,input:focus{outline:2px solid #6f72ff;outline-offset:2px}
+
+/* Header */
 .header{padding:56px 20px 96px;background:linear-gradient(180deg,var(--brand1) 0%,var(--brand2) 100%);color:#fff}
 .wrap{max-width:1160px;margin:0 auto}
 .h1{font-size:clamp(34px,5vw,56px);font-weight:800;margin:0 0 6px}
 .blurb{max-width:880px;margin:10px 0 6px;opacity:.95}
 .tag{display:inline-block;margin-top:12px;padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.16);font-weight:700}
+
+/* Main */
 .panel{margin-top:-60px}
 .card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin:16px 0}
 
@@ -64,6 +68,7 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
 .stat{margin-top:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:14px}
 .stat small{color:#9fb3ff;display:block;margin-bottom:4px;font-weight:600}
 .stat b{font-size:20px}
+.smallnote{margin-top:10px;font-size:13px;color:#aeb8ff;line-height:1.4}
 
 /* Size breakdown in footer */
 .sizegrid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-top:10px}
@@ -118,14 +123,10 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
     <h3 style="margin:0 0 8px">Brand Proof</h3>
     <div class="sub">Luxury credentials, pricing evidence, and media recognition.</div>
     <div style="margin-top:10px">
-      <!-- Luxury brand credentials -->
       <a href="https://www.lanecrawford.com/brand/700351/marleen-molenaar-sleepwear/women/">Lane Crawford brand page</a>
       <a href="https://www.lanecrawford.com/discover/natural-wonder-10900001-20120229/">Lane Crawford feature</a>
-      <!-- Premium retail pricing -->
       <a href="https://retykle.com/products/marleen-molenaar-pyjama-set-2t-8y">Retykle pricing example</a>
-      <!-- Media recognition -->
       <a href="https://www.scmp.com/article/533820/eastern-premise">South China Morning Post</a>
-      <!-- Luxury positioning (directory mention) -->
       <a href="https://kidsdresssmart.com/brands">Luxury kids brands directory</a>
     </div>
   </section>
@@ -148,6 +149,10 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
       <h3>Collection Summary</h3>
       <p><span id="sumPieces">—</span> pieces across <span id="sumSkus">—</span> SKUs</p>
       <div id="sizes" class="sizegrid"></div>
+      <p class="smallnote">
+        Figures are provided as an approximate stock summary. Piece counts are based on consolidated box inventories;
+        minor variances may occur due to packing and handling.
+      </p>
     </div>
   </div>
 </footer>
@@ -158,8 +163,8 @@ const INV_URL='detailed_inventory.csv';
 const MAP_URL='image_map.csv';
 const METRICS_URL='summary_metrics.json'; // optional
 const PLACEHOLDER='images/placeholder.webp';
-const WHOLESALE_FACTOR=0.40;
-const QUICK_SALE=12000;
+const WHOLESALE_FACTOR=0.40;   // 40% of RRP
+const QUICK_SALE=12000;        // fixed approx amount
 
 /* ====== Utils ====== */
 const lc = s => (s||'').toString().replace(/\uFEFF/g,'').trim().toLowerCase();
@@ -167,7 +172,17 @@ const num = v => Number((v??'').toString().replace(/[^\d.\-]/g,''))||0;
 const money=v=> new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD'}).format(v||0);
 const fmt  =v=> (+v||0).toLocaleString('en-AU');
 
-function splitCSVLine(s){const out=[];let cur="";let q=false;for(let i=0;i<s.length;i++){const c=s[i];if(c=='"'){if(q&&s[i+1]=='"'){cur+='"';i++;}else{q=!q;}}else if(c==","&&!q){out.push(cur);cur="";}else cur+=c;}out.push(cur);return out;}
+function splitCSVLine(s){
+  const out=[]; let cur=""; let q=false;
+  for(let i=0;i<s.length;i++){
+    const c=s[i];
+    if(c=='"'){ if(q && s[i+1]=='"'){ cur+='"'; i++; } else { q=!q; } }
+    else if(c=="," && !q){ out.push(cur); cur=""; }
+    else cur+=c;
+  }
+  out.push(cur);
+  return out;
+}
 function parseCSV(text){
   const lines = text.replace(/\r/g,"").split("\n").filter(l=>l.trim().length);
   if(!lines.length) return {rows:[], headers:[]};
@@ -179,11 +194,22 @@ function parseCSV(text){
   });
   return {rows, headers};
 }
-async function fetchCSV(url){const r=await fetch(url+'?t='+Date.now()); if(!r.ok) throw new Error(`${url}: ${r.status}`); return parseCSV(await r.text());}
-async function fetchJSON(url){const r=await fetch(url+'?t='+Date.now()); if(!r.ok) throw new Error(`${url}: ${r.status}`); return r.json();}
+async function fetchCSV(url){
+  const r=await fetch(url+'?t='+Date.now());
+  if(!r.ok) throw new Error(`${url}: ${r.status}`);
+  return parseCSV(await r.text());
+}
+async function fetchJSON(url){
+  const r=await fetch(url+'?t='+Date.now());
+  if(!r.ok) throw new Error(`${url}: ${r.status}`);
+  return r.json();
+}
 
-/* ====== Images: Exact-match + AI-ish filter ====== */
-const IMAGE_BLOCKLIST = ['money','coin','coins','cash','bag','dollar','usd','aud','eur','yen','gbp','wallet','bank','finance','stock','chart','icon','vector','illustration','ai'];
+/* ====== Images: exact-match + AI-ish/icon filter ====== */
+const IMAGE_BLOCKLIST = [
+  'money','coin','coins','cash','bag','dollar','usd','aud','eur','yen','gbp',
+  'wallet','bank','finance','stock','chart','icon','vector','illustration','ai'
+];
 let IMG_INDEX=new Map();
 function buildImageIndex(mapRows){
   IMG_INDEX.clear();
@@ -198,13 +224,18 @@ function buildImageIndex(mapRows){
     if(!IMG_INDEX.has(lc(name))) IMG_INDEX.set(lc(name), image); // exact only
   });
 }
-function pickImage(itemName){ return IMG_INDEX.get(lc(itemName)) || PLACEHOLDER; }
+function pickImage(itemName){
+  return IMG_INDEX.get(lc(itemName)) || PLACEHOLDER;
+}
 
-/* ====== Inventory: qty = sum(size2..14); NO merging ====== */
+/* ====== Inventory: qty=sum(size2..14); keep rows distinct ====== */
 function normRow(raw){
   const m={}; Object.keys(raw).forEach(k=> m[lc(k)]=raw[k]);
   const g=k=> m[k] ?? '';
-  const sizes={2:num(g('size2')),4:num(g('size4')),6:num(g('size6')),8:num(g('size8')),10:num(g('size10')),12:num(g('size12')),14:num(g('size14'))};
+  const sizes={
+    2:num(g('size2')),4:num(g('size4')),6:num(g('size6')),8:num(g('size8')),
+    10:num(g('size10')),12:num(g('size12')),14:num(g('size14'))
+  };
   const qty=sizes[2]+sizes[4]+sizes[6]+sizes[8]+sizes[10]+sizes[12]+sizes[14];
   return {
     sku: g('sku')||'',
@@ -228,9 +259,10 @@ function sizeChips(r){
   return chips.join('');
 }
 function footerSizes(tot){
-  document.getElementById('sizes').innerHTML = [2,4,6,8,10,12,14].map(s=>`
-    <div class="sizepill"><b>Size ${s}</b><span class="sub">${fmt(tot[s])} pcs</span></div>
-  `).join('');
+  document.getElementById('sizes').innerHTML =
+    [2,4,6,8,10,12,14].map(s=>`
+      <div class="sizepill"><b>Size ${s}</b><span class="sub">${fmt(tot[s])} pcs</span></div>
+    `).join('');
 }
 function updateActiveFilters(){
   const f=document.getElementById('activeFilters');
@@ -245,7 +277,7 @@ function updateActiveFilters(){
   f.style.display = bits.length ? '' : 'none';
 }
 
-/* ====== Render ====== */
+/* ====== Render list ====== */
 function renderList(rows){
   const size=document.getElementById('sizeFilter').value;
   const cat =document.getElementById('catFilter').value;
@@ -283,7 +315,7 @@ function renderList(rows){
         <div class="row">
           <div class="badge"><strong>Qty:</strong>&nbsp;${fmt(r.qty)}</div>
           <div class="badge"><strong>RRP:</strong>&nbsp;${r.rrp?money(r.rrp):'—'}</div>
-          <div class="badge"><strong>Wholesale:</strong>&nbsp;${r.rrp?money(r.rrp*0.40):'—'}</div>
+          <div class="badge"><strong>Wholesale:</strong>&nbsp;${r.rrp?money(r.rrp*WHOLESALE_FACTOR):'—'}</div>
         </div>
       </div>
     </article>`;
@@ -293,6 +325,7 @@ function renderList(rows){
   updateActiveFilters();
 }
 
+/* ====== Metrics display ====== */
 function renderFooterTotalsFromMetrics(metrics, computedPieces, skus, totalsFromInventory){
   const pieces = Number(metrics?.total_pieces)||computedPieces;
   const skusDisplay = Number(metrics?.distinct_items)||skus;
@@ -300,6 +333,7 @@ function renderFooterTotalsFromMetrics(metrics, computedPieces, skus, totalsFrom
   document.getElementById('sumPieces').textContent = fmt(pieces);
   document.getElementById('sumSkus').textContent   = fmt(skusDisplay);
 
+  // Size breakdown: prefer metrics.sizes if present; else computed totals
   const sizes = metrics?.sizes;
   if(sizes){
     const tot = {2:0,4:0,6:0,8:0,10:0,12:0,14:0};
@@ -315,8 +349,10 @@ async function start(){
   const errBox=document.getElementById('errBox');
   try{
     const [invCSV, mapCSV] = await Promise.all([fetchCSV(INV_URL), fetchCSV(MAP_URL)]);
-    const inventory = invCSV.rows.map(normRow); // keep rows distinct (e.g., Fireman +Hat vs No Hat)
-    buildImageIndex(mapCSV.rows);
+
+    // Build data
+    const inventory = invCSV.rows.map(normRow);   // keep rows distinct (e.g., Fireman +Hat vs No Hat)
+    buildImageIndex(mapCSV.rows);                 // exact mapping
 
     // Internal totals from sizes
     const totals={2:0,4:0,6:0,8:0,10:0,12:0,14:0};
@@ -328,16 +364,17 @@ async function start(){
     });
     const skus = inventory.length;
 
-    // Money
+    // Money (footer)
     const wholesale = inventory.reduce((a,r)=> a + (r.rrp*WHOLESALE_FACTOR)*r.qty, 0);
     document.getElementById('sumWholesaleFooter').textContent = money(wholesale);
     document.getElementById('sumQuickFooter').textContent     = money(QUICK_SALE);
 
-    // Prefer summary_metrics.json for display if present
-    let metrics=null; try{ metrics = await fetchJSON(METRICS_URL); }catch{}
+    // Prefer summary_metrics.json for displayed "approx" counts if present
+    let metrics=null;
+    try{ metrics = await fetchJSON(METRICS_URL); }catch{}
     renderFooterTotalsFromMetrics(metrics, computedPieces, skus, totals);
 
-    // Filters
+    // Wire filters & first render
     ['sizeFilter','catFilter','search'].forEach(id=>{
       document.getElementById(id).addEventListener('input',()=>renderList(inventory));
       document.getElementById(id).addEventListener('change',()=>renderList(inventory));
