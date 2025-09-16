@@ -20,14 +20,6 @@ a{color:#4e5bff;text-decoration:none;font-weight:600}
 .tag{display:inline-block;margin-top:16px;padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.16);font-weight:700}
 .panel{margin-top:-70px}
 .card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:var(--shadow);margin:16px 0}
-.grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:12px}
-@media(max-width:980px){.grid7{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:620px){.grid7{grid-template-columns:repeat(2,1fr)}}
-.sizepill{background:#fff;border:1px solid var(--border);border-radius:16px;padding:12px;text-align:center}
-.sizepill b{display:block;font-size:18px;margin-bottom:4px}
-.kvgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-@media(max-width:980px){.kvgrid{grid-template-columns:1fr}}
-.kv{padding:16px;border:1px solid var(--border);border-radius:16px;background:#fff}
 .controls{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
 select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-radius:12px}
 .gridCards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
@@ -43,15 +35,25 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
 .chip{background:var(--chip);border:1px dashed var(--border);padding:5px 10px;border-radius:999px;font-size:12px;font-weight:600}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .badge{background:#f6f7fb;border:1px solid var(--border);border-radius:999px;padding:6px 12px;font-weight:600}
+
+/* Footer */
 .footer{background:var(--foot);color:#eaf0ff;margin-top:28px}
-.footer .wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;padding:26px 20px}
-@media(max-width:820px){.footer .wrap{grid-template-columns:1fr}}
+.footer .wrap{display:grid;grid-template-columns:1.2fr 1fr;gap:18px;padding:26px 20px}
+@media(max-width:980px){.footer .wrap{grid-template-columns:1fr}}
 .footCard{background:var(--footCard);border-radius:18px;padding:18px 20px}
 .footCard h3{color:#aeb8ff;margin:0 0 10px}
 .stat{margin-top:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:14px}
 .stat small{color:#9fb3ff;display:block;margin-bottom:4px;font-weight:600}
 .stat b{font-size:20px}
 .smallnote{margin-top:8px;color:#aeb8ff;font-size:12px}
+
+/* Size breakdown moved to footer */
+.sizegrid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-top:10px}
+@media(max-width:980px){.sizegrid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:620px){.sizegrid{grid-template-columns:repeat(3,1fr)}}
+.sizepill{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 8px;text-align:center}
+.sizepill b{display:block;color:#c9d5ff}
+.sizepill .sub{color:#aeb8ff;font-size:13px}
 .err{color:#ffb3b3;font-size:13px;margin-top:6px;display:none}
 </style>
 </head>
@@ -65,26 +67,6 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
 
 <main class="wrap panel">
   <section class="card">
-    <h2>🧵 Size Breakdown — Pieces Available</h2>
-    <div id="sizes" class="grid7"></div>
-  </section>
-
-  <section class="kvgrid">
-    <div class="kv">
-      <h4>🏆 Lane Crawford Luxury Retailer</h4>
-      <a href="https://www.lanecrawford.com/brand/700351/marleen-molenaar-sleepwear/women">View Brand Page</a>
-    </div>
-    <div class="kv">
-      <h4>💰 Retail Pricing Evidence</h4>
-      <a href="https://www.retykle.com/search?q=marleen%20molenaar">Retykle Pricing Proof</a>
-    </div>
-    <div class="kv">
-      <h4>📰 Media Coverage</h4>
-      <a href="https://www.scmp.com/article/533820/eastern-premise">South China Morning Post</a>
-    </div>
-  </section>
-
-  <section class="card">
     <div class="controls">
       <select id="sizeFilter"><option value="">All Sizes</option><option>2</option><option>4</option><option>6</option><option>8</option><option>10</option><option>12</option><option>14</option></select>
       <select id="catFilter"><option value="">All Categories</option><option>Children's</option><option>Ladies</option><option>Boys</option><option>Baby</option><option>Unisex</option></select>
@@ -94,20 +76,36 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
     <div id="empty" class="empty" style="display:none">No results.</div>
     <div id="errBox" class="err"></div>
   </section>
+
+  <!-- Proof links -->
+  <section class="card">
+    <h3 style="margin:0 0 8px">Brand Proof</h3>
+    <div class="sub">Luxury positioning and retail pricing references.</div>
+    <div class="controls" style="margin-top:10px">
+      <a href="https://www.lanecrawford.com/brand/700351/marleen-molenaar-sleepwear/women">Lane Crawford</a>
+      <a href="https://www.retykle.com/search?q=marleen%20molenaar">Retykle Pricing</a>
+      <a href="https://www.scmp.com/article/533820/eastern-premise">SCMP Profile</a>
+    </div>
+  </section>
 </main>
 
 <footer class="footer">
   <div class="wrap">
     <div class="footCard">
-      <h3>Contact Information</h3>
+      <h3>Contact</h3>
       <p><strong>Gary Flax:</strong> 02 9314 5774<br>Vaucluse, Sydney NSW<br>Viewing: Weekdays 5pm+, Weekends anytime</p>
+
       <div class="stat"><small>Wholesale (approx)</small><b id="sumWholesaleFooter">—</b></div>
       <div class="stat"><small>Quick sale (approx)</small><b id="sumQuickFooter">—</b></div>
-      <div class="smallnote">Totals are approximate. Box counts and on-hand may vary slightly.</div>
+      <div class="smallnote">Figures are approximate. Photos use exact matches only; items without a match show a placeholder.</div>
     </div>
+
     <div class="footCard">
       <h3>Collection Summary</h3>
       <p><span id="sumPieces">—</span> pieces across <span id="sumSkus">—</span> SKUs</p>
+
+      <!-- Size breakdown moved here -->
+      <div id="sizes" class="sizegrid"></div>
     </div>
   </div>
 </footer>
@@ -116,8 +114,9 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
 /* ---------- config ---------- */
 const INV_URL='detailed_inventory.csv';
 const MAP_URL='image_map.csv';
+const METRICS_URL='summary_metrics.json';   // optional; used for footer "approx" display if present
 const PLACEHOLDER='images/placeholder.webp';
-const WHOLESALE_FACTOR=0.40;           // adjust if you like
+const WHOLESALE_FACTOR=0.40;
 const QUICK_SALE=12000;
 
 /* ---------- utils ---------- */
@@ -126,7 +125,7 @@ const num = v => Number((v??'').toString().replace(/[^\d.\-]/g,''))||0;
 const money=v=> new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD'}).format(v||0);
 const fmt  =v=> (+v||0).toLocaleString('en-AU');
 
-/* robust CSV (handles quotes & commas) */
+/* robust CSV parser (quotes + commas) */
 function splitCSVLine(s){
   const out=[]; let cur=""; let q=false;
   for(let i=0;i<s.length;i++){
@@ -150,24 +149,40 @@ function parseCSV(text){
   return {rows, headers};
 }
 async function fetchCSV(url){
-  const r = await fetch(url+'?t='+Date.now());
+  const r=await fetch(url+'?t='+Date.now());
   if(!r.ok) throw new Error(`${url}: ${r.status}`);
   return parseCSV(await r.text());
 }
+async function fetchJSON(url){
+  const r=await fetch(url+'?t='+Date.now());
+  if(!r.ok) throw new Error(`${url}: ${r.status}`);
+  return r.json();
+}
 
-/* ---------- images: EXACT match only ---------- */
+/* ---------- images: EXACT match; block AI-ish icons ---------- */
+const IMAGE_BLOCKLIST = [
+  'money','coin','coins','cash','bag','dollar','usd','aud','eur','yen','gbp',
+  'wallet','bank','finance','stock','chart','icon','vector','illustration','ai'
+];
 let IMG_INDEX=new Map();
 function buildImageIndex(mapRows){
   IMG_INDEX.clear();
   mapRows.forEach(r=>{
-    if(r.image && r.name) IMG_INDEX.set(lc(r.name), r.image);
+    const name = (r.name||'').toString().trim();
+    const image= (r.image||'').toString().trim();
+    if(!name || !image) return;
+    const p = lc(image);
+    if(!p.startsWith('images/')) return; // only allow our images dir
+    if(!(p.endsWith('.jpg')||p.endsWith('.jpeg')||p.endsWith('.png')||p.endsWith('.webp'))) return;
+    if(IMAGE_BLOCKLIST.some(w=> p.includes(w))) return; // drop AI-ish / icons
+    IMG_INDEX.set(lc(name), image);  // EXACT only
   });
 }
 function pickImage(itemName){
   return IMG_INDEX.get(lc(itemName)) || PLACEHOLDER;
 }
 
-/* ---------- inventory: qty = sum(size2..size14) ONLY ---------- */
+/* ---------- inventory: qty = sum(size2..size14); no merging ---------- */
 function normRow(raw){
   const m={}; Object.keys(raw).forEach(k=> m[lc(k)]=raw[k]);
   const g=k=> m[k] ?? '';
@@ -189,7 +204,7 @@ function normRow(raw){
   };
 }
 
-/* ---------- UI helpers ---------- */
+/* ---------- UI ---------- */
 function sizeChips(r){
   const chips=[];
   [[2,'size2'],[4,'size4'],[6,'size6'],[8,'size8'],[10,'size10'],[12,'size12'],[14,'size14']].forEach(([s,k])=>{
@@ -197,25 +212,17 @@ function sizeChips(r){
   });
   return chips.join('');
 }
-function renderMetrics(rows){
-  // exact totals from sizes only
-  const pieces = rows.reduce((a,r)=> a+r.qty, 0);
-  const skus   = rows.length; // no merging of unlike items
+function renderFooterSizes(totals){
+  document.getElementById('sizes').innerHTML =
+    [2,4,6,8,10,12,14].map(s=>`
+      <div class="sizepill"><b>Size ${s}</b><span class="sub">${fmt(totals[s])} pcs</span></div>
+    `).join('');
+}
+function renderMetricsDisplay(pieces, skus, totals){
   document.getElementById('heroPill').textContent = `Approx ${fmt(pieces)} pieces • ${fmt(skus)} SKUs`;
   document.getElementById('sumPieces').textContent = fmt(pieces);
   document.getElementById('sumSkus').textContent   = fmt(skus);
-
-  const totals={2:0,4:0,6:0,8:0,10:0,12:0,14:0};
-  rows.forEach(r=>{
-    totals[2]+=r.size2; totals[4]+=r.size4; totals[6]+=r.size6; totals[8]+=r.size8;
-    totals[10]+=r.size10; totals[12]+=r.size12; totals[14]+=r.size14;
-  });
-  document.getElementById('sizes').innerHTML =
-    [2,4,6,8,10,12,14].map(s=>`<div class="sizepill"><b>Size ${s}</b><span class="sub">${fmt(totals[s])} pcs</span></div>`).join('');
-
-  const wholesale = rows.reduce((a,r)=> a + (r.rrp*WHOLESALE_FACTOR)*r.qty, 0);
-  document.getElementById('sumWholesaleFooter').textContent = money(wholesale);
-  document.getElementById('sumQuickFooter').textContent     = money(QUICK_SALE);
+  renderFooterSizes(totals);
 }
 function renderList(rows){
   const size=document.getElementById('sizeFilter').value;
@@ -223,7 +230,7 @@ function renderList(rows){
   const q   =document.getElementById('search').value.trim().toLowerCase();
 
   const filtered = rows.filter(r=>{
-    if(size && !(r['size'+size]>0)) return false;                // strict size filter
+    if(size && !(r['size'+size]>0)) return false; // strict size filter
     if(cat && r.category!==cat && r.subcategory!==cat) return false;
     if(q){
       const hay=(r.item_name+' '+r.description+' '+r.colour+' '+r.category+' '+r.subcategory).toLowerCase();
@@ -256,15 +263,39 @@ function renderList(rows){
 async function start(){
   const errBox=document.getElementById('errBox');
   try{
-    const [inv, map] = await Promise.all([fetchCSV(INV_URL), fetchCSV(MAP_URL)]);
-    // normalise inventory rows (NO aggregation of different items)
-    const inventory = inv.rows.map(normRow);
+    const [invCSV, mapCSV] = await Promise.all([fetchCSV(INV_URL), fetchCSV(MAP_URL)]);
 
-    // exact image index
-    buildImageIndex(map.rows);
+    // Inventory: keep every row distinct (so Fireman +Hat vs No Hat are separate)
+    const inventory = invCSV.rows.map(normRow);
 
-    // compute + render
-    renderMetrics(inventory);
+    // Exact image index with AI-ish/icon filtering
+    buildImageIndex(mapCSV.rows);
+
+    // Compute actual totals from sizes (internal)
+    const totals={2:0,4:0,6:0,8:0,10:0,12:0,14:0};
+    let computedPieces = 0;
+    inventory.forEach(r=>{
+      computedPieces += r.qty;
+      totals[2]+=r.size2; totals[4]+=r.size4; totals[6]+=r.size6; totals[8]+=r.size8;
+      totals[10]+=r.size10; totals[12]+=r.size12; totals[14]+=r.size14;
+    });
+    const skus = inventory.length;
+
+    // Footer money
+    const wholesale = inventory.reduce((a,r)=> a + (r.rrp*WHOLESALE_FACTOR)*r.qty, 0);
+    document.getElementById('sumWholesaleFooter').textContent = money(wholesale);
+    document.getElementById('sumQuickFooter').textContent     = money(QUICK_SALE);
+
+    // Prefer summary_metrics.json for displayed "approx" pieces if present
+    try{
+      const metrics = await fetchJSON(METRICS_URL);
+      const displayPieces = Number(metrics.total_pieces)||computedPieces;
+      renderMetricsDisplay(displayPieces, skus, totals);
+    }catch{  // no metrics file; show computed
+      renderMetricsDisplay(computedPieces, skus, totals);
+    }
+
+    // Filters
     ['sizeFilter','catFilter','search'].forEach(id=>{
       document.getElementById(id).addEventListener('input',()=>renderList(inventory));
       document.getElementById(id).addEventListener('change',()=>renderList(inventory));
