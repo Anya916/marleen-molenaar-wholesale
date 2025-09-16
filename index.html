@@ -51,6 +51,8 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
 .stat{margin-top:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:14px}
 .stat small{color:#9fb3ff;display:block;margin-bottom:4px;font-weight:600}
 .stat b{font-size:20px}
+.smallnote{margin-top:8px;color:#aeb8ff;font-size:12px}
+.err{color:#ffb3b3;font-size:13px;margin-top:6px;display:none}
 </style>
 </head>
 <body>
@@ -90,6 +92,7 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
     </div>
     <div id="grid" class="gridCards"></div>
     <div id="empty" class="empty" style="display:none">No results.</div>
+    <div id="errBox" class="err"></div>
   </section>
 </main>
 
@@ -97,9 +100,10 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
   <div class="wrap">
     <div class="footCard">
       <h3>Contact Information</h3>
-      <p><strong>Gary Flax:</strong> +61 414 242 142<br>Vaucluse, Sydney NSW<br>Viewing: Weekdays 5pm+, Weekends anytime</p>
-      <div class="stat"><small>Wholesale (target)</small><b id="sumWholesaleFooter">—</b></div>
-      <div class="stat"><small>Quick sale (target)</small><b id="sumQuickFooter">—</b></div>
+      <p><strong>Gary Flax:</strong> 02 9314 5774<br>Vaucluse, Sydney NSW<br>Viewing: Weekdays 5pm+, Weekends anytime</p>
+      <div class="stat"><small>Wholesale (approx)</small><b id="sumWholesaleFooter">—</b></div>
+      <div class="stat"><small>Quick sale (approx)</small><b id="sumQuickFooter">—</b></div>
+      <div class="smallnote">Totals are approximate. Box counts and on-hand may vary slightly.</div>
     </div>
     <div class="footCard">
       <h3>Collection Summary</h3>
@@ -113,36 +117,49 @@ select,input{height:40px;padding:0 12px;border:1px solid var(--border);border-ra
 const INV_URL='detailed_inventory.csv';
 const MAP_URL='image_map.csv';
 const PLACEHOLDER='images/placeholder.webp';
-const WHOLESALE_FACTOR=0.40;
-const QUICK_SALE_TARGET=12000;
+const WHOLESALE_FACTOR=0.40;           // adjust if you like
+const QUICK_SALE=12000;
 
 /* ---------- utils ---------- */
-const lc = s => (s||'').toString().trim().toLowerCase();
-const n  = v => Number((v??'').toString().replace(/[^\d.\-]/g,''))||0;
+const lc = s => (s||'').toString().replace(/\uFEFF/g,'').trim().toLowerCase();
+const num = v => Number((v??'').toString().replace(/[^\d.\-]/g,''))||0;
 const money=v=> new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD'}).format(v||0);
 const fmt  =v=> (+v||0).toLocaleString('en-AU');
 
-/* simple CSV (works for your current files; no embedded commas) */
-function parseCSV(txt){
-  const lines = txt.replace(/\r/g,'').trim().split('\n').filter(Boolean);
-  const head  = lines.shift().split(',').map(h=>h.trim());
-  return lines.map(line=>{
-    const cells = line.split(',');
-    const row={}; head.forEach((h,i)=> row[h]=cells[i]??'');
-    return row;
+/* robust CSV (handles quotes & commas) */
+function splitCSVLine(s){
+  const out=[]; let cur=""; let q=false;
+  for(let i=0;i<s.length;i++){
+    const c=s[i];
+    if(c=='"'){ if(q && s[i+1]=='"'){ cur+='"'; i++; } else { q=!q; } }
+    else if(c=="," && !q){ out.push(cur); cur=""; }
+    else cur+=c;
+  }
+  out.push(cur);
+  return out;
+}
+function parseCSV(text){
+  const lines = text.replace(/\r/g,"").split("\n").filter(l=>l.trim().length);
+  if(!lines.length) return {rows:[], headers:[]};
+  const headers = splitCSVLine(lines.shift()).map(h=>h.trim());
+  const rows = lines.map(line=>{
+    const cells=splitCSVLine(line);
+    const obj={}; headers.forEach((h,i)=> obj[h]=cells[i]!==undefined?cells[i]:"");
+    return obj;
   });
+  return {rows, headers};
 }
 async function fetchCSV(url){
-  const r=await fetch(url);
-  if(!r.ok) throw new Error('Failed '+url+' '+r.status);
+  const r = await fetch(url+'?t='+Date.now());
+  if(!r.ok) throw new Error(`${url}: ${r.status}`);
   return parseCSV(await r.text());
 }
 
 /* ---------- images: EXACT match only ---------- */
 let IMG_INDEX=new Map();
-function buildImageIndex(rows){
+function buildImageIndex(mapRows){
   IMG_INDEX.clear();
-  rows.forEach(r=>{
+  mapRows.forEach(r=>{
     if(r.image && r.name) IMG_INDEX.set(lc(r.name), r.image);
   });
 }
@@ -150,36 +167,41 @@ function pickImage(itemName){
   return IMG_INDEX.get(lc(itemName)) || PLACEHOLDER;
 }
 
-/* ---------- inventory: NEVER use total_qty; sum sizes only ---------- */
-function normalise(r){
-  const size2=n(r.size2), size4=n(r.size4), size6=n(r.size6), size8=n(r.size8),
-        size10=n(r.size10), size12=n(r.size12), size14=n(r.size14);
-  const qty = size2+size4+size6+size8+size10+size12+size14; // <- authoritative
+/* ---------- inventory: qty = sum(size2..size14) ONLY ---------- */
+function normRow(raw){
+  const m={}; Object.keys(raw).forEach(k=> m[lc(k)]=raw[k]);
+  const g=k=> m[k] ?? '';
+  const sizes={
+    2:num(g('size2')),4:num(g('size4')),6:num(g('size6')),8:num(g('size8')),
+    10:num(g('size10')),12:num(g('size12')),14:num(g('size14'))
+  };
+  const qty = sizes[2]+sizes[4]+sizes[6]+sizes[8]+sizes[10]+sizes[12]+sizes[14];
   return {
-    item_name: r.item_name||r.name||'',
-    description: r.description||'',
-    category: r.category||'',
-    subcategory: r.subcategory||'',
-    colour: r.colour||'',
-    rrp: n(r.rrp),
-    size2,size4,size6,size8,size10,size12,size14,
+    item_name: g('item_name')||g('name')||'',
+    description: g('description')||'',
+    category: g('category')||'',
+    subcategory: g('subcategory')||'',
+    colour: g('colour')||g('color')||'',
+    rrp: num(g('rrp')),
+    size2:sizes[2], size4:sizes[4], size6:sizes[6], size8:sizes[8],
+    size10:sizes[10], size12:sizes[12], size14:sizes[14],
     qty
   };
 }
 
 /* ---------- UI helpers ---------- */
 function sizeChips(r){
-  const out=[];
+  const chips=[];
   [[2,'size2'],[4,'size4'],[6,'size6'],[8,'size8'],[10,'size10'],[12,'size12'],[14,'size14']].forEach(([s,k])=>{
-    if(r[k]>0) out.push(`<span class="chip"><b>Size ${s}</b> (${r[k]} pcs)</span>`);
+    if(r[k]>0) chips.push(`<span class="chip"><b>Size ${s}</b> (${r[k]} pcs)</span>`);
   });
-  return out.join('');
+  return chips.join('');
 }
 function renderMetrics(rows){
-  // pieces = sum of sizes for ALL items
+  // exact totals from sizes only
   const pieces = rows.reduce((a,r)=> a+r.qty, 0);
-  const skus   = rows.length; // no merging — each distinct row stays distinct
-  document.getElementById('heroPill').textContent = `${fmt(pieces)} pieces • ${fmt(skus)} SKUs`;
+  const skus   = rows.length; // no merging of unlike items
+  document.getElementById('heroPill').textContent = `Approx ${fmt(pieces)} pieces • ${fmt(skus)} SKUs`;
   document.getElementById('sumPieces').textContent = fmt(pieces);
   document.getElementById('sumSkus').textContent   = fmt(skus);
 
@@ -188,14 +210,12 @@ function renderMetrics(rows){
     totals[2]+=r.size2; totals[4]+=r.size4; totals[6]+=r.size6; totals[8]+=r.size8;
     totals[10]+=r.size10; totals[12]+=r.size12; totals[14]+=r.size14;
   });
-  const sizesEl=document.getElementById('sizes');
-  sizesEl.innerHTML = [2,4,6,8,10,12,14].map(s=>`
-    <div class="sizepill"><b>Size ${s}</b><span class="sub">${fmt(totals[s])} pcs</span></div>
-  `).join('');
+  document.getElementById('sizes').innerHTML =
+    [2,4,6,8,10,12,14].map(s=>`<div class="sizepill"><b>Size ${s}</b><span class="sub">${fmt(totals[s])} pcs</span></div>`).join('');
 
   const wholesale = rows.reduce((a,r)=> a + (r.rrp*WHOLESALE_FACTOR)*r.qty, 0);
   document.getElementById('sumWholesaleFooter').textContent = money(wholesale);
-  document.getElementById('sumQuickFooter').textContent     = money(QUICK_SALE_TARGET);
+  document.getElementById('sumQuickFooter').textContent     = money(QUICK_SALE);
 }
 function renderList(rows){
   const size=document.getElementById('sizeFilter').value;
@@ -203,7 +223,7 @@ function renderList(rows){
   const q   =document.getElementById('search').value.trim().toLowerCase();
 
   const filtered = rows.filter(r=>{
-    if(size && !(r['size'+size]>0)) return false; // strict size filter
+    if(size && !(r['size'+size]>0)) return false;                // strict size filter
     if(cat && r.category!==cat && r.subcategory!==cat) return false;
     if(q){
       const hay=(r.item_name+' '+r.description+' '+r.colour+' '+r.category+' '+r.subcategory).toLowerCase();
@@ -234,11 +254,16 @@ function renderList(rows){
 
 /* ---------- start ---------- */
 async function start(){
+  const errBox=document.getElementById('errBox');
   try{
     const [inv, map] = await Promise.all([fetchCSV(INV_URL), fetchCSV(MAP_URL)]);
-    const inventory = inv.map(normalise); // NO aggregation — keeps Fireman SKUs separate
-    buildImageIndex(map);
+    // normalise inventory rows (NO aggregation of different items)
+    const inventory = inv.rows.map(normRow);
 
+    // exact image index
+    buildImageIndex(map.rows);
+
+    // compute + render
     renderMetrics(inventory);
     ['sizeFilter','catFilter','search'].forEach(id=>{
       document.getElementById(id).addEventListener('input',()=>renderList(inventory));
@@ -247,7 +272,8 @@ async function start(){
     renderList(inventory);
   }catch(e){
     console.error(e);
-    document.getElementById('grid').innerHTML='<div class="empty">Error loading files</div>';
+    errBox.style.display='block';
+    errBox.textContent='Load error: '+e.message+' — check filenames sit beside index.html';
     document.getElementById('heroPill').textContent='Load error';
   }
 }
